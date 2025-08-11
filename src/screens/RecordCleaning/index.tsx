@@ -1,9 +1,12 @@
-import { Container, Title } from "./styles";
+import { Header } from "@components/Header";
+import { Container, Main } from "./styles";
 
 export function RecordCleaning() {
   return(
     <Container>
-      <Title>Registrar limpeza</Title>
+      <Header title="Registrar limpeza"/>
+      <Main>
+      </Main>
     </Container>
   )
 }

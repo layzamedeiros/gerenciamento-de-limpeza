@@ -1,9 +1,12 @@
-import { Container, Title } from "./styles";
+import { Header } from "@components/Header";
+import { Container, Main } from "./styles";
 
 export function ClassRoom() {
   return(
     <Container>
-      <Title>Salas de aula</Title>
+      <Header title="Salas de aula"/>
+      <Main>
+      </Main>
     </Container>
   )
 }

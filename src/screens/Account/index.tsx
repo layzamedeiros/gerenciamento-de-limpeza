@@ -1,9 +1,12 @@
-import { Container, Title } from "./styles";
+import { Header } from "@components/Header";
+import { Container, Main, Title } from "./styles";
 
 export function Account() {
   return(
     <Container>
-      <Title>Minha conta</Title>
+      <Main>
+        <Title>Minha conta</Title>
+      </Main>
     </Container>
   )
 }
