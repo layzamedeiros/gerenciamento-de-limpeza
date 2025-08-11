@@ -13,8 +13,8 @@
       "@screens/*": [
         "./src/screens/*"
       ],
-      "@themes/*": [
-        "./src/themes/*"
+      "@theme/*": [
+        "src/theme/*"
       ],
       "@routes/*": [
         "./src/routes/*"
