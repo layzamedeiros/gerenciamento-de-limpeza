@@ -38,14 +38,22 @@ export function BottomApp() {
           backgroundColor: theme.COLORS.PRIMARY,
           borderTopWidth: 0,
           height: 60 + insets.bottom,
-        }
+        },
+        tabBarActiveTintColor: theme.COLORS.WHITE,    
+        tabBarInactiveTintColor: theme.COLORS.DISABLED, 
       }}
     >
       <Screen 
         name="home"
         component={Home}
         options={{
-          tabBarIcon: ({ color }) => <HouseIcon weight="fill" size={24} color={theme.COLORS.BACKGROUND} />
+          tabBarIcon: ({ color, focused }) => (
+            <HouseIcon
+              weight={focused ? 'fill' : 'regular'}
+              size={26} 
+              color={color} 
+            />
+          )
         }}
       />
 
@@ -53,7 +61,13 @@ export function BottomApp() {
         name="classRoom"
         component={ClassRoom}
         options={{
-          tabBarIcon: ({ color }) => <ChalkboardIcon weight="regular" size={24} color={theme.COLORS.BACKGROUND} />
+          tabBarIcon: ({ color, focused }) => (
+            <ChalkboardIcon 
+              weight={focused ? 'fill' : 'regular'}
+              size={26} 
+              color={color} 
+            />
+          )
         }}
       />
 
@@ -61,7 +75,13 @@ export function BottomApp() {
         name="recordCleaning"
         component={RecordCleaning}
         options={{
-          tabBarIcon: ({ color }) => <PlusSquareIcon weight="regular" size={24} color={theme.COLORS.BACKGROUND} />
+          tabBarIcon: ({ color, focused }) => (
+            <PlusSquareIcon 
+              weight={focused ? 'fill' : 'regular'} 
+              size={26} 
+              color={color} 
+            />
+          )
         }}
       />
 
@@ -69,7 +89,13 @@ export function BottomApp() {
         name="account"
         component={Account}
         options={{
-          tabBarIcon: ({ color }) => <UserCircleIcon weight="regular" size={24} color={theme.COLORS.BACKGROUND} />
+          tabBarIcon: ({ color, focused }) => (
+            <UserCircleIcon 
+              weight={focused ? 'fill' : 'regular'} 
+              size={26} 
+              color={color} 
+            />
+          )
         }}
       />
     </Navigator>
