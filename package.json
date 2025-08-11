@@ -10,12 +10,19 @@
   },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.4.1",
+    "@react-navigation/bottom-tabs": "^7.4.6",
+    "@react-navigation/native": "^7.1.17",
+    "@react-navigation/native-stack": "^7.3.25",
     "expo": "~53.0.20",
     "expo-font": "~13.3.2",
     "expo-status-bar": "~2.2.3",
+    "phosphor-react-native": "^3.0.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-native": "0.79.5",
+    "react-native-safe-area-context": "5.4.0",
+    "react-native-screens": "~4.11.1",
+    "react-native-svg": "^15.12.1",
     "styled-components": "^6.1.19"
   },
   "devDependencies": {
