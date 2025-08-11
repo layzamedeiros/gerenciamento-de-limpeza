@@ -6,6 +6,9 @@ import { HouseIcon, ChalkboardIcon, PlusSquareIcon, UserCircleIcon } from "phosp
 
 import { Home } from "@screens/Home";
 import { TouchableOpacity } from "react-native";
+import { ClassRoom } from "@screens/ClassRoom";
+import { RecordCleaning } from "@screens/RecordCleaning";
+import { Account } from "@screens/Account";
 
 type BottomAppProps = {
   home: undefined;
@@ -56,7 +59,7 @@ export function BottomApp() {
 
       <Screen 
         name="classRoom"
-        component={Home}
+        component={ClassRoom}
         options={{
           tabBarIcon: ({ color, focused }) => (
             <ChalkboardIcon 
@@ -70,7 +73,7 @@ export function BottomApp() {
 
       <Screen 
         name="recordCleaning"
-        component={Home}
+        component={RecordCleaning}
         options={{
           tabBarIcon: ({ color, focused }) => (
             <PlusSquareIcon 
@@ -84,7 +87,7 @@ export function BottomApp() {
 
       <Screen 
         name="account"
-        component={Home}
+        component={Account}
         options={{
           tabBarIcon: ({ color, focused }) => (
             <UserCircleIcon 

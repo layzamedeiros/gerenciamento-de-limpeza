@@ -12,3 +12,7 @@ export const Main = styled.View`
   background-color: ${({ theme }) => theme.COLORS.BACKGROUND};
   padding: 15px 20px;
 `;
+
+export const Title = styled.Text`
+  font-size: 24px;
+`;

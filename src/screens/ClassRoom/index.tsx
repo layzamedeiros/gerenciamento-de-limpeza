@@ -1,10 +1,10 @@
 import { Header } from "@components/Header";
 import { Container, Main } from "./styles";
 
-export function Home() {
+export function ClassRoom() {
   return(
     <Container>
-      <Header title="Gerenciamento de limpeza"/>
+      <Header title="Salas de aula"/>
       <Main>
       </Main>
     </Container>

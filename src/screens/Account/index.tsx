@@ -1,11 +1,11 @@
 import { Header } from "@components/Header";
-import { Container, Main } from "./styles";
+import { Container, Main, Title } from "./styles";
 
-export function Home() {
+export function Account() {
   return(
     <Container>
-      <Header title="Gerenciamento de limpeza"/>
       <Main>
+        <Title>Minha conta</Title>
       </Main>
     </Container>
   )
