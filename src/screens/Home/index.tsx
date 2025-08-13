@@ -12,6 +12,7 @@ export function Home() {
       <Main>
       <Title>Dashboard</Title>
       <ContainerButton>
+
         <DashboardButton 
           icon={
             <WarningIcon
@@ -29,7 +30,7 @@ export function Home() {
         />
 
         <DashboardButton 
-          title="4 Salas com limpeza pendente"
+          title="Ver salas de aula"
           icon= {
             <ChalkboardTeacherIcon 
               color={theme.COLORS.WHITE}
@@ -40,7 +41,8 @@ export function Home() {
         />
 
         <DashboardButton 
-          title="4 Salas com limpeza pendente"
+          title="Última limpeza:"
+          subtitle="Sala de informática 02"
           icon={
             <ClockCountdownIcon 
               color={theme.COLORS.WHITE}

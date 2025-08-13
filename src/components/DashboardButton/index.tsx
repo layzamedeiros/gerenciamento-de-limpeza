@@ -2,7 +2,6 @@ import { TouchableOpacityProps } from "react-native";
 import { Button, Content, Title, SubTitle, IconWrapper } from "./styles";
 import React, { ReactNode } from "react";
 import { ProgressCircle } from "@components/ProgressCircle";
-import { CircularProgressBase } from "react-native-circular-progress-indicator";
 
 type Props = TouchableOpacityProps & {
   title: string;

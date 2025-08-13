@@ -4,7 +4,7 @@ export const Button = styled.TouchableOpacity`
   background-color: ${({ theme })  => theme.COLORS.PRIMARY};
   max-width: 47.5%;
   aspect-ratio: 160 / 180;
-  padding: 16px;
+  padding: 10px;
   border-radius: 14px;
   justify-content: space-between;
   align-items: center;
