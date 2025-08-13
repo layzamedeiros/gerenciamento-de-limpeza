@@ -1,5 +1,5 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import styled from "styled-components/native";
+import styled, { css } from "styled-components/native";
 
 export const Container = styled(SafeAreaView)`
   flex: 1;
@@ -11,4 +11,21 @@ export const Main = styled.View`
   flex: 1;
   background-color: ${({ theme }) => theme.COLORS.BACKGROUND};
   padding: 15px 20px;
+`;
+
+export const Title = styled.Text`
+  ${({ theme }) => css`
+    color: ${theme.COLORS.PRIMARY};
+    font-family: ${theme.FONT_FAMILY.SEMIBOLD};
+  `}
+  font-size: 16px;
+  margin-bottom: 10px;
+`;
+
+export const ContainerButton = styled.View`
+  flex: 1;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
 `;
