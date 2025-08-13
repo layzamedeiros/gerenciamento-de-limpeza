@@ -1,6 +1,8 @@
 import styled, { css } from "styled-components/native";
 
-export const Button = styled.TouchableOpacity`
+export const Button = styled.TouchableOpacity.attrs({
+  activeOpacity: 1
+})`
   background-color: ${({ theme })  => theme.COLORS.PRIMARY};
   max-width: 47.5%;
   aspect-ratio: 160 / 180;
