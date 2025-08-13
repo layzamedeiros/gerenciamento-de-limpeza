@@ -13,7 +13,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
     <ThemeProvider theme={theme}>
-      { fontsLoaded ? <Routes /> : <Loading /> }
+      <Routes />
     </ThemeProvider>
     </SafeAreaProvider>
   );

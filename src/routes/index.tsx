@@ -1,3 +1,4 @@
+import 'react-native-reanimated';
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native"
 import { BottomApp } from "./bottomApp.routes"
 import { useTheme } from "styled-components/native";
