@@ -21,7 +21,6 @@ export const StatusContainer = styled.View<StatusProps>`
   height: 16px;
   border-radius: 20px;
   align-items: center;
-  transform: rotate(90deg);
   justify-content: center;
   transform: rotate(90deg);
   left: -15px;
@@ -36,12 +35,12 @@ export const StatusContainer = styled.View<StatusProps>`
 `;
 
 export const StatusTitle = styled.Text`
+  font-size: 11px;
+
   ${({ theme }) => css`
     color: ${theme.COLORS.WHITE};
     font-family: ${theme.FONT_FAMILY.SEMIBOLD};
   `}
-  font-size: 11px;
-
 `;
 
 export const CardContent = styled.View`
@@ -50,17 +49,19 @@ export const CardContent = styled.View`
 `;
 
 export const Title = styled.Text`
+  font-size: 16px;
+
   ${({ theme }) => css`
     color: ${theme.COLORS.TITLE};
     font-family: ${theme.FONT_FAMILY.SEMIBOLD};
-  `}
-  font-size: 16px;
+  `};
 `;
 
 export const SubTitle = styled.Text`
+  font-size: 14px;
+  
   ${({ theme }) => css`
     color: ${theme.COLORS.SUBTITLE};
     font-family: ${theme.FONT_FAMILY.REGULAR};
-  `}
-  font-size: 14px;
+  `};
 `;

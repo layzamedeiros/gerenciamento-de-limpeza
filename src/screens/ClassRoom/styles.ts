@@ -5,7 +5,6 @@ export const Container = styled(SafeAreaView).attrs({
   edges: ["right", "top", "left"],
 })`
   flex: 1;
-  justify-content: center;
 `;
 
 export const Content = styled.View`
@@ -14,16 +13,16 @@ export const Content = styled.View`
   padding: 15px 20px 0px 20px;
 `;
 
-export const FilterContainer = styled.View`
+export const FilterContainer = styled.View` 
   flex-direction: row;
   justify-content: center;
+  margin-top: 10px;
+  margin-bottom: 20px; 
 `;
 
 export const StyledScroll = styled.ScrollView.attrs(() => ({
   showsVerticalScrollIndicator: false,
   contentContainerStyle: {
-    flexGrow: 1
+    paddingBottom: 20
   },
-}))`
-  flex: 1; 
-`;
+}))``;
