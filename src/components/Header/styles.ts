@@ -4,9 +4,9 @@ import styled, { css } from "styled-components/native";
 
 export const HeaderContainer = styled.View`
  ${({ theme }) => css`
-  background-color: ${theme.COLORS.BACKGROUND};
-  border-bottom-color: ${theme.COLORS.BORDER};
- `};
+    background-color: ${theme.COLORS.BACKGROUND};
+    border-bottom-color: ${theme.COLORS.BORDER};
+  `}
   width: 100%;
   height: 70px;
   flex-direction: row;
@@ -16,12 +16,13 @@ export const HeaderContainer = styled.View`
 `;
 
 export const ScreenName = styled.Text`
+  font-size: 20px;
+  margin-left: 20px;
+
   ${({ theme }) => css`
     font-family: ${theme.FONT_FAMILY.SEMIBOLD};
     color: ${theme.COLORS.PRIMARY};
   `}
-  font-size: 20px;
-  margin-left:20px;
 `;
 
 export const NotificationButton = styled.TouchableOpacity.attrs({
@@ -31,8 +32,8 @@ export const NotificationButton = styled.TouchableOpacity.attrs({
   margin-right: 20px;
 `;
 
-export const NotificationIcon = styled(BellIcon).attrs({
+export const NotificationIcon = styled(BellIcon).attrs(({ theme }) => ({
   size: 26,
   color: theme.COLORS.PRIMARY,
   weight: "bold"
-})``;
+}))``;
