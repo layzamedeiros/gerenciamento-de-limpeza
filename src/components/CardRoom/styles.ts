@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components/native";
 
 type StatusProps = {
-  status: "limpa" | "pendente";
+  status?: "limpa" | "pendente";
 }
 
 export const CardContainer = styled.View`
