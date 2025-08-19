@@ -64,11 +64,9 @@ export const LogoutButtonText = styled.Text`
 `;
 
 export const Button = styled(TouchableOpacity)`
-  min-height: 56px;
-  max-height: 56px;
-
+  min-height: 35px;
+  max-height: 40px;
   background-color: ${({ theme }) => theme.COLORS.PRIMARY};
-  
   border-radius: 8px;
   justify-content: center;
   align-items: center;
@@ -80,5 +78,5 @@ export const ButtonText = styled.Text`
     color: ${theme.COLORS.WHITE};
     font-family: ${theme.FONT_FAMILY.SEMIBOLD};
   `}
-  font-size: 16px;
+  font-size: 14px;
 `;
