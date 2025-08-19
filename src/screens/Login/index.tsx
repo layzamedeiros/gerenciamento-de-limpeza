@@ -28,12 +28,12 @@ export function Login() {
 
   return (
     <Container>
-      <Logo source={require('@assets/logo.png')} accessibilityLabel="Logo da empresa" />
+      {/* <Logo source={require('../../assets/logo_senac.png')} /> */}
       <Title>Login</Title>
       <Subtitle>Seja Bem-Vindo!</Subtitle>
       
       <InputContainer>
-        <UserIcon size={20} color="#888" />
+        <UserIcon size={20} color="#004A8D" weight='bold' />
         <Input
           placeholder="usuário"
           value={username}
@@ -44,7 +44,7 @@ export function Login() {
       </InputContainer>
       
       <InputContainer>
-        <LockIcon size={20} color="#888" />
+        <LockIcon size={20} color="#004A8D"  weight='bold'/>
         <Input
           placeholder="senha"
           value={password}
@@ -53,7 +53,7 @@ export function Login() {
           placeholderTextColor="#888"
         />
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-          {showPassword ? <EyeSlashIcon size={22} color="#888" /> : <EyeIcon size={22} color="#888" />}
+          {showPassword ? <EyeSlashIcon size={22} color="#004A8D" /> : <EyeIcon size={22} color="#004A8D" />}
         </TouchableOpacity>
       </InputContainer>
 

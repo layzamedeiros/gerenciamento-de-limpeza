@@ -9,15 +9,13 @@ export const Container = styled.View`
 `;
 
 export const Logo = styled.Image`
-  width: 180px;
-  height: 60px;
   margin-bottom: 20px;
 `;
 
 export const Title = styled.Text`
 ${({ theme }) => css`
   font-family: ${theme.FONT_FAMILY.BOLD};
-  color: ${theme.COLORS.PRIMARY}
+  color: ${theme.COLORS.PRIMARY};
 `}
   font-size: 30px;
 `;
@@ -25,7 +23,7 @@ ${({ theme }) => css`
 export const Subtitle = styled.Text`
 ${({ theme }) => css`
   font-family: ${theme.FONT_FAMILY.SEMIBOLD};
-  color: ${theme.COLORS.PRIMARY}
+  color: ${theme.COLORS.PRIMARY};
 `}
   font-size: 20px;
   margin-bottom: 40px;
@@ -35,9 +33,9 @@ export const InputContainer = styled.View`
   width: 100%;
   height: 55px;
   background-color: ${({ theme }) => theme.COLORS.WHITE};
-  border-radius: 30px; 
+  border-radius: 8px; 
   border: 1px;
-  border-left-color: ${({ theme }) => theme.COLORS.BORDER};
+  border-color: ${({ theme }) => theme.COLORS.BORDER};
   margin-bottom: 15px;
   flex-direction: row;
   align-items: center;
@@ -55,10 +53,10 @@ export const LoginButton = styled.TouchableOpacity`
   width: 100%;
   height: 55px;
   background-color: ${({ theme }) => theme.COLORS.PRIMARY}; 
-  border-radius: 30px;
+  border-radius: 8px;
   align-items: center;
   justify-content: center;
-  margin-top: 10px;
+  margin-top: 15px;
 `;
 
 export const LoginButtonText = styled.Text`
