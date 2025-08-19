@@ -7,12 +7,12 @@ type StatusProps = {
 export const CardContainer = styled.View`
   flex: 1;
   width: 100%;
-  height: 117px;
+  height: 140px;
   border-radius: 11px;
   background-color: ${({ theme }) => theme.COLORS.WHITE};
   flex-direction: row;
   align-items: center;
-  padding: 16px 0;
+  padding: 16px;
   margin-bottom: 10px;
 `;
 
@@ -22,8 +22,8 @@ export const StatusContainer = styled.View<StatusProps>`
   border-radius: 20px;
   align-items: center;
   justify-content: center;
-  transform: rotate(90deg);
-  left: -15px;
+  transform: rotate(-90deg);
+  left: -30px;
 
   ${({ theme, status }) => css`
     background-color: ${
@@ -45,7 +45,7 @@ export const StatusTitle = styled.Text`
 
 export const CardContent = styled.View`
   flex: 1;
-  left: -30px;
+  left: -50px;
 `;
 
 export const Title = styled.Text`
@@ -64,4 +64,10 @@ export const SubTitle = styled.Text`
     color: ${theme.COLORS.SUBTITLE};
     font-family: ${theme.FONT_FAMILY.REGULAR};
   `};
+`;
+
+export const IconContainer = styled.View`
+  flex-direction: column; 
+  align-items: center;
+  gap: 12px; 
 `;
