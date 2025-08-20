@@ -20,3 +20,13 @@ export const fetchSalas = async (): Promise<Sala[]> => {
     throw error;
   }
 };
+
+export const marcarSalaComoLimpa = async (salaId: number) => {
+  try {
+    const response = await api.post(`/salas/${salaId}/marcar_como_limpa/`);
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to mark room ${salaId} as clean:`, error);
+    throw error;
+  }
+};
