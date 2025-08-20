@@ -2,8 +2,13 @@ import 'react-native-reanimated';
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native"
 import { BottomApp } from "./bottomApp.routes"
 import { useTheme } from "styled-components/native";
+import { UserType } from 'App';
 
-export function Routes() {
+type Props = {
+  userType: UserType;
+}
+
+export function Routes({ userType }: Props) {
   const theme = useTheme();
   
   const themeNavigation = DefaultTheme;
@@ -11,7 +16,7 @@ export function Routes() {
   
   return(
     <NavigationContainer theme={themeNavigation}>
-      <BottomApp />
+      <BottomApp userType={userType} />
     </NavigationContainer>
   )
 }
