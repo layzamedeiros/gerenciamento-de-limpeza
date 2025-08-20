@@ -1,13 +1,29 @@
 import { CardContainer, StatusContainer, StatusTitle, CardContent, Title, SubTitle } from "./styles";
+import { format,  parseISO } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 type Props = {
-  title: string;
-  subtitle?: string;
+  status: 'limpa' | 'pendente';
   statustitle: string;
-  status: "limpa" | "pendente";
+  title: string;
+  capacidade: number;
+  descricao: string;
+  ultimaLimpeza: string | null;
 }
 
-export function CardRoom({ title, status }: Props) {
+export function CardRoom({ title, status, capacidade, descricao, ultimaLimpeza }: Props) {
+  const formatarData = (data: string | null) => {
+    if (!data) {
+      return "Limpeza pendente" ;
+    }
+    try {
+      const dataObj = parseISO(data);
+      return format(dataObj, "dd/MM/yyyy", { locale: ptBR });
+    } catch (error) {
+      console.error("Erro ao formatar data:", error);
+      return "Data inválida";
+    }
+  };
   return (
     <CardContainer>
       <StatusContainer status={status}> 
@@ -18,9 +34,9 @@ export function CardRoom({ title, status }: Props) {
 
       <CardContent>
         <Title>{title}</Title>
-        <SubTitle>Capacidade: 20</SubTitle>
-        <SubTitle>Descrição: Sala informática desktop</SubTitle>
-        <SubTitle>Última limpeza: 2025/07/31</SubTitle>
+        <SubTitle>Capacidade: {capacidade}</SubTitle>
+        <SubTitle>Descrição: {descricao}</SubTitle>
+        <SubTitle>Última limpeza: {formatarData(ultimaLimpeza)}</SubTitle>
       </CardContent>
     </CardContainer>
   )

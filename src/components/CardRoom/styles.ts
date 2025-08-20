@@ -5,7 +5,6 @@ type StatusProps = {
 }
 
 export const CardContainer = styled.View`
-  flex: 1;
   width: 100%;
   height: 117px;
   border-radius: 11px;

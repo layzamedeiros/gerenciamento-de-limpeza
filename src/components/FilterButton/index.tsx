@@ -1,22 +1,31 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Container, Button, ButtonText } from './styles';
 
+export type FilterStatus = 'todas' | 'pendentes' | 'limpas';
 
-export default function FilterButton() {
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const buttons = ['Todas', 'Pendentes', 'Limpas'];
+type Props = {
+  activeFilter: FilterStatus;
+  onFilterChange: (status: FilterStatus) => void;
+}
+
+export default function FilterButton({ activeFilter, onFilterChange }: Props) {
+  const buttons: { label: string, status: FilterStatus }[] = [
+    { label: 'Todas', status: 'todas' },
+    { label: 'Pendentes', status: 'pendentes' },
+    { label: 'Limpas', status: 'limpas' }
+  ];
 
   return (
     <Container>
-      {buttons.map((label, index) => (
+      {buttons.map((button) => (
         <Button
-          key={index}
-          selected={selectedIndex === index}
-          onPress={() => setSelectedIndex(index)}
+          key={button.status}
+          selected={activeFilter === button.status}
+          onPress={() => onFilterChange(button.status)}
           style={{ marginHorizontal: 8 }} 
         >
-          <ButtonText selected={selectedIndex === index}>
-            {label}
+          <ButtonText selected={activeFilter === button.status}>
+            {button.label}
           </ButtonText>
         </Button>
       ))}
