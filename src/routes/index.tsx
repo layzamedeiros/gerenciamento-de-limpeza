@@ -6,8 +6,8 @@ import { useTheme } from "styled-components/native";
 import { ActivityIndicator, View } from 'react-native';
 
 import { useAuth } from '@contexts/AuthContext';
-import { Login } from '@screens/Login'; // Assuming Login is the default export
-import { BottomApp } from "./bottomApp.routes";
+import { Login } from '@screens/Login'; 
+import { AppRoutes } from './app.routes';
 
 export function Routes() {
   const { user, isAppLoading } = useAuth();
@@ -26,8 +26,7 @@ export function Routes() {
 
   return (
     <NavigationContainer theme={themeNavigation}>
-      {/* If user is authenticated, render BottomApp, otherwise render Login screen */}
-      {user ? <BottomApp /> : <Login />}
+      {user ? <AppRoutes /> : <Login />}
     </NavigationContainer>
   );
 }
