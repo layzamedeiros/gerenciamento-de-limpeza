@@ -8,27 +8,11 @@ import { Container, Content, FilterContainer } from "./styles";
 import { CardRoom } from "@components/CardRoom";
 import FilterButton from "@components/FilterButton";
 
-import { fetchSalas, Sala } from '@services/roomsService';
+import { useSalas } from '@contexts/RoomsContext';
 
 export function ClassRoom() {
   const theme = useTheme();
-
-  const [salas, setSalas] = useState<Sala[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadSalasData() {
-      try {
-        const data = await fetchSalas();
-        setSalas(data);
-      } catch (error) {
-        console.error("Failed to load classrooms:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    loadSalasData();
-  }, []);
+  const { salas, isLoading } = useSalas();
 
   if (isLoading) {
     return (

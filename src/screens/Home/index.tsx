@@ -8,30 +8,15 @@ import { Container, ContainerButton, Main, Title } from "./styles";
 import { DashboardButton } from "@components/DashboardButton";
 import { WarningIcon, ChalkboardTeacherIcon, ClockCountdownIcon } from "phosphor-react-native";
 
-import { fetchSalas, Sala } from '@services/roomsService';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { AppRoutesParamList } from '@routes/app.routes';
+import { useSalas } from '@contexts/RoomsContext';
 
 export function Home() {
   const theme = useTheme();
   const navigation = useNavigation<StackNavigationProp<AppRoutesParamList>>();
-
-  const [salas, setSalas] = useState<Sala[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadDashboardData() {
-      try {
-        const data = await fetchSalas();
-        setSalas(data);
-      } catch (error) {
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    loadDashboardData();
-  }, []);
-
+  const { salas, isLoading } = useSalas();
+  
   const dashboardStats = useMemo(() => {
     if (salas.length === 0) {
       return { pendentes: 0, progresso: 0, ultimaLimpeza: 'Nenhuma' };
