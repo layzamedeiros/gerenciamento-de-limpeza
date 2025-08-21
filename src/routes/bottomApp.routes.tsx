@@ -2,22 +2,26 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useTheme } from "styled-components/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { HouseIcon, ChalkboardIcon, PlusSquareIcon, UserCircleIcon } from "phosphor-react-native";
+import { HouseIcon, ChalkboardIcon, PlusSquareIcon, UserCircleIcon, UsersThreeIcon } from "phosphor-react-native";
 
 import { Home } from "@screens/Home";
 import { TouchableOpacity } from "react-native";
 import { ClassRoom } from "@screens/ClassRoom";
 import { RecordCleaning } from "@screens/RecordCleaning";
 import { Account } from "@screens/Account";
+import { ManageEmployee } from "@screens/ManageEmployee";
 
-type BottomAppProps = {
-  home: undefined;
-  classRoom: undefined;
-  recordCleaning: undefined;
-  account: undefined;
-}
+export type BottomTabParamList = {
+  Home: undefined; 
+  ClassRoom: undefined;
+  ManageEmployee: undefined;
+  RecordCleaning: undefined;
+  Account: undefined;
+};
 
-const { Navigator, Screen } = createBottomTabNavigator<BottomAppProps>();
+
+
+const { Navigator, Screen } = createBottomTabNavigator<BottomTabParamList>();
 
 export function BottomApp() {
   const theme = useTheme();
@@ -44,7 +48,7 @@ export function BottomApp() {
       }}
     >
       <Screen 
-        name="home"
+        name="Home"
         component={Home}
         options={{
           tabBarIcon: ({ color, focused }) => (
@@ -58,7 +62,7 @@ export function BottomApp() {
       />
 
       <Screen 
-        name="classRoom"
+        name="ClassRoom"
         component={ClassRoom}
         options={{
           tabBarIcon: ({ color, focused }) => (
@@ -70,23 +74,36 @@ export function BottomApp() {
           )
         }}
       />
+        <Screen 
+          name="ManageEmployee"
+          component={ManageEmployee}
+          options={{
+            tabBarIcon: ({ color, focused }) => (
+              <UsersThreeIcon 
+                weight={focused ? 'fill' : 'regular'} 
+                size={26} 
+                color={color} 
+              />
+            )
+          }}
+        />
+
+        <Screen 
+          name="RecordCleaning"
+          component={RecordCleaning}
+          options={{
+            tabBarIcon: ({ color, focused }) => (
+              <PlusSquareIcon 
+                weight={focused ? 'fill' : 'regular'} 
+                size={26} 
+                color={color} 
+              />
+            )
+          }}
+        />
 
       <Screen 
-        name="recordCleaning"
-        component={RecordCleaning}
-        options={{
-          tabBarIcon: ({ color, focused }) => (
-            <PlusSquareIcon 
-              weight={focused ? 'fill' : 'regular'} 
-              size={26} 
-              color={color} 
-            />
-          )
-        }}
-      />
-
-      <Screen 
-        name="account"
+        name="Account"
         component={Account}
         options={{
           tabBarIcon: ({ color, focused }) => (
