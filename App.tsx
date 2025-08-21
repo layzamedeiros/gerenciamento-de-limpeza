@@ -8,6 +8,7 @@ import theme from '@theme/index';
 import { Routes } from '@routes/index';
 import { AuthProvider } from '@contexts/AuthContext';
 import { SalasProvider } from '@contexts/RoomsContext';
+import { EmployeeProvider } from '@contexts/EmployeeContext';
 
 export default function App() {
   const [ fontsLoaded ] = useFonts({ Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold });
@@ -17,7 +18,9 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <AuthProvider>
         <SalasProvider>
-          <Routes />
+          <EmployeeProvider>
+            <Routes />
+          </EmployeeProvider>
         </SalasProvider>
       </AuthProvider>
     </ThemeProvider>
