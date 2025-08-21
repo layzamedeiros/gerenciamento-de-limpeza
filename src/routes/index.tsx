@@ -1,22 +1,32 @@
+// src/routes/index.tsx
+
 import 'react-native-reanimated';
-import { DefaultTheme, NavigationContainer } from "@react-navigation/native"
-import { BottomApp } from "./bottomApp.routes"
+import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { useTheme } from "styled-components/native";
-import { UserType } from 'App';
+import { ActivityIndicator, View } from 'react-native';
 
-type Props = {
-  userType: UserType;
-}
+import { useAuth } from '@contexts/AuthContext';
+import { Login } from '@screens/Login'; 
+import { AppRoutes } from './app.routes';
 
-export function Routes({ userType }: Props) {
+export function Routes() {
+  const { user, isAppLoading } = useAuth();
   const theme = useTheme();
   
   const themeNavigation = DefaultTheme;
-  themeNavigation.colors.background = theme.COLORS.BACKGROUND
+  themeNavigation.colors.background = theme.COLORS.BACKGROUND;
   
-  return(
+  if (isAppLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color={theme.COLORS.PRIMARY} />
+      </View>
+    );
+  }
+
+  return (
     <NavigationContainer theme={themeNavigation}>
-      <BottomApp userType={userType} />
+      {user ? <AppRoutes /> : <Login />}
     </NavigationContainer>
-  )
+  );
 }

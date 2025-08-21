@@ -9,7 +9,6 @@ import { TouchableOpacity } from "react-native";
 import { ClassRoom } from "@screens/ClassRoom";
 import { RecordCleaning } from "@screens/RecordCleaning";
 import { Account } from "@screens/Account";
-import { UserType } from '../../App';
 import { ManageEmployee } from "@screens/ManageEmployee";
 
 export type BottomTabParamList = {
@@ -20,13 +19,11 @@ export type BottomTabParamList = {
   Account: undefined;
 };
 
-type BottomAppProps = {
-  userType: UserType;
-}
+
 
 const { Navigator, Screen } = createBottomTabNavigator<BottomTabParamList>();
 
-export function BottomApp({ userType }: BottomAppProps) {
+export function BottomApp() {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
 
@@ -77,8 +74,6 @@ export function BottomApp({ userType }: BottomAppProps) {
           )
         }}
       />
-
-       {userType === 'admin' ? (
         <Screen 
           name="ManageEmployee"
           component={ManageEmployee}
@@ -92,7 +87,7 @@ export function BottomApp({ userType }: BottomAppProps) {
             )
           }}
         />
-      ) : (
+
         <Screen 
           name="RecordCleaning"
           component={RecordCleaning}
@@ -106,8 +101,6 @@ export function BottomApp({ userType }: BottomAppProps) {
             )
           }}
         />
-      )}
-      
 
       <Screen 
         name="Account"
