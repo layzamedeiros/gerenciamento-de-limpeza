@@ -1,11 +1,12 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useTheme } from "styled-components/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
 import { HouseIcon, ChalkboardIcon, PlusSquareIcon, UserCircleIcon, UsersThreeIcon } from "phosphor-react-native";
+import { TouchableOpacity } from "react-native";
+
+import { useAuth } from "@contexts/AuthContext"; 
 
 import { Home } from "@screens/Home";
-import { TouchableOpacity } from "react-native";
 import { ClassRoom } from "@screens/ClassRoom";
 import { RecordCleaning } from "@screens/RecordCleaning";
 import { Account } from "@screens/Account";
@@ -19,13 +20,14 @@ export type BottomTabParamList = {
   Account: undefined;
 };
 
-
-
 const { Navigator, Screen } = createBottomTabNavigator<BottomTabParamList>();
 
 export function BottomApp() {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
+  
+  const { user } = useAuth(); 
+  const isAdmin = user?.is_staff || user?.is_superuser;
 
   return (
     <Navigator
@@ -74,6 +76,8 @@ export function BottomApp() {
           )
         }}
       />
+      
+      {isAdmin ? (
         <Screen 
           name="ManageEmployee"
           component={ManageEmployee}
@@ -87,7 +91,7 @@ export function BottomApp() {
             )
           }}
         />
-
+      ) : (
         <Screen 
           name="RecordCleaning"
           component={RecordCleaning}
@@ -101,6 +105,7 @@ export function BottomApp() {
             )
           }}
         />
+      )}
 
       <Screen 
         name="Account"

@@ -1,24 +1,24 @@
 import React, { createContext, useState, useContext, ReactNode, useCallback, useEffect } from 'react';
-import { Sala, fetchSalas } from '@services/roomsService';
-import { useAuth } from './AuthContext'; 
+import { Sala, fetchSalas } from '@services/roomsService'; 
+import { useAuth } from '@contexts/AuthContext';
 
 interface SalasContextData {
   salas: Sala[];
   isLoading: boolean;
-  refreshSalas: () => Promise<void>;
+  refreshSalas: () => Promise<void>; 
 }
 
 const SalasContext = createContext<SalasContextData>({} as SalasContextData);
 
 function SalasProvider({ children }: { children: ReactNode }) {
   const [salas, setSalas] = useState<Sala[]>([]);
-  const [isLoading, setIsLoading] = useState(false); 
-  
-  const { token } = useAuth(); 
+  const [isLoading, setIsLoading] = useState(true);
+  const { token, isAppLoading } = useAuth();
 
   const refreshSalas = useCallback(async () => {
-    setIsLoading(true);
     try {
+      if (!token) return; 
+      setIsLoading(true);
       const data = await fetchSalas();
       setSalas(data);
     } catch (error) {
@@ -26,13 +26,13 @@ function SalasProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [token]);
 
   useEffect(() => {
-    if (token) {
+    if (!isAppLoading && token) {
       refreshSalas();
     }
-  }, [token]); 
+  }, [isAppLoading, token, refreshSalas]);
 
   return (
     <SalasContext.Provider value={{ salas, isLoading, refreshSalas }}>
