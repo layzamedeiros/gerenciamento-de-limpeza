@@ -44,5 +44,5 @@ export const ButtonText = styled.Text`
     color: ${theme.COLORS.WHITE};
     font-family: ${theme.FONT_FAMILY.SEMIBOLD};
   `}
-  font-size: 14px;
+  font-size: 16px;
 `;

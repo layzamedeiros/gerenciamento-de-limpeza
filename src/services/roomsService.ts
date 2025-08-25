@@ -30,3 +30,20 @@ export const marcarSalaComoLimpa = async (salaId: number) => {
     throw error;
   }
 };
+
+export interface CreateSalaData {
+  nome_numero: string;
+  capacidade: number;
+  descricao: string;
+  localizacao: string;
+}
+
+export const createSala = async (data: CreateSalaData): Promise<Sala> => {
+  try {
+    const response = await api.post('/salas/', data);
+    return response.data;
+  } catch (error) {
+    console.error("Falha ao criar sala:", error);
+    throw error;
+  }
+};

@@ -74,16 +74,16 @@ export function CreateEmployeeModal({ onClose, onEmployeeCreated, ...rest }: Pro
           <ModalTitle>Cadastrar funcionário</ModalTitle>
 
           <TitleInput>Usuário</TitleInput>
-          <Input placeholder='Digitar o nome de usuário' value={username} onChangeText={setUsername} autoCapitalize="none" />
+          <Input placeholder='Ex: joao.silva' value={username} onChangeText={setUsername} autoCapitalize="none" />
           
           <TitleInput>Senha</TitleInput>
-          <Input placeholder='Digitar a senha' value={password} onChangeText={setPassword} secureTextEntry />
+          <Input placeholder='Digite uma senha forte' value={password} onChangeText={setPassword} secureTextEntry />
 
           <TitleInput>Confirmar senha</TitleInput>
-          <Input placeholder='Confirmar a senha' value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry />
+          <Input placeholder='Confirme a senha' value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry />
 
           <TitleInput>E-mail</TitleInput>
-          <Input placeholder='Digitar email do usuário' value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
+          <Input placeholder='Ex: joao.silva@email.com' value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
 
           <AdminContainer>
             <Switch

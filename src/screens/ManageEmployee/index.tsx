@@ -27,7 +27,7 @@ export function ManageEmployee() {
       <Header title="Gerenciar Funcionários" />
       <Content>
         <Button onPress={() => setIsModalVisible(true)}>
-          <PlusIcon color="white" size={24} />
+          <PlusIcon color="white" size={24} weight='bold' />
           <ButtonText>Cadastrar novo Funcionário</ButtonText>
         </Button>
 
