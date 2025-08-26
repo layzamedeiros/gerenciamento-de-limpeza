@@ -1,43 +1,61 @@
-import { CardContainer, StatusContainer, StatusTitle, CardContent, Title, SubTitle } from "./styles";
-import { format,  parseISO } from 'date-fns';
+import { Alert } from "react-native";
+import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { PencilSimpleIcon, TrashIcon } from "phosphor-react-native";
+import { useTheme } from "styled-components/native";
+import { Sala } from '@services/roomsService';
+
+import { 
+  CardContainer, Title, SubTitle, CardHeader, StatusTag, StatusTagText, 
+  ActionsContainer, ActionButton, ActionButtonText, DeleteButtonText 
+} from "./styles";
 
 type Props = {
-  status: 'limpa' | 'pendente';
-  statustitle: string;
-  title: string;
-  capacidade: number;
-  descricao: string;
-  ultimaLimpeza: string | null;
+  sala: Sala;
+  isAdmin?: boolean;
+  onEdit: (sala: Sala) => void;
+  onDelete: (sala: Sala) => void;
 }
 
-export function CardRoom({ title, status, capacidade, descricao, ultimaLimpeza }: Props) {
+export function CardRoom({ sala, isAdmin = false, onEdit, onDelete }: Props) {
+  const theme = useTheme();
+
   const formatarData = (data: string | null) => {
-    if (!data) {
-      return "Limpeza pendente" ;
-    }
+    if (!data) return "Limpeza não realizada";
     try {
-      const dataObj = parseISO(data);
-      return format(dataObj, "dd/MM/yyyy", { locale: ptBR });
+      return format(parseISO(data), "dd/MM/yyyy", { locale: ptBR });
     } catch (error) {
-      console.error("Erro ao formatar data:", error);
       return "Data inválida";
     }
   };
+  
   return (
     <CardContainer>
-      <StatusContainer status={status}> 
-        <StatusTitle>
-          {status === "limpa" ? "Limpa" : "Pendente"}
-        </StatusTitle>
-      </StatusContainer>
+      <CardHeader>
+        <Title>{sala.nome_numero}</Title>
+        <StatusTag status={sala.status_limpeza === 'Limpa' ? 'limpa' : 'pendente'}> 
+          <StatusTagText status={sala.status_limpeza === 'Limpa' ? 'limpa' : 'pendente'}>
+            {sala.status_limpeza === 'Limpa' ? 'Limpa' : 'Pendente'}
+          </StatusTagText>
+        </StatusTag>
+      </CardHeader>
+      
+      <SubTitle>Capacidade: {sala.capacidade}</SubTitle>
+      {!!sala.descricao && <SubTitle>Descrição: {sala.descricao}</SubTitle>}
+      <SubTitle>Última limpeza: {formatarData(sala.ultima_limpeza_data_hora)}</SubTitle>
 
-      <CardContent>
-        <Title>{title}</Title>
-        <SubTitle>Capacidade: {capacidade}</SubTitle>
-        <SubTitle>Descrição: {descricao}</SubTitle>
-        <SubTitle>Última limpeza: {formatarData(ultimaLimpeza)}</SubTitle>
-      </CardContent>
+      {isAdmin && (
+        <ActionsContainer>
+          <ActionButton onPress={() => onEdit(sala)}>
+            <PencilSimpleIcon size={20} color={theme.COLORS.SUBTITLE} />
+            <ActionButtonText>Editar</ActionButtonText>
+          </ActionButton>
+          <ActionButton onPress={() => onDelete(sala)}>
+            <TrashIcon size={20} color={theme.COLORS.SUBTITLE} />
+            <DeleteButtonText>Excluir</DeleteButtonText>
+          </ActionButton>
+        </ActionsContainer>
+      )}
     </CardContainer>
   )
 }

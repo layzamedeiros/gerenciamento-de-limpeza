@@ -1,85 +1,126 @@
-import React, { useState, useMemo } from 'react';
-import { ActivityIndicator, FlatList } from 'react-native';
+import React, { useState, useMemo, useCallback } from 'react';
+import { ActivityIndicator, FlatList, Alert } from 'react-native';
 import { useTheme } from 'styled-components/native';
 import { PlusIcon } from 'phosphor-react-native';
+import { useFocusEffect } from '@react-navigation/native';
 
 import { Header } from "@components/Header";
+import { Container, Content, FilterContainer, Button, ButtonText } from "./styles";
 import { CardRoom } from "@components/CardRoom";
 import FilterButton, { FilterStatus } from "@components/FilterButton"; 
 import { CreateRoomModal } from '@components/CreateRoomModal';
-import { useSalas } from '@contexts/RoomsContext';
-import { useAuth } from '@contexts/AuthContext'; 
+import { EditRoomModal } from '@components/EditRoomModal';
+import { ConfirmationModal } from '@components/ConfirmationModal';
+import { MessageHighlight } from '@components/ConfirmationModal/styles';
 
-import { Button, ButtonText, Container, Content, FilterContainer } from "./styles";
+import { useSalas } from '@contexts/RoomsContext';
+import { useAuth } from '@contexts/AuthContext';
+import { deleteSala, Sala } from '@services/roomsService';
 
 export function ClassRoom() {
   const theme = useTheme();
-  
-  const { user } = useAuth(); 
-  const { salas, isLoading, refreshSalas } = useSalas(); 
-  const [isModalVisible, setIsModalVisible] = useState(false); 
+  const { user } = useAuth();
+  const { salas, isLoading, refreshSalas } = useSalas();
 
+  const [isCreateModalVisible, setCreateModalVisible] = useState(false);
+  const [isEditModalVisible, setEditModalVisible] = useState(false);
+  const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  
+  const [selectedSala, setSelectedSala] = useState<Sala | null>(null);
   const [activeFilter, setActiveFilter] = useState<FilterStatus>('todas');
 
+  useFocusEffect(useCallback(() => { refreshSalas(); }, []));
+
   const filteredSalas = useMemo(() => {
-    if (activeFilter === 'limpas') {
-      return salas.filter(sala => sala.status_limpeza === 'Limpa');
-    }
-    if (activeFilter === 'pendentes') {
-      return salas.filter(sala => sala.status_limpeza === 'Limpeza Pendente');
-    }
+    if (activeFilter === 'limpas') return salas.filter(s => s.status_limpeza === 'Limpa');
+    if (activeFilter === 'pendentes') return salas.filter(s => s.status_limpeza === 'Limpeza Pendente');
     return salas;
   }, [salas, activeFilter]);
 
-  if (isLoading && salas.length === 0) {
-    return (
-      <Container style={{ justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color={theme.COLORS.PRIMARY} />
-      </Container>
-    );
-  }
+  const handleEdit = (sala: Sala) => {
+    setSelectedSala(sala);
+    setEditModalVisible(true);
+  };
+
+  const handleDelete = (sala: Sala) => {
+    setSelectedSala(sala);
+    setDeleteModalVisible(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!selectedSala) return;
+    setIsDeleting(true);
+    try {
+      await deleteSala(selectedSala.id);
+      Alert.alert("Sucesso", "Sala excluída com sucesso!");
+      await refreshSalas();
+      setDeleteModalVisible(false);
+      setSelectedSala(null);
+    } catch (error) {
+      Alert.alert("Erro", "Não foi possível excluir a sala.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <Container>
       <Header title="Salas de aula" />
       <Content>
         {user?.is_staff && (
-          <Button onPress={() => setIsModalVisible(true)}>
-            <PlusIcon color="white" size={24} weight='bold' />
+          <Button onPress={() => setCreateModalVisible(true)}>
+            <PlusIcon color="white" size={24} />
             <ButtonText>Adicionar nova sala</ButtonText>
           </Button>
         )}
-        
+
         <FilterContainer>
-          <FilterButton
-            activeFilter={activeFilter}
-            onFilterChange={setActiveFilter}
-          />
+          <FilterButton activeFilter={activeFilter} onFilterChange={setActiveFilter} />
         </FilterContainer>
 
-        <FlatList
-          data={filteredSalas} 
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <CardRoom
-              status={item.status_limpeza === 'Limpa' ? 'limpa' : 'pendente'}
-              statustitle={item.status_limpeza}
-              title={item.nome_numero}
-              capacidade={item.capacidade}
-              descricao={item.descricao}
-              ultimaLimpeza={item.ultima_limpeza_data_hora} 
-            />
-          )}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 40 }}
-        />
+        {isLoading && salas.length === 0 ? (
+          <ActivityIndicator size="large" color={theme.COLORS.PRIMARY} />
+        ) : (
+          <FlatList
+            data={filteredSalas} 
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <CardRoom
+                sala={item}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                isAdmin={user?.is_staff} 
+              />
+            )}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: 40 }}
+          />
+        )}
       </Content>
-      
+
       <CreateRoomModal 
-        visible={isModalVisible}
-        onClose={() => setIsModalVisible(false)}
+        visible={isCreateModalVisible}
+        onClose={() => setCreateModalVisible(false)}
         onRoomCreated={refreshSalas}
       />
+
+      <EditRoomModal
+        visible={isEditModalVisible}
+        onClose={() => setEditModalVisible(false)}
+        onRoomUpdated={refreshSalas}
+        sala={selectedSala}
+      />
+      
+      <ConfirmationModal
+        visible={isDeleteModalVisible}
+        onClose={() => setDeleteModalVisible(false)}
+        onConfirm={confirmDelete}
+        title="Excluir sala"
+        isLoading={isDeleting}
+      >
+        Deseja excluir <MessageHighlight>{selectedSala?.nome_numero}</MessageHighlight>?
+      </ConfirmationModal>
     </Container>
   );
 }

@@ -13,26 +13,27 @@ const EmployeeContext = createContext<EmployeeContextData>({} as EmployeeContext
 function EmployeeProvider({ children }: { children: ReactNode }) {
   const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { token } = useAuth();
-
+  const { user } = useAuth(); 
   const refreshFuncionarios = useCallback(async () => {
-    if (!token) return;
+    if (!user?.is_staff) {
+      setFuncionarios([]); 
+      return;
+    }
+
     setIsLoading(true);
     try {
       const data = await fetchFuncionarios();
       setFuncionarios(data);
     } catch (error) {
       console.error("Falha ao carregar funcionários do contexto:", error);
+      setFuncionarios([]); 
     } finally {
       setIsLoading(false);
     }
-  }, [token]);
-
+  }, [user]); 
   useEffect(() => {
-    if (token) {
-      refreshFuncionarios();
-    }
-  }, [token]);
+    refreshFuncionarios();
+  }, [refreshFuncionarios]);
 
   return (
     <EmployeeContext.Provider value={{ funcionarios, isLoading, refreshFuncionarios }}>

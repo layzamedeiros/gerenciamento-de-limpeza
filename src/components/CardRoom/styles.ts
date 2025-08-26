@@ -1,3 +1,4 @@
+import { TouchableOpacity } from "react-native";
 import styled, { css } from "styled-components/native";
 
 type StatusProps = {
@@ -6,67 +7,80 @@ type StatusProps = {
 
 export const CardContainer = styled.View`
   width: 100%;
-  height: 140px;
   border-radius: 11px;
   background-color: ${({ theme }) => theme.COLORS.WHITE};
-  flex-direction: row;
-  align-items: center;
   padding: 16px;
   margin-bottom: 10px;
 `;
 
-export const StatusContainer = styled.View<StatusProps>`
-  width: 90px;
-  height: 16px;
-  border-radius: 20px;
+export const CardHeader = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  transform: rotate(-90deg);
-  left: -30px;
-
-  ${({ theme, status }) => css`
-    background-color: ${
-      status === "limpa"
-        ? "#D6E4F2"
-        : `${theme.COLORS.ACCENT}8C`
-    };
-  `}
-`;
-
-export const StatusTitle = styled.Text`
-  font-size: 11px;
-
-  ${({ theme }) => css`
-    color: ${theme.COLORS.WHITE};
-    font-family: ${theme.FONT_FAMILY.SEMIBOLD};
-  `}
-`;
-
-export const CardContent = styled.View`
-  flex: 1;
-  left: -50px;
+  margin-bottom: 8px;
 `;
 
 export const Title = styled.Text`
   font-size: 16px;
-
+  flex: 1; 
   ${({ theme }) => css`
     color: ${theme.COLORS.TITLE};
     font-family: ${theme.FONT_FAMILY.SEMIBOLD};
   `};
 `;
 
+export const StatusTag = styled.View<StatusProps>`
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-left: 10px;
+  
+  background-color: ${({ theme, status }) => 
+    status === 'limpa' ? theme.COLORS.PRIMARY_LIGHT : `${theme.COLORS.ACCENT}30`};
+`;
+
+export const StatusTagText = styled.Text<StatusProps>`
+  font-size: 12px;
+  ${({ theme, status }) => css`
+    font-family: ${theme.FONT_FAMILY.BOLD};
+    color: ${status === 'limpa' ? theme.COLORS.PRIMARY : theme.COLORS.ACCENT};
+  `}
+`;
+
 export const SubTitle = styled.Text`
   font-size: 14px;
-  
+  line-height: 20px; 
   ${({ theme }) => css`
     color: ${theme.COLORS.SUBTITLE};
     font-family: ${theme.FONT_FAMILY.REGULAR};
   `};
 `;
 
-export const IconContainer = styled.View`
-  flex-direction: column; 
+export const ActionsContainer = styled.View`
+  flex-direction: row;
+  justify-content: flex-start; 
   align-items: center;
-  gap: 12px; 
+  margin-top: 16px;
+  gap: 10px;
+  border-top-width: 1px;
+  border-top-color: ${({ theme }) => theme.COLORS.DISABLED};
+  padding-top: 12px;
+`;
+
+export const ActionButton = styled(TouchableOpacity)`
+  flex-direction: row;
+  align-items: center;
+  margin-left: px; 
+`;
+
+export const ActionButtonText = styled.Text`
+  font-size: 14px;
+  margin-left: 8px;
+  ${({ theme }) => css`
+    color: ${theme.COLORS.SUBTITLE};
+    font-family: ${theme.FONT_FAMILY.MEDIUM};
+  `}
+`;
+
+export const DeleteButtonText = styled(ActionButtonText)`
+  color: ${({ theme }) => theme.COLORS.SUBTITLE};
 `;
