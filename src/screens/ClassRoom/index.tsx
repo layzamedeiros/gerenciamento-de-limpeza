@@ -70,8 +70,8 @@ export function ClassRoom() {
       <Content>
         {user?.is_staff && (
           <Button onPress={() => setCreateModalVisible(true)}>
-            <PlusIcon color="white" size={24} />
-            <ButtonText>Adicionar nova sala</ButtonText>
+            <PlusIcon color="white" size={24} weight='bold' />
+            <ButtonText>Cadastrar Nova Sala</ButtonText>
           </Button>
         )}
 

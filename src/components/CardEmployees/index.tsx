@@ -1,4 +1,6 @@
-import { CardContainer, Title, SubTitle, InfoContainer, TagContainer, TagText } from "./styles";
+import { 
+  CardContainer, Title, SubTitle, InfoContainer, TagContainer, TagText 
+} from "./styles";
 
 type Props = {
   title: string;

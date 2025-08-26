@@ -28,7 +28,7 @@ export function ManageEmployee() {
       <Content>
         <Button onPress={() => setIsModalVisible(true)}>
           <PlusIcon color="white" size={24} weight='bold' />
-          <ButtonText>Cadastrar novo Funcionário</ButtonText>
+          <ButtonText>Cadastrar Funcionário</ButtonText>
         </Button>
 
         {isLoading && funcionarios.length === 0 ? (

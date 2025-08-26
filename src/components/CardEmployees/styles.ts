@@ -9,15 +9,15 @@ export const CardContainer = styled.View`
   min-height: 90px;
   border-radius: 11px;
   background-color: ${({ theme }) => theme.COLORS.WHITE};
-  flex-direction: column;
-  justify-content: center; 
-  align-items: flex-start;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   padding: 16px;
   margin-bottom: 10px;
 `;
 
 export const InfoContainer = styled.View`
-  margin-bottom: 8px;
+  flex: 1;
 `;
 
 export const Title = styled.Text`
@@ -39,6 +39,7 @@ export const SubTitle = styled.Text`
 export const TagContainer = styled.View<TagProps>`
   padding: 4px 12px;
   border-radius: 20px;
+  margin-left: 10px;
   background-color: ${({ theme, type }) => 
     type === 'admin' ? theme.COLORS.PRIMARY_LIGHT : `${theme.COLORS.ACCENT}30`}; 
 `;
