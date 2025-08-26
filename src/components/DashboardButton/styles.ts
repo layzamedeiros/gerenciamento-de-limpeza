@@ -36,9 +36,8 @@ export const Title = styled.Text`
 export const SubTitle = styled.Text`
   ${({ theme }) => css`
     color: ${theme.COLORS.WHITE};
-    font-family: ${theme.FONT_FAMILY.SEMIBOLD};
+    font-family: ${theme.FONT_FAMILY.MEDIUM};
   `}
-  font-size: 12px;
+  font-size: 14px;
   text-align: center;
-  margin-top: 4px;
 `;

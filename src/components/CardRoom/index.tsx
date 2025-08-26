@@ -23,7 +23,7 @@ export function CardRoom({ sala, isAdmin = false, onEdit, onDelete }: Props) {
   const formatarData = (data: string | null) => {
     if (!data) return "Limpeza não realizada";
     try {
-      return format(parseISO(data), "dd/MM/yyyy", { locale: ptBR });
+      return format(parseISO(data), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR });
     } catch (error) {
       return "Data inválida";
     }
