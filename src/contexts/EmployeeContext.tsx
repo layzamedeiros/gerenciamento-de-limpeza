@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, ReactNode, useCallback, useEffect } from 'react';
-import { Funcionario, fetchFuncionarios } from '@services/employeeService';
+import { Funcionario, fetchFuncionarios } from '@services/employee.service';
 import { useAuth } from './AuthContext';
 
 interface EmployeeContextData {

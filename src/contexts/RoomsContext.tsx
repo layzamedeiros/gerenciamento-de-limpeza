@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, ReactNode, useCallback, useEffect } from 'react';
-import { Sala, fetchSalas } from '@services/roomsService'; 
+import { Sala, fetchSalas } from '@services/rooms.service'; 
 import { useAuth } from '@contexts/AuthContext';
 
 interface SalasContextData {

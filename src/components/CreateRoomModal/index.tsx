@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Alert, ActivityIndicator, ModalProps } from 'react-native';
 import { ModalOverlay, ModalContainer, ModalTitle, TitleInput, Input, ModalButtons, ModalButton, ModalButtonText } from './styles'; 
-import { createSala } from '@services/roomsService';
+import { createSala } from '@services/rooms.service';
 
 type Props = ModalProps & {
   onClose: () => void;

@@ -30,7 +30,7 @@ export function ConfirmationModal({ title, children, isLoading = false, onClose,
               <ModalButtonText>Cancelar</ModalButtonText>
             </ModalButton>
             <ModalButton variant="confirm" onPress={onConfirm} disabled={isLoading}>
-              {isLoading ? <ActivityIndicator color="#FFF" /> : <ModalButtonText>Excluir</ModalButtonText>}
+              {isLoading ? <ActivityIndicator color="#FFF" /> : <ModalButtonText>Confirmar</ModalButtonText>}
             </ModalButton>
           </ModalButtons>
         </ModalContainer>

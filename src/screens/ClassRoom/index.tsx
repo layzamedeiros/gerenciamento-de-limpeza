@@ -15,7 +15,7 @@ import { MessageHighlight } from '@components/ConfirmationModal/styles';
 
 import { useSalas } from '@contexts/RoomsContext';
 import { useAuth } from '@contexts/AuthContext';
-import { deleteSala, Sala } from '@services/roomsService';
+import { deleteSala, Sala } from '@services/rooms.service';
 
 export function ClassRoom() {
   const theme = useTheme();

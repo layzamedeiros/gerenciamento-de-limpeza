@@ -3,7 +3,7 @@ import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { PencilSimpleIcon, TrashIcon } from "phosphor-react-native";
 import { useTheme } from "styled-components/native";
-import { Sala } from '@services/roomsService';
+import { Sala } from '@services/rooms.service';
 
 import { 
   CardContainer, Title, SubTitle, CardHeader, StatusTag, StatusTagText, 

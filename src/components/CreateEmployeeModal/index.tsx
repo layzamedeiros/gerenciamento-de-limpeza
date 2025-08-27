@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Modal, Alert, ActivityIndicator, Switch, ModalProps } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
-import { Funcionario, createFuncionario } from '@services/employeeService'; 
+import { Funcionario, createFuncionario } from '@services/employee.service'; 
 
 import { ModalOverlay, ModalContainer, ModalTitle, TitleInput, Input, ModalButtons, ModalButton, ModalButtonText, AdminContainer, AdminTitle } from './styles';
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Alert, ActivityIndicator, ModalProps } from 'react-native';
-import { Sala, updateSala } from '@services/roomsService';
+import { Sala, updateSala } from '@services/rooms.service';
 import { 
   ModalOverlay, ModalContainer, ModalTitle, Input, ModalButtons, ModalButton, ModalButtonText, 
   TitleInput

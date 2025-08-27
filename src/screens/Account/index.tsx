@@ -1,42 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTheme } from 'styled-components/native';
-import { Alert } from 'react-native';
 
 import { UserIcon, SignOutIcon } from 'phosphor-react-native'; 
-
-import { Container, Content, AvatarPlaceholder, UserName, UserEmail, ButtonGroup, LogoutButton, LogoutButtonText, ButtonText, Button } from './styles';
+import { Container, Content, AvatarPlaceholder, UserName, UserEmail, LogoutButton, LogoutButtonText, ButtonText, Button, Divider } from './styles';
 
 import { useAuth } from '@contexts/AuthContext';
+import { ChangePasswordModal } from '@components/ChangePasswordModal';
+import { ConfirmationModal } from '@components/ConfirmationModal'; 
 
 export function Account() {
   const theme = useTheme(); 
-  
   const { user, logout } = useAuth();
-
-  const handleEditProfile = () => {
-    Alert.alert("Editar Perfil", "Navegação para a tela de edição ainda não implementada.");
-  };
-
-  const handleChangePassword = () => {
-    Alert.alert("Alterar Senha", "Navegação para a tela de alteração de senha ainda não implementada.");
-  };
+  const [isPasswordModalVisible, setPasswordModalVisible] = useState(false);
+  
+  const [isLogoutModalVisible, setLogoutModalVisible] = useState(false);
 
   const handleSignOut = () => {
-    Alert.alert(
-      "Sair", 
-      "Você tem certeza que deseja sair?",
-      [
-        {
-          text: "Cancelar",
-          style: "cancel"
-        },
-        {
-          text: "Sair",
-          onPress: logout, 
-          style: "destructive"
-        }
-      ]
-    );
+    setLogoutModalVisible(true);
   };
 
   return (
@@ -48,21 +28,32 @@ export function Account() {
 
         <UserName>{user?.username || 'Usuário'}</UserName>
         <UserEmail>{user?.email || 'Sem e-mail'}</UserEmail>
+
+        <Divider/>
         
-        <ButtonGroup>
-          <Button style={{ flex: 1, marginRight: 8 }} onPress={handleEditProfile}>
-            <ButtonText>Editar</ButtonText>
-          </Button>
-          <Button style={{ flex: 1, marginLeft: 8 }} onPress={handleChangePassword}>
-            <ButtonText>Alterar senha</ButtonText>
-          </Button>
-        </ButtonGroup>
+        <Button onPress={() => setPasswordModalVisible(true)}>
+          <ButtonText>Alterar senha</ButtonText>
+        </Button>
 
         <LogoutButton onPress={handleSignOut}>
           <SignOutIcon size={24} color={theme.COLORS.DANGER} />
           <LogoutButtonText>Sair</LogoutButtonText>
         </LogoutButton>
       </Content>
+
+      <ChangePasswordModal 
+        visible={isPasswordModalVisible}
+        onClose={() => setPasswordModalVisible(false)}
+      />
+
+      <ConfirmationModal
+        visible={isLogoutModalVisible}
+        onClose={() => setLogoutModalVisible(false)}
+        onConfirm={logout} 
+        title="Sair da Conta"
+      >
+        Você tem certeza que deseja sair?
+      </ConfirmationModal>
     </Container>
   );
 }

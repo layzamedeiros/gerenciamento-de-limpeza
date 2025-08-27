@@ -7,7 +7,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { Header } from "@components/Header";
 import { Button, ButtonText, CleaningContainer, CleaningDetails, CleaningDetailsTime, Container, Content, ObservationInput, ObservationTitle, Title } from "./styles";
 
-import { fetchSalas, marcarSalaComoLimpa, Sala } from '@services/roomsService';
+import { fetchSalas, marcarSalaComoLimpa, Sala } from '@services/rooms.service';
 
 export function RecordCleaning() {
   const theme = useTheme();
