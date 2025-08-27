@@ -9,6 +9,7 @@ import { Routes } from '@routes/index';
 import { AuthProvider } from '@contexts/AuthContext';
 import { SalasProvider } from '@contexts/RoomsContext';
 import { EmployeeProvider } from '@contexts/EmployeeContext';
+import Toast from 'react-native-toast-message';
 
 export default function App() {
   const [ fontsLoaded ] = useFonts({ Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold });
@@ -20,6 +21,7 @@ export default function App() {
         <SalasProvider>
           <EmployeeProvider>
             <Routes />
+            <Toast />
           </EmployeeProvider>
         </SalasProvider>
       </AuthProvider>

@@ -3,13 +3,16 @@ import styled, { css } from 'styled-components/native';
 export const Container = styled.View`
   flex: 1;
   background-color: ${({ theme }) => theme.COLORS.BACKGROUND}; 
-  align-items: center;
   justify-content: center;
-  padding: 40px;
+  padding: 0 35px ;
 `;
 
 export const Logo = styled.Image`
-  margin-bottom: 20px;
+  width: 255px; 
+  height: 80px;
+  resize: contain;
+  align-self: center; 
+  margin-bottom: 35px;
 `;
 
 export const Title = styled.Text`
@@ -18,6 +21,7 @@ ${({ theme }) => css`
   color: ${theme.COLORS.PRIMARY};
 `}
   font-size: 30px;
+  text-align: center;
 `;
 
 export const Subtitle = styled.Text`
@@ -25,8 +29,9 @@ ${({ theme }) => css`
   font-family: ${theme.FONT_FAMILY.SEMIBOLD};
   color: ${theme.COLORS.PRIMARY};
 `}
-  font-size: 20px;
-  margin-bottom: 40px;
+  font-size: 18px;
+  margin-bottom: 30px;
+  text-align: center;
 `;
 
 export const InputContainer = styled.View`
@@ -60,7 +65,7 @@ export const LoginButton = styled.TouchableOpacity`
 `;
 
 export const LoginButtonText = styled.Text`
-  color: #fff;
+  color:  ${({ theme }) => theme.COLORS.WHITE};
   font-size: 18px;
   font-weight: bold;
 `;
