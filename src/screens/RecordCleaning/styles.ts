@@ -40,30 +40,30 @@ export const CleaningDetailsTime = styled.Text`
 `;
 
 export const ObservationTitle = styled(Title)`
-  margin-bottom: 10px; 
+  margin-bottom: 10px;
 `;
 
 export const ObservationInput = styled(TextInput).attrs(({ theme }) => ({
   placeholderTextColor: theme.COLORS.PLACEHOLDER,
   multiline: true,
+  numberOfLines: 4,
 }))`
   background-color: ${({ theme }) => theme.COLORS.WHITE};
   border-color: ${({ theme }) => theme.COLORS.BORDER};
   border-width: 1px;
   border-radius: 8px;
-  height: 20%;
   padding: 10px;
   font-size: 16px;
   color: ${({ theme }) => theme.COLORS.TITLE};
 `;
 
 type ButtonProps = {
-  variant?: 'primary' | 'success';
-}
+  variant?: "primary" | "success";
+};
 
 export const Button = styled(TouchableOpacity)<ButtonProps>`
-  background-color: ${({ theme, variant = 'primary' }) => 
-    variant === 'success' ? theme.COLORS.ACCENT : theme.COLORS.PRIMARY};
+  background-color: ${({ theme, variant = "primary" }) =>
+    variant === "success" ? theme.COLORS.ACCENT : theme.COLORS.PRIMARY};
   padding: 12px;
   border-radius: 8px;
   align-items: center;

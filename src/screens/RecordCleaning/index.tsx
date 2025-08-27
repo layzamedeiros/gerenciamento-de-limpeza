@@ -1,62 +1,93 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { useTheme } from 'styled-components/native';
-import { Alert, ActivityIndicator } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import DropDownPicker from 'react-native-dropdown-picker';
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { useTheme } from "styled-components/native";
+import { ActivityIndicator, View, Text } from "react-native";
+import DropDownPicker from "react-native-dropdown-picker";
+import Toast from "react-native-toast-message";
 
 import { Header } from "@components/Header";
-import { Button, ButtonText, CleaningContainer, CleaningDetails, CleaningDetailsTime, Container, Content, ObservationInput, ObservationTitle, Title } from "./styles";
+import {
+  Button,
+  ButtonText,
+  CleaningContainer,
+  CleaningDetails,
+  CleaningDetailsTime,
+  Container,
+  Content,
+  ObservationInput,
+  ObservationTitle,
+  Title,
+} from "./styles";
 
-import { fetchSalas, marcarSalaComoLimpa, Sala } from '@services/rooms.service';
+import { fetchSalas, marcarSalaComoLimpa, Sala } from "@services/rooms.service";
+
+type SalaComStatus = Sala & {
+  limpeza_pendente: boolean;
+};
 
 export function RecordCleaning() {
   const theme = useTheme();
-  const navigation = useNavigation();
 
   const [open, setOpen] = useState(false);
   const [salaSelecionada, setSalaSelecionada] = useState<number | null>(null);
-  
   const [salas, setSalas] = useState<Sala[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
   const [limpezaIniciada, setLimpezaIniciada] = useState(false);
-  const [infoLimpeza, setInfoLimpeza] = useState({ salaId: 0, salaNome: '', horaInicio: '' });
-  const [observacao, setObservacao] = useState('');
+  const [infoLimpeza, setInfoLimpeza] = useState({
+    salaId: 0,
+    salaNome: "",
+    horaInicio: "",
+  });
+  const [observacao, setObservacao] = useState("");
 
-  useEffect(() => {
-    async function loadSalas() {
-      try {
-        const data = await fetchSalas();
-        setSalas(data);
-      } catch (error) {
-        Alert.alert('Erro', 'Não foi possível carregar la lista de salas.');
-      } finally {
-        setIsLoading(false);
-      }
+  const loadSalas = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const data = await fetchSalas();
+      setSalas(data);
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Erro ao Carregar",
+        text2: "Não foi possível buscar a lista de salas.",
+      });
+    } finally {
+      setIsLoading(false);
     }
-    loadSalas();
   }, []);
 
+  useEffect(() => {
+    loadSalas();
+  }, [loadSalas]);
+
   const dropdownItems = useMemo(() => {
-    return salas.map(sala => ({
-      label: sala.nome_numero,
-      value: sala.id
-    }));
+    return salas
+      .filter((sala) => sala.status_limpeza === "Limpeza Pendente")
+      .map((sala) => ({
+        label: sala.nome_numero,
+        value: sala.id,
+      }));
   }, [salas]);
 
   const handleIniciarLimpeza = () => {
     if (salaSelecionada) {
-      const salaInfo = salas.find(sala => sala.id === salaSelecionada);
-      const nomeSala = salaInfo ? salaInfo.nome_numero : 'Sala desconhecida';
-      
-      const horaAtual = new Date().toLocaleTimeString('pt-BR', {
-        hour: '2-digit', minute: '2-digit'
+      const salaInfo = salas.find((sala) => sala.id === salaSelecionada);
+      const nomeSala = salaInfo ? salaInfo.nome_numero : "Sala desconhecida";
+      const horaAtual = new Date().toLocaleTimeString("pt-BR", {
+        hour: "2-digit",
+        minute: "2-digit",
       });
-
-      setInfoLimpeza({ salaId: salaSelecionada, salaNome: nomeSala, horaInicio: horaAtual });
-      setLimpezaIniciada(true); 
+      setInfoLimpeza({
+        salaId: salaSelecionada,
+        salaNome: nomeSala,
+        horaInicio: horaAtual,
+      });
+      setLimpezaIniciada(true);
     } else {
-      Alert.alert('Atenção', 'Por favor, selecione uma sala primeiro.');
+      Toast.show({
+        type: "error",
+        text1: "Atenção",
+        text2: "Por favor, selecione uma sala primeiro.",
+      });
     }
   };
 
@@ -64,16 +95,23 @@ export function RecordCleaning() {
     setIsLoading(true);
     try {
       await marcarSalaComoLimpa(infoLimpeza.salaId);
-      
-      Alert.alert('Sucesso!', `A limpeza da "${infoLimpeza.salaNome}" foi registrada.`);
-      
+      Toast.show({
+        type: "success",
+        text1: "Sucesso!",
+        text2: `A limpeza da "${infoLimpeza.salaNome}" foi registrada.`,
+      });
+
+      await loadSalas();
+
       setLimpezaIniciada(false);
       setSalaSelecionada(null);
-      setObservacao('');
-      navigation.goBack();
-
+      setObservacao("");
     } catch (error) {
-      Alert.alert('Erro', 'Não foi possível registrar a limpeza. Tente novamente.');
+      Toast.show({
+        type: "error",
+        text1: "Erro",
+        text2: "Não foi possível registrar a limpeza. Tente novamente.",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -81,7 +119,7 @@ export function RecordCleaning() {
 
   if (isLoading && salas.length === 0) {
     return (
-      <Container style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Container style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size="large" color={theme.COLORS.PRIMARY} />
       </Container>
     );
@@ -89,26 +127,31 @@ export function RecordCleaning() {
 
   return (
     <Container>
-      <Header title="Registrar limpeza"/>
+      <Header title="Registrar limpeza" />
       <Content>
-        { !limpezaIniciada ? (
+        {!limpezaIniciada ? (
           <>
-            <Title>Salas de aula</Title>
+            <Title>Salas com limpeza pendente</Title>
             <DropDownPicker
               open={open}
               value={salaSelecionada}
-              items={dropdownItems} 
+              items={dropdownItems}
               setOpen={setOpen}
               setValue={setSalaSelecionada}
-              setItems={() => {}} 
               placeholder="Selecionar sala"
-              zIndex={3000}             
+              ListEmptyComponent={() => (
+                <View style={{ padding: 15, alignItems: "center" }}>
+                  <Text style={{ color: theme.COLORS.TITLE, fontSize: 16 }}>
+                    Nenhuma sala com limpeza pendente
+                  </Text>
+                </View>
+              )}
+              listMode="FLATLIST"
+              zIndex={3000}
               zIndexInverse={1000}
-              
-              // SEU ESTILO ORIGINAL MANTIDO
               style={{
-                backgroundColor: theme.COLORS.WHITE,   
-                borderColor: theme.COLORS.BORDER,     
+                backgroundColor: theme.COLORS.WHITE,
+                borderColor: theme.COLORS.BORDER,
                 borderWidth: 1,
               }}
               dropDownContainerStyle={{
@@ -116,15 +159,10 @@ export function RecordCleaning() {
                 borderColor: theme.COLORS.BORDER,
                 borderWidth: 1,
               }}
-              placeholderStyle={{
-                color: theme.COLORS.TITLE,
-              }}
-              textStyle={{
-                fontSize: 16,
-                color: theme.COLORS.TITLE,
-              }}
+              placeholderStyle={{ color: theme.COLORS.TITLE }}
+              textStyle={{ fontSize: 16, color: theme.COLORS.TITLE }}
             />
-            <Button onPress={handleIniciarLimpeza}>
+            <Button onPress={handleIniciarLimpeza} disabled={isLoading}>
               <ButtonText>Iniciar Limpeza</ButtonText>
             </Button>
           </>
@@ -135,16 +173,22 @@ export function RecordCleaning() {
             <CleaningDetailsTime>
               Limpeza Iniciada às {infoLimpeza.horaInicio}
             </CleaningDetailsTime>
-            
             <ObservationTitle>Observação</ObservationTitle>
             <ObservationInput
               placeholder="Digite uma observação (opcional)"
               value={observacao}
               onChangeText={setObservacao}
             />
-            
-            <Button variant="success" onPress={handleFinalizarLimpeza} disabled={isLoading}>
-              {isLoading ? <ActivityIndicator color="#FFF" /> : <ButtonText>Finalizar limpeza</ButtonText>}
+            <Button
+              variant="success"
+              onPress={handleFinalizarLimpeza}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <ActivityIndicator color="#FFF" />
+              ) : (
+                <ButtonText>Finalizar limpeza</ButtonText>
+              )}
             </Button>
           </CleaningContainer>
         )}
