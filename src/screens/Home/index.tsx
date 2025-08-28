@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { ActivityIndicator } from 'react-native';
 import { useTheme } from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
 import { format, parseISO } from 'date-fns';
@@ -37,34 +36,22 @@ export function Home() {
       .filter(s => s.ultima_limpeza_data_hora)
       .sort((a, b) => new Date(b.ultima_limpeza_data_hora!).getTime() - new Date(a.ultima_limpeza_data_hora!).getTime())[0];
 
-    // --- LÓGICA DE FORMATAÇÃO DO SUBTÍTULO ---
     let ultimaLimpezaSubtitle = 'Nenhuma registrada';
 
     if (ultimaLimpezaObj) {
       try {
         const dataFormatada = format(parseISO(ultimaLimpezaObj.ultima_limpeza_data_hora!), "dd/MM/yy 'às' HH:mm", { locale: ptBR });
-        // Junta o nome da sala com a data formatada
         ultimaLimpezaSubtitle = `${ultimaLimpezaObj.nome_numero}\n${dataFormatada}`;
       } catch (e) {
         ultimaLimpezaSubtitle = 'Data inválida';
       }
     }
-    // --- FIM DA LÓGICA ---
-
     return {
       pendentes,
       progresso,
       ultimaLimpezaSubtitle,
     };
   }, [salas]);
-
-  if (isLoading) {
-    return (
-      <Container style={{ justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color={theme.COLORS.PRIMARY} />
-      </Container>
-    );
-  }
 
   return(
     <Container>
@@ -89,10 +76,9 @@ export function Home() {
             onPress={() => navigation.navigate('ClassRoom')}
           />
 
-          {/* --- CARD ATUALIZADO --- */}
           <DashboardButton 
-            title="Última limpeza:" // Título agora é estático
-            subtitle={dashboardStats.ultimaLimpezaSubtitle} // Subtítulo agora tem nome e data
+            title="Última limpeza:" 
+            subtitle={dashboardStats.ultimaLimpezaSubtitle} 
             icon={<ClockCountdownIcon color={theme.COLORS.WHITE} size={50} weight="fill"/>}
           />
 

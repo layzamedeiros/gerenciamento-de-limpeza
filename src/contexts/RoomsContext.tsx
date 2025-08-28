@@ -1,6 +1,5 @@
 import React, { createContext, useState, useContext, ReactNode, useCallback, useEffect } from 'react';
-// Importa a nova função e a nova interface
-import { Sala, fetchSalas, LimpezaRegistro, fetchLimpezas } from '@services/rooms.service';
+import { Sala, fetchSalas, fetchLimpezas } from '@services/rooms.service';
 import { useAuth } from '@contexts/AuthContext';
 
 interface SalasContextData {
@@ -14,21 +13,18 @@ const SalasContext = createContext<SalasContextData>({} as SalasContextData);
 function SalasProvider({ children }: { children: ReactNode }) {
   const [salas, setSalas] = useState<Sala[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { token, isAppLoading, user } = useAuth(); // Precisamos do 'user' para saber se é admin
+  const { token, isAppLoading, user } = useAuth(); 
 
   const refreshSalas = useCallback(async () => {
     if (!token) return;
     setIsLoading(true);
 
     try {
-      // 1. Busca a lista de salas
       const salasData = await fetchSalas();
 
-      // 2. Se for admin, busca também o histórico de limpezas
       if (user?.is_staff) {
         const limpezasData = await fetchLimpezas();
 
-        // 3. Combina os dados
         const salasComObservacoes = salasData.map(sala => {
           const registrosDaSala = limpezasData
             .filter(limpeza => limpeza.sala === sala.id)
@@ -44,7 +40,6 @@ function SalasProvider({ children }: { children: ReactNode }) {
 
         setSalas(salasComObservacoes);
       } else {
-        // Se não for admin, apenas define as salas normais
         setSalas(salasData);
       }
 
@@ -53,7 +48,7 @@ function SalasProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  }, [token, user?.is_staff]); // Adiciona user.is_staff como dependência
+  }, [token, user?.is_staff]); 
 
   useEffect(() => {
     if (!isAppLoading && token) {

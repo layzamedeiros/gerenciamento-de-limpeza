@@ -1,16 +1,17 @@
 {
   "expo": {
-    "name": "gerenciador-de-limpeza",
+    "name": "Senac Gestão de Limpeza",
     "slug": "gerenciador-de-limpeza",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "description": "Aplicativo para gestão e registro de limpeza das salas do Senac.",
+    "icon": "assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#004587"
     },
     "ios": {
       "supportsTablet": true
