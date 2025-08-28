@@ -1,14 +1,10 @@
-import { Alert } from "react-native";
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { PencilSimpleIcon, TrashIcon } from "phosphor-react-native";
 import { useTheme } from "styled-components/native";
 import { Sala } from '@services/rooms.service';
 
-import { 
-  CardContainer, Title, SubTitle, CardHeader, StatusTag, StatusTagText, 
-  ActionsContainer, ActionButton, ActionButtonText, DeleteButtonText 
-} from "./styles";
+import {  CardContainer, Title, SubTitle, CardHeader, StatusTag, StatusTagText, ActionsContainer, ActionButton, ActionButtonText, DeleteButtonText } from "./styles";
 
 type Props = {
   sala: Sala;
@@ -19,6 +15,8 @@ type Props = {
 
 export function CardRoom({ sala, isAdmin = false, onEdit, onDelete }: Props) {
   const theme = useTheme();
+
+  const isClean = sala.status_limpeza === 'Limpa';
 
   const formatarData = (data: string | null) => {
     if (!data) return "Limpeza não realizada";
@@ -39,11 +37,18 @@ export function CardRoom({ sala, isAdmin = false, onEdit, onDelete }: Props) {
           </StatusTagText>
         </StatusTag>
       </CardHeader>
-      
+
       <SubTitle>Capacidade: {sala.capacidade}</SubTitle>
       {!!sala.descricao && <SubTitle>Descrição: {sala.descricao}</SubTitle>}
       <SubTitle>Última limpeza: {formatarData(sala.ultima_limpeza_data_hora)}</SubTitle>
+      {isAdmin && isClean && sala.ultima_limpeza_funcionario && (
+        <SubTitle>Colaborador: {sala.ultima_limpeza_funcionario}</SubTitle>
+      )}
 
+      {isAdmin && isClean && sala.observacao_recente && sala.observacao_recente.trim() !== '' && (
+        <SubTitle>Observação: {sala.observacao_recente}</SubTitle>
+      )}
+      
       {isAdmin && (
         <ActionsContainer>
           <ActionButton onPress={() => onEdit(sala)}>

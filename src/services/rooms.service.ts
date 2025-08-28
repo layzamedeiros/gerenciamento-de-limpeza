@@ -1,5 +1,24 @@
 import api from './api';
 
+export interface CreateSalaData {
+  nome_numero: string;
+  capacidade: number;
+  descricao: string;
+  localizacao: string;
+}
+
+export interface LimpezaRegistro {
+  id: number;
+  sala: number; 
+  sala_nome: string;
+  data_hora_limpeza: string;
+  funcionario_responsavel: {
+    id: number;
+    username: string;
+  };
+  observacoes: string;
+}
+
 export interface Sala {
   id: number;
   nome_numero: string;
@@ -9,14 +28,18 @@ export interface Sala {
   status_limpeza: 'Limpa' | 'Limpeza Pendente';
   ultima_limpeza_data_hora: string | null;
   ultima_limpeza_funcionario: string | null;
+  observacao_recente?: string; 
 }
 
-export interface CreateSalaData {
-  nome_numero: string;
-  capacidade: number;
-  descricao: string;
-  localizacao: string;
-}
+export const fetchLimpezas = async (): Promise<LimpezaRegistro[]> => {
+  try {
+    const response = await api.get('/limpezas/');
+    return response.data;
+  } catch (error) {
+    console.error("Falha ao buscar registos de limpeza:", error);
+    throw error;
+  }
+};
 
 export const fetchSalas = async (): Promise<Sala[]> => {
   try {
