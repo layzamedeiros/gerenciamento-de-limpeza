@@ -26,8 +26,8 @@ export function Account() {
           <UserIcon size={60} color={theme.COLORS.PLACEHOLDER} />
         </AvatarPlaceholder>
 
-        <UserName>{user?.username || 'Usuário'}</UserName>
-        <UserEmail>{user?.email || 'Sem e-mail'}</UserEmail>
+        <UserName>{user?.username || ""}</UserName>
+        <UserEmail>{user?.email || ""}</UserEmail>
 
         <Divider/>
         

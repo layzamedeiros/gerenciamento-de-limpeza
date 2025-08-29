@@ -94,7 +94,7 @@ export function RecordCleaning() {
   const handleFinalizarLimpeza = async () => {
     setIsLoading(true);
     try {
-      await marcarSalaComoLimpa(infoLimpeza.salaId);
+      await marcarSalaComoLimpa(infoLimpeza.salaId, observacao);
       Toast.show({
         type: "success",
         text1: "Sucesso!",

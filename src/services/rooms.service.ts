@@ -80,12 +80,14 @@ export const deleteSala = async (id: number): Promise<void> => {
   }
 };
 
-export const marcarSalaComoLimpa = async (salaId: number) => {
-  try {
-    const response = await api.post(`/salas/${salaId}/marcar_como_limpa/`);
-    return response.data;
-  } catch (error) {
-    console.error(`Failed to mark room ${salaId} as clean:`, error);
-    throw error;
-  }
+export const marcarSalaComoLimpa = async (salaId: number, observacoes?: string) => {
+  try {
+    const response = await api.post(`/salas/${salaId}/marcar_como_limpa/`, {
+      observacoes: observacoes, 
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to mark room ${salaId} as clean:`, error);
+    throw error;
+  }
 };
