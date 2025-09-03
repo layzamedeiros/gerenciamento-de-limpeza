@@ -55,7 +55,7 @@ export function Home() {
 
   return(
     <Container>
-      <Header title="Gerenciamento de limpeza"/>
+      <Header title="Gerenciamento de Limpeza"/>
       <Main>
         <Title>Dashboard</Title>
         <ContainerButton>

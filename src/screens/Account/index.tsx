@@ -7,6 +7,7 @@ import { Container, Content, AvatarPlaceholder, UserName, UserEmail, LogoutButto
 import { useAuth } from '@contexts/AuthContext';
 import { ChangePasswordModal } from '@components/ChangePasswordModal';
 import { ConfirmationModal } from '@components/ConfirmationModal'; 
+import { Header } from '@components/Header';
 
 export function Account() {
   const theme = useTheme(); 
@@ -21,6 +22,7 @@ export function Account() {
 
   return (
     <Container>
+      <Header title="Minha Conta" showNotificationIcon={false} />
       <Content>
         <AvatarPlaceholder>
           <UserIcon size={60} color={theme.COLORS.PLACEHOLDER} />

@@ -2,15 +2,18 @@ import { HeaderContainer, ScreenName, NotificationButton, NotificationIcon } fro
 
 type Props = {
   title: string;
+  showNotificationIcon?: boolean;
 }
 
-export function Header({ title }: Props) {
+export function Header({ title,  showNotificationIcon = true }: Props) {
   return (
     <HeaderContainer>
       <ScreenName>{title}</ScreenName>
-      <NotificationButton>
-        <NotificationIcon/>
-      </NotificationButton>
+      {showNotificationIcon && (
+        <NotificationButton>
+          <NotificationIcon/>
+        </NotificationButton>
+      )}
     </HeaderContainer>
   )
 }

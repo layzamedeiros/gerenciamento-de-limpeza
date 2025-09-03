@@ -127,7 +127,7 @@ export function RecordCleaning() {
 
   return (
     <Container>
-      <Header title="Registrar limpeza" />
+      <Header title="Registrar Limpeza" />
       <Content>
         {!limpezaIniciada ? (
           <>

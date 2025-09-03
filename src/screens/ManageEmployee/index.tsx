@@ -24,7 +24,7 @@ export function ManageEmployee() {
 
   return (
     <Container>
-      <Header title="Gerenciar Funcionários" />
+      <Header title="Gerenciar Usuários" />
       <Content>
         <Button onPress={() => setIsModalVisible(true)}>
           <PlusIcon color="white" size={24} weight='bold' />

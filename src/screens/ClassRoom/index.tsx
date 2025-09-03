@@ -88,7 +88,7 @@ export function ClassRoom() {
 
   return (
     <Container>
-      <Header title="Salas de aula" />
+      <Header title="Salas de Aula" />
       <Content>
         {user?.is_staff && (
           <Button onPress={() => setCreateModalVisible(true)}>
