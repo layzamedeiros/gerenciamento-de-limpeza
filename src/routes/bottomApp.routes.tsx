@@ -1,7 +1,6 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useTheme } from "styled-components/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { HouseIcon, ChalkboardIcon, PlusSquareIcon, UserCircleIcon, UsersThreeIcon } from "phosphor-react-native";
 import { TouchableOpacity } from "react-native";
 
 import { useAuth } from "@contexts/AuthContext"; 
@@ -11,6 +10,7 @@ import { ClassRoom } from "@screens/ClassRoom";
 import { RecordCleaning } from "@screens/RecordCleaning";
 import { Account } from "@screens/Account";
 import { ManageEmployee } from "@screens/ManageEmployee";
+import { TabBarItem } from "@components/TabBarItem";
 
 export type BottomTabParamList = {
   Home: undefined; 
@@ -53,12 +53,8 @@ export function BottomApp() {
         name="Home"
         component={Home}
         options={{
-          tabBarIcon: ({ color, focused }) => (
-            <HouseIcon
-              weight={focused ? 'fill' : 'regular'}
-              size={26} 
-              color={color} 
-            />
+          tabBarIcon: ({ color, focused, size }) => (
+            <TabBarItem name="Início" iconName="Home" focused={focused} color={color} size={size} />
           )
         }}
       />
@@ -67,12 +63,8 @@ export function BottomApp() {
         name="ClassRoom"
         component={ClassRoom}
         options={{
-          tabBarIcon: ({ color, focused }) => (
-            <ChalkboardIcon 
-              weight={focused ? 'fill' : 'regular'}
-              size={26} 
-              color={color} 
-            />
+          tabBarIcon: ({ color, focused, size }) => (
+            <TabBarItem name="Salas" iconName="ClassRoom" focused={focused} color={color} size={size} />
           )
         }}
       />
@@ -82,13 +74,9 @@ export function BottomApp() {
           name="ManageEmployee"
           component={ManageEmployee}
           options={{
-            tabBarIcon: ({ color, focused }) => (
-              <UsersThreeIcon 
-                weight={focused ? 'fill' : 'regular'} 
-                size={26} 
-                color={color} 
-              />
-            )
+            tabBarIcon: ({ color, focused, size }) => (
+              <TabBarItem name="Usuários" iconName="ManageEmployee" focused={focused} color={color} size={size} />
+            ),
           }}
         />
       ) : (
@@ -96,13 +84,9 @@ export function BottomApp() {
           name="RecordCleaning"
           component={RecordCleaning}
           options={{
-            tabBarIcon: ({ color, focused }) => (
-              <PlusSquareIcon 
-                weight={focused ? 'fill' : 'regular'} 
-                size={26} 
-                color={color} 
-              />
-            )
+            tabBarIcon: ({ color, focused, size }) => (
+              <TabBarItem name="Limpar" iconName="RecordCleaning" focused={focused} color={color} size={size} />
+            ),
           }}
         />
       )}
@@ -111,13 +95,9 @@ export function BottomApp() {
         name="Account"
         component={Account}
         options={{
-          tabBarIcon: ({ color, focused }) => (
-            <UserCircleIcon 
-              weight={focused ? 'fill' : 'regular'} 
-              size={26} 
-              color={color} 
-            />
-          )
+          tabBarIcon: ({ color, focused, size }) => (
+            <TabBarItem name="Minha Conta" iconName="Account" focused={focused} color={color} size={size} />
+          ),
         }}
       />
     </Navigator>

@@ -14,7 +14,8 @@ export default {
     PLACEHOLDER: "#A1A1AA",  
     DISABLED: "#F4F4F5",     
     
-    WHITE: "#FFFFFF"         
+    WHITE: "#FFFFFF",
+    WHITE_20: "#FFFFFF33"      
   },
 
   FONT_FAMILY: {
