@@ -1,32 +1,30 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import api from '@services/api';
-import { AxiosError } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { User } from '@services/employee.service';
 
-interface UserData {
-  id: number;
-  username: string;
-  email: string;
-  is_staff: boolean;
-  is_superuser: boolean;
-}
+interface AuthUser extends User {}
 
 interface AuthContextData {
-  user: UserData | null;
+  user: AuthUser | null;
   token: string | null;
   isLoading: boolean;
-  isAppLoading: boolean; 
+  isAppLoading: boolean;
+  isAdmin: boolean; 
   login: (username: string, password: string) => Promise<void>;
-  logout: () => Promise<void>; 
+  logout: () => Promise<void>;
+  refreshUser: () => Promise<void>; 
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<UserData | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [token, setToken] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false); 
-  const [isAppLoading, setIsAppLoading] = useState(true); 
+  const [isLoading, setIsLoading] = useState(false);
+  const [isAppLoading, setIsAppLoading] = useState(true);
+
+  const isAdmin = !!user?.is_superuser;
 
   useEffect(() => {
     async function loadStorageData() {
@@ -39,7 +37,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
         setUser(parsedUser);
         api.defaults.headers.common['Authorization'] = `Token ${storedToken}`;
       }
-      setIsAppLoading(false); 
+      setIsAppLoading(false);
     }
     loadStorageData();
   }, []);
@@ -75,9 +73,22 @@ function AuthProvider({ children }: { children: ReactNode }) {
     await AsyncStorage.removeItem('@ZeladoriaApp:token');
     await AsyncStorage.removeItem('@ZeladoriaApp:user');
   };
+  
+  const refreshUser = async () => {
+    try {
+      const response = await api.get('/accounts/current_user/');
+      const updatedUserData = response.data;
+      
+      setUser(updatedUserData);
+      await AsyncStorage.setItem('@ZeladoriaApp:user', JSON.stringify(updatedUserData));
+    } catch (error) {
+      console.error("Failed to refresh user data:", error);
+      logout(); 
+    }
+  };
 
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, isAppLoading, login, logout }}>
+    <AuthContext.Provider value={{ user, token, isLoading, isAppLoading, isAdmin, login, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );
