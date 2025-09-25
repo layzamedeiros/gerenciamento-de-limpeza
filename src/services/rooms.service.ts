@@ -1,92 +1,141 @@
 import api from './api';
 
-export interface CreateSalaData {
-  nome_numero: string;
-  capacidade: number;
-  descricao: string;
-  localizacao: string;
-}
-
-export interface LimpezaRegistro {
+export interface Room {
   id: number;
-  sala: number; 
-  sala_nome: string;
-  data_hora_limpeza: string;
-  funcionario_responsavel: {
-    id: number;
-    username: string;
-  };
-  observacoes: string;
-}
-
-export interface Sala {
-  id: number;
+  qr_code_id: string;
   nome_numero: string;
+  imagem: string | null;
   capacidade: number;
-  descricao: string;
+  validade_limpeza_horas: number;
+  descricao: string | null;
+  instrucoes: string | null;
   localizacao: string;
-  status_limpeza: 'Limpa' | 'Limpeza Pendente';
+  ativa: boolean;
+  responsaveis: { id: number; username: string; }[];
+  status_limpeza: 'Limpa' | 'Limpeza Pendente' | 'Em Limpeza' | 'Suja';
   ultima_limpeza_data_hora: string | null;
   ultima_limpeza_funcionario: string | null;
   observacao_recente?: string; 
 }
 
-export const fetchLimpezas = async (): Promise<LimpezaRegistro[]> => {
-  try {
-    const response = await api.get('/limpezas/');
-    return response.data;
-  } catch (error) {
-    console.error("Falha ao buscar registos de limpeza:", error);
-    throw error;
-  }
-};
+export interface CreateRoomData {
+  nome_numero: string;
+  capacidade: number;
+  localizacao: string;
+  validade_limpeza_horas?: number;
+  descricao?: string;
+  instrucoes?: string;
+  responsaveis?: number[];
+  imagem?: any; 
+}
 
-export const fetchSalas = async (): Promise<Sala[]> => {
+export const fetchRooms = async (): Promise<Room[]> => {
   try {
     const response = await api.get('/salas/');
     return response.data;
   } catch (error) {
-    console.error("Falha ao buscar salas:", error);
+    console.error("Failed to fetch rooms:", error);
     throw error;
   }
 };
 
-export const createSala = async (data: CreateSalaData): Promise<Sala> => {
+// --- FUNÇÃO RENOMEADA E ATUALIZADA ---
+// createSala virou createRoom. Agora envia os dados como multipart/form-data.
+export const createRoom = async (data: CreateRoomData) => {
+  const formData = new FormData();
+
+  // Adiciona cada campo ao FormData
+  Object.keys(data).forEach(key => {
+    const value = (data as any)[key];
+    if (value !== undefined) {
+      // Trata o array de responsáveis de forma especial
+      if (key === 'responsaveis' && Array.isArray(value)) {
+        value.forEach(respId => formData.append('responsaveis', respId.toString()));
+      } else {
+        formData.append(key, value);
+      }
+    }
+  });
+
   try {
-    const response = await api.post('/salas/', data);
-    return response.data;
-  } catch (error) {
-    console.error("Falha ao criar sala:", error);
-    throw error;
-  }
-};
-
-export const updateSala = async (id: number, data: Partial<CreateSalaData>): Promise<Sala> => {
-  try {
-    const response = await api.patch(`/salas/${id}/`, data);
-    return response.data;
-  } catch (error) {
-    console.error(`Falha ao atualizar a sala ${id}:`, error);
-    throw error;
-  }
-};
-
-export const deleteSala = async (id: number): Promise<void> => {
-  try {
-    await api.delete(`/salas/${id}/`);
-  } catch (error) {
-    console.error(`Falha ao deletar a sala ${id}:`, error);
-    throw error;
-  }
-};
-
-export const marcarSalaComoLimpa = async (salaId: number, observacoes?: string) => {
-  try { 
-    const response = await api.post(`/salas/${salaId}/marcar_como_limpa/`, {
-      observacoes: observacoes, 
+    const response = await api.post('/salas/', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
     });
     return response.data;
-   } catch (error) {
-     console.error(`Failed to mark room ${salaId} as clean:`, error);
-      throw error; }
+  } catch (error) {
+    console.error("Failed to create room:", error);
+    throw error;
+  }
+};
+
+export const updateRoom = async (qr_code_id: string, data: Partial<CreateRoomData>) => {
+  const formData = new FormData();
+   Object.keys(data).forEach(key => {
+    const value = (data as any)[key];
+    if (value !== undefined) {
+       if (key === 'responsaveis' && Array.isArray(value)) {
+        value.forEach(respId => formData.append('responsaveis', respId.toString()));
+      } else {
+        formData.append(key, value);
+      }
+    }
+  });
+
+  try {
+    const response = await api.patch(`/salas/${qr_code_id}/`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to update room ${qr_code_id}:`, error);
+    throw error;
+  }
+};
+
+export const deleteRoom = async (qr_code_id: string): Promise<void> => {
+  try {
+    await api.delete(`/salas/${qr_code_id}/`);
+  } catch (error) {
+    console.error(`Failed to delete room ${qr_code_id}:`, error);
+    throw error;
+  }
+};
+
+export const startCleaning = async (qr_code_id: string) => {
+  try {
+    const response = await api.post(`/salas/${qr_code_id}/iniciar_limpeza/`);
+    return response.data; 
+  } catch (error) {
+    console.error(`Failed to start cleaning for room ${qr_code_id}:`, error);
+    throw error;
+  }
+};
+
+export const addCleaningPhoto = async (cleaningRecordId: number, imageUri: string) => {
+  const formData = new FormData();
+  const fileName = imageUri.split('/').pop() || 'photo.jpg';
+  const fileType = `image/${fileName.split('.').pop()?.toLowerCase()}`;
+
+  formData.append('registro_limpeza', cleaningRecordId.toString());
+  formData.append('imagem', { uri: imageUri, name: fileName, type: fileType } as any);
+  
+  try {
+    const response = await api.post('/fotos_limpeza/', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to add photo to cleaning record ${cleaningRecordId}:`, error);
+    throw error;
+  }
+};
+
+export const finishCleaning = async (qr_code_id: string, observacoes?: string) => {
+  try {
+    const response = await api.post(`/salas/${qr_code_id}/concluir_limpeza/`, { observacoes });
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to finish cleaning for room ${qr_code_id}:`, error);
+    throw error;
+  }
 };

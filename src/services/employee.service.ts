@@ -1,37 +1,58 @@
 import api from './api';
 
-export interface Funcionario {
+export interface Group {
+  id: number;
+  name: string;
+}
+
+export interface User {
   id: number;
   username: string;
   email: string;
-  is_staff: boolean;
   is_superuser: boolean;
+  name: string; 
+  groups: number[];
+  profile: {
+    profile_picture: string | null;
+  }
 }
 
-export const fetchFuncionarios = async (): Promise<Funcionario[]> => {
-  try {
-    const response = await api.get('/accounts/list_users/'); 
-    return response.data;
-  } catch (error) {
-    console.error("Falha ao buscar funcionários:", error);
-    throw error;
-  }
-};
-
-export interface CreateFuncionarioData {
+export interface CreateUserData {
   username: string;
   email?: string;
   password: string;
   confirm_password: string;
-  is_staff?: boolean;
+  name?: string;
+  groups?: number[];
+  is_superuser?: boolean;
 }
 
-export const createFuncionario = async (data: CreateFuncionarioData): Promise<{ user: Funcionario }> => {
+export const fetchUsers = async (): Promise<User[]> => {
+  try {
+    const response = await api.get('/accounts/list_users/');
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch users:", error); 
+    throw error;
+  }
+};
+
+export const createUser = async (data: CreateUserData): Promise<{ user: User }> => {
   try {
     const response = await api.post('/accounts/create_user/', data);
-    return response.data; 
+    return response.data;
   } catch (error) {
-    console.error("Falha ao criar funcionário:", error);
+    console.error("Failed to create user:", error); 
+    throw error;
+  }
+};
+
+export const fetchGroups = async (): Promise<Group[]> => {
+  try {
+    const response = await api.get('/accounts/list_groups/');
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch groups:", error);
     throw error;
   }
 };
