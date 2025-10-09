@@ -3,41 +3,46 @@ import styled, { css } from "styled-components/native";
 export const Button = styled.TouchableOpacity.attrs({
   activeOpacity: 1
 })`
-  background-color: ${({ theme })  => theme.COLORS.PRIMARY};
-  max-width: 47.5%;
-  aspect-ratio: 160 / 180;
+  background-color: ${({ theme })  => theme.COLORS.WHITE};
+  width: 333px;
+  height: 100px;
   padding: 10px;
   border-radius: 14px;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
 `;
 
 export const Content = styled.View`
+  width: 340px;
+  padding: 20px;
   flex: 1;
   align-items: center;
-  justify-content: center;
+  gap: 35px;
+  flex-direction: row;
 `;
 
 export const IconWrapper = styled.View`  
-  justify-content: center;
   align-items: center;
+`;
+
+export const Description = styled.View`
+  flex-direction: column;
+  justify-content: center;
 `;
 
 export const Title = styled.Text`
   ${({ theme }) => css`
-    color: ${theme.COLORS.WHITE};
+    color: ${theme.COLORS.PRIMARY};
     font-family: ${theme.FONT_FAMILY.SEMIBOLD};
   `}
   font-size: 16px;
-  text-align: center;
   margin-top: 8px;
 `;
 
 export const SubTitle = styled.Text`
   ${({ theme }) => css`
-    color: ${theme.COLORS.WHITE};
+    color: ${theme.COLORS.PRIMARY};
     font-family: ${theme.FONT_FAMILY.MEDIUM};
   `}
   font-size: 14px;
-  text-align: center;
 `;

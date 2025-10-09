@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Button, ButtonText } from './styles';
 
-export type FilterStatus = 'todas' | 'pendentes' | 'limpas';
+export type FilterStatus = 'todas' | 'pendentes' | 'limpas' | 'limpeza urgente' | 'limpeza em andamento';
 
 type Props = {
   activeFilter: FilterStatus;
@@ -12,7 +12,7 @@ export default function FilterButton({ activeFilter, onFilterChange }: Props) {
   const buttons: { label: string, status: FilterStatus }[] = [
     { label: 'Todas', status: 'todas' },
     { label: 'Pendentes', status: 'pendentes' },
-    { label: 'Limpas', status: 'limpas' }
+    { label: 'Limpas', status: 'limpas' },
   ];
 
   return (
@@ -22,7 +22,6 @@ export default function FilterButton({ activeFilter, onFilterChange }: Props) {
           key={button.status}
           selected={activeFilter === button.status}
           onPress={() => onFilterChange(button.status)}
-          style={{ marginHorizontal: 8 }} 
         >
           <ButtonText selected={activeFilter === button.status}>
             {button.label}

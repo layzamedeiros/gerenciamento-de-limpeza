@@ -11,10 +11,10 @@ export function ProgressCircle({ value }: Props ){
   return (
     <CircularProgress 
       value={value}
-      radius={35}
+      radius={30}
       activeStrokeColor={COLORS.ACCENT}
-      inActiveStrokeColor={COLORS.DISABLED}
-      progressValueColor={COLORS.WHITE}
+      inActiveStrokeColor={COLORS.ACCENT_LIGHT}
+      progressValueColor={COLORS.PRIMARY}
       valueSuffix={"%"}
       progressValueStyle={{ fontFamily: FONT_FAMILY.BOLD}}
     />

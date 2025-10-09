@@ -5,13 +5,12 @@ export const Container = styled.View`
   flex: 1;
   height: 30px;
   flex-direction: row;
-  justify-content: flex-start;
-  align-items: flex-start;
+  gap: 10px;
 `;
 
 export const Button = styled.TouchableOpacity<{ selected: boolean }>`
-  padding: 5px 16px;
-  border-radius: 20px;
+  padding: 5px 26px;
+  border-radius: 8px;
   background-color: ${({ selected, theme }) =>
     selected ? theme.COLORS.PRIMARY : 'transparent'};
   border-width: 1px;

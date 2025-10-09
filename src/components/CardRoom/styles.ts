@@ -1,28 +1,35 @@
+import { Room } from "@services/rooms.service";
 import { TouchableOpacity } from "react-native";
 import styled, { css } from "styled-components/native";
 
 type StatusProps = {
-  status?: "limpa" | "pendente";
+  status: Room['status_limpeza'];
 }
 
 export const CardContainer = styled.View`
   width: 100%;
   border-radius: 11px;
   background-color: ${({ theme }) => theme.COLORS.WHITE};
-  padding: 16px;
+  padding: 12px;
   margin-bottom: 10px;
 `;
 
 export const CardHeader = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 8px;
+`;
+
+export const Line = styled.View`
+  height: 1px;
+  background-color: ${({ theme }) => theme.COLORS.DISABLED};
+  margin-bottom: 4px;
 `;
 
 export const Title = styled.Text`
   font-size: 16px;
-  flex: 1; 
+  flex: 1;
   ${({ theme }) => css`
     color: ${theme.COLORS.TITLE};
     font-family: ${theme.FONT_FAMILY.SEMIBOLD};
@@ -30,57 +37,102 @@ export const Title = styled.Text`
 `;
 
 export const StatusTag = styled.View<StatusProps>`
-  padding: 4px 12px;
-  border-radius: 20px;
-  margin-left: 10px;
-  
-  background-color: ${({ theme, status }) => 
-    status === 'limpa' ? theme.COLORS.PRIMARY_LIGHT : `${theme.COLORS.ACCENT}30`};
+  padding: 1.5px;
+  border-radius: 6px;
+  width: 32%;
+  align-items: center;
+  background-color: ${({ theme, status }) =>
+    status === 'Limpa'
+      ? theme.COLORS.GREEN_LIGHT
+      : status === 'Em Limpeza'
+      ? theme.COLORS.PRIMARY_LIGHT
+      : status === 'Limpeza Pendente'
+      ? theme.COLORS.ACCENT_LIGHT
+      : theme.COLORS.DANGER_LIGHT};
 `;
 
 export const StatusTagText = styled.Text<StatusProps>`
-  font-size: 12px;
+  font-size: 11px;
   ${({ theme, status }) => css`
     font-family: ${theme.FONT_FAMILY.BOLD};
-    color: ${status === 'limpa' ? theme.COLORS.PRIMARY : theme.COLORS.ACCENT};
+    color: ${
+      status === 'Limpa'
+        ? theme.COLORS.GREEN
+        : status === 'Em Limpeza'
+        ? theme.COLORS.PRIMARY
+        : status === 'Limpeza Pendente'
+        ? theme.COLORS.ACCENT
+        : theme.COLORS.DANGER
+    };
   `}
 `;
 
 export const SubTitle = styled.Text`
   font-size: 14px;
-  line-height: 20px; 
+  line-height: 20px;
   ${({ theme }) => css`
-    color: ${theme.COLORS.SUBTITLE};
+    color: ${theme.COLORS.INFO};
     font-family: ${theme.FONT_FAMILY.REGULAR};
   `};
 `;
 
-export const ActionsContainer = styled.View`
-  flex-direction: row;
-  justify-content: flex-start; 
-  align-items: center;
+export const DetailLabel = styled.Text`
+  font-family: ${({ theme }) => theme.FONT_FAMILY.SEMIBOLD};
+  color: ${({ theme }) => theme.COLORS.TITLE};
+`;
+
+export const ExpandedContent = styled.View`
   margin-top: 16px;
-  gap: 10px;
   border-top-width: 1px;
   border-top-color: ${({ theme }) => theme.COLORS.DISABLED};
-  padding-top: 12px;
+  padding-top: 2px;
 `;
 
-export const ActionButton = styled(TouchableOpacity)`
+export const RoomImage = styled.Image`
+  width: 100%;
+  height: 150px;
+  margin-bottom: 12px;
+`;
+
+export const DetailsContainer = styled.View`
+  gap: 4px;
+`;
+
+export const MenuButton = styled(TouchableOpacity)`
+`;
+
+export const MenuContainer = styled.View`
+  position: absolute;
+  top: 45px;
+  right: 16px;
+  background-color: ${({ theme }) => theme.COLORS.SURFACE};
+  border-radius: 8px;
+  border-width: 0.5px;
+  border-color: ${({ theme }) => theme.COLORS.BORDER};
+  z-index: 10;
+`;
+
+export const MenuItem = styled.View`
   flex-direction: row;
   align-items: center;
-  margin-left: px; 
+  justify-content: space-between;
+  padding: 5px 10px;
+  width: 180px;
 `;
 
-export const ActionButtonText = styled.Text`
-  font-size: 14px;
-  margin-left: 8px;
-  ${({ theme }) => css`
-    color: ${theme.COLORS.SUBTITLE};
-    font-family: ${theme.FONT_FAMILY.MEDIUM};
-  `}
+type MenuItemTextProps = {
+  isDelete?: boolean;
+}
+
+export const MenuItemText = styled.Text<MenuItemTextProps>`
+  font-size: 16px;
+  ${({ theme, isDelete }) => css`
+    font-family: ${theme.FONT_FAMILY.REGULAR};
+    color: ${isDelete ? theme.COLORS.DANGER : theme.COLORS.TITLE};
+  `};
 `;
 
-export const DeleteButtonText = styled(ActionButtonText)`
-  color: ${({ theme }) => theme.COLORS.SUBTITLE};
+export const MenuSeparator = styled.View`
+  height: 0.5px;
+  background-color: ${({ theme }) => theme.COLORS.BORDER};
 `;

@@ -1,7 +1,8 @@
 import { TouchableOpacityProps } from "react-native";
-import { Button, Content, Title, SubTitle, IconWrapper } from "./styles";
+import { Button, Content, Title, SubTitle, IconWrapper, Description } from "./styles";
 import React, { ReactNode } from "react";
 import { ProgressCircle } from "@components/ProgressCircle";
+import { useTheme } from "styled-components/native";
 
 type Props = TouchableOpacityProps & {
   title: string;
@@ -11,16 +12,19 @@ type Props = TouchableOpacityProps & {
 };
 
 export function DashboardButton({ title, subtitle, icon, progress, onPress }: Props) {
+  const theme = useTheme();
   return (
-     <Button onPress={onPress}>
+     <Button onPress={onPress} style={{ boxShadow: `0px 0.5px 4px ${theme.COLORS.BLACK_SHADOW}` }}>
       <Content>
         {progress !== undefined ? (
           <ProgressCircle value={progress} />
         ) : (
           icon && <IconWrapper>{icon}</IconWrapper>
         )}
-        <Title>{title}</Title>
-        {subtitle && <SubTitle>{subtitle}</SubTitle>}
+        <Description>
+          <Title>{title}</Title>
+          {subtitle && <SubTitle>{subtitle}</SubTitle>}
+        </Description>
       </Content>
     </Button>
   );
