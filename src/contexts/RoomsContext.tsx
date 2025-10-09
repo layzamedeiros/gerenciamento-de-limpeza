@@ -1,71 +1,74 @@
 import React, { createContext, useState, useContext, ReactNode, useCallback, useEffect } from 'react';
-import { Sala, fetchSalas, fetchLimpezas } from '@services/rooms.service';
+import { Room, fetchRooms, CleaningRecord, fetchCleaningHistory } from '@services/rooms.service';
 import { useAuth } from '@contexts/AuthContext';
 
-interface SalasContextData {
-  salas: Sala[];
+interface RoomsContextData {
+  rooms: Room[];
   isLoading: boolean;
-  refreshSalas: () => Promise<void>;
+  refreshRooms: () => Promise<void>;
 }
 
-const SalasContext = createContext<SalasContextData>({} as SalasContextData);
+const RoomsContext = createContext<RoomsContextData>({} as RoomsContextData);
 
-function SalasProvider({ children }: { children: ReactNode }) {
-  const [salas, setSalas] = useState<Sala[]>([]);
+function RoomsProvider({ children }: { children: ReactNode }) {
+  const [rooms, setRooms] = useState<Room[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { token, isAppLoading, user } = useAuth(); 
+  const { token, isAppLoading, isAdmin } = useAuth(); 
 
-  const refreshSalas = useCallback(async () => {
+  const refreshRooms = useCallback(async () => {
     if (!token) return;
     setIsLoading(true);
 
     try {
-      const salasData = await fetchSalas();
+      const roomsData = await fetchRooms();
 
-      if (user?.is_staff) {
-        const limpezasData = await fetchLimpezas();
+      if (isAdmin) {
+        const cleaningsData = await fetchCleaningHistory();
 
-        const salasComObservacoes = salasData.map(sala => {
-          const registrosDaSala = limpezasData
-            .filter(limpeza => limpeza.sala === sala.id)
-            .sort((a, b) => new Date(b.data_hora_limpeza).getTime() - new Date(a.data_hora_limpeza).getTime());
+        const roomsWithObservations = roomsData.map(room => {
+          const roomCleaningRecords = cleaningsData
+            .filter(cleaningRecord => cleaningRecord.sala === room.qr_code_id)
+            .sort((a, b) => {
+              if (!a.data_hora_fim || !b.data_hora_fim) return 0;
+              return new Date(b.data_hora_fim).getTime() - new Date(a.data_hora_fim).getTime()
+            });
 
-          const observacao_recente = registrosDaSala.length > 0 ? registrosDaSala[0].observacoes : undefined;
+          const recentObservation = roomCleaningRecords.length > 0 ? roomCleaningRecords[0].observacoes : undefined;
 
           return {
-            ...sala,
-            observacao_recente,
+            ...room,
+            recentObservation,
           };
         });
 
-        setSalas(salasComObservacoes);
+        setRooms(roomsWithObservations);
       } else {
-        setSalas(salasData);
+        setRooms(roomsData);
       }
 
     } catch (error) {
-      console.error("Falha ao atualizar os dados das salas no contexto:", error);
+      console.error("Failed to refresh rooms data in context:", error);
     } finally {
       setIsLoading(false);
     }
-  }, [token, user?.is_staff]); 
+  }, [token, isAdmin]); 
 
   useEffect(() => {
     if (!isAppLoading && token) {
-      refreshSalas();
+      refreshRooms();
     }
-  }, [isAppLoading, token, refreshSalas]);
+  }, [isAppLoading, token, refreshRooms]);
 
   return (
-    <SalasContext.Provider value={{ salas, isLoading, refreshSalas }}>
+    <RoomsContext.Provider value={{ rooms, isLoading, refreshRooms }}>
       {children}
-    </SalasContext.Provider>
+    </RoomsContext.Provider>
   );
 }
 
-function useSalas() {
-  const context = useContext(SalasContext);
+function useRooms() {
+  const context = useContext(RoomsContext);
   return context;
 }
 
-export { SalasProvider, useSalas };
+export { RoomsProvider, useRooms };

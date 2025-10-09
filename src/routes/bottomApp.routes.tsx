@@ -1,7 +1,6 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useTheme } from "styled-components/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { TouchableOpacity } from "react-native";
 
 import { useAuth } from "@contexts/AuthContext"; 
 
@@ -10,7 +9,8 @@ import { ClassRoom } from "@screens/ClassRoom";
 import { RecordCleaning } from "@screens/RecordCleaning";
 import { Account } from "@screens/Account";
 import { ManageEmployee } from "@screens/ManageEmployee";
-import { TabBarItem } from "@components/TabBarItem";
+import { TabBarItem } from "@components/TabBarItem"; 
+import { TouchableOpacity } from "react-native";
 
 export type BottomTabParamList = {
   Home: undefined; 
@@ -26,8 +26,7 @@ export function BottomApp() {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   
-  const { user } = useAuth(); 
-  const isAdmin = user?.is_staff || user?.is_superuser;
+  const { isAdmin } = useAuth(); 
 
   return (
     <Navigator
@@ -76,7 +75,7 @@ export function BottomApp() {
           options={{
             tabBarIcon: ({ color, focused, size }) => (
               <TabBarItem name="Usuários" iconName="ManageEmployee" focused={focused} color={color} size={size} />
-            ),
+            )
           }}
         />
       ) : (
@@ -86,7 +85,7 @@ export function BottomApp() {
           options={{
             tabBarIcon: ({ color, focused, size }) => (
               <TabBarItem name="Limpar" iconName="RecordCleaning" focused={focused} color={color} size={size} />
-            ),
+            )
           }}
         />
       )}
@@ -97,7 +96,7 @@ export function BottomApp() {
         options={{
           tabBarIcon: ({ color, focused, size }) => (
             <TabBarItem name="Minha Conta" iconName="Account" focused={focused} color={color} size={size} />
-          ),
+          )
         }}
       />
     </Navigator>

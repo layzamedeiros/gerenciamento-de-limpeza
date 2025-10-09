@@ -18,31 +18,38 @@ import {
   Title,
 } from "./styles";
 
-import { fetchSalas, marcarSalaComoLimpa, Sala } from "@services/rooms.service";
+import { fetchRooms, startCleaning, finishCleaning, Room, addCleaningPhoto } from "@services/rooms.service";
 
-type SalaComStatus = Sala & {
-  limpeza_pendente: boolean;
-};
+// A interface da API para o registro de limpeza
+interface CleaningRecordResponse {
+  id: number;
+  sala: string; // qr_code_id
+  sala_nome: string;
+  data_hora_inicio: string;
+  data_hora_fim: string | null;
+  funcionario_responsavel: string;
+  observacoes: string | null;
+  fotos: { id: number; imagem: string; }[];
+}
 
 export function RecordCleaning() {
   const theme = useTheme();
 
-  const [open, setOpen] = useState(false);
-  const [salaSelecionada, setSalaSelecionada] = useState<number | null>(null);
-  const [salas, setSalas] = useState<Sala[]>([]);
+  const [open, setOpen] = useState(false); 
+  const [qrCodeIdSelecionado, setQrCodeIdSelecionado] = useState<string | null>(null);
+  const [salas, setSalas] = useState<Room[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [limpezaIniciada, setLimpezaIniciada] = useState(false);
-  const [infoLimpeza, setInfoLimpeza] = useState({
-    salaId: 0,
-    salaNome: "",
-    horaInicio: "",
-  });
-  const [observacao, setObservacao] = useState("");
+  
+  const [cleaningStarted, setCleaningStarted] = useState(false);
+  const [activeCleaning, setActiveCleaning] = useState<CleaningRecordResponse | null>(null);
+  
+  const [observation, setObservation] = useState("");
+  const [isFinishing, setIsFinishing] = useState(false);
 
-  const loadSalas = useCallback(async () => {
+  const loadRooms = useCallback(async () => {
     try {
       setIsLoading(true);
-      const data = await fetchSalas();
+      const data = await fetchRooms();
       setSalas(data);
     } catch (error) {
       Toast.show({
@@ -56,32 +63,41 @@ export function RecordCleaning() {
   }, []);
 
   useEffect(() => {
-    loadSalas();
-  }, [loadSalas]);
+    loadRooms();
+  }, [loadRooms]);
+
 
   const dropdownItems = useMemo(() => {
+
     return salas
-      .filter((sala) => sala.status_limpeza === "Limpeza Pendente")
-      .map((sala) => ({
-        label: sala.nome_numero,
-        value: sala.id,
+      .filter((room) => room.status_limpeza === "Limpeza Pendente" || room.status_limpeza === "Suja")
+      .map((room) => ({
+        label: room.nome_numero,
+        value: room.qr_code_id,
       }));
   }, [salas]);
 
-  const handleIniciarLimpeza = () => {
-    if (salaSelecionada) {
-      const salaInfo = salas.find((sala) => sala.id === salaSelecionada);
-      const nomeSala = salaInfo ? salaInfo.nome_numero : "Sala desconhecida";
-      const horaAtual = new Date().toLocaleTimeString("pt-BR", {
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-      setInfoLimpeza({
-        salaId: salaSelecionada,
-        salaNome: nomeSala,
-        horaInicio: horaAtual,
-      });
-      setLimpezaIniciada(true);
+  const handleStartCleaning = async () => {
+    if (qrCodeIdSelecionado) {
+      setIsLoading(true);
+      try {
+        const response = await startCleaning(qrCodeIdSelecionado);
+        setCleaningStarted(true);
+        setActiveCleaning(response);
+        Toast.show({
+          type: "success",
+          text1: "Limpeza Iniciada",
+          text2: `A limpeza de "${response.sala_nome}" foi iniciada.`,
+        });
+      } catch (error) {
+        Toast.show({
+          type: "error",
+          text1: "Erro",
+          text2: "Não foi possível iniciar a limpeza. Sala já em limpeza?",
+        });
+      } finally {
+        setIsLoading(false);
+      }
     } else {
       Toast.show({
         type: "error",
@@ -91,29 +107,41 @@ export function RecordCleaning() {
     }
   };
 
-  const handleFinalizarLimpeza = async () => {
-    setIsLoading(true);
+  const handleFinishCleaning = async () => {
+    if (!activeCleaning) return;
+
+    setIsFinishing(true);
     try {
-      await marcarSalaComoLimpa(infoLimpeza.salaId, observacao);
+      // É necessário adicionar uma foto antes de finalizar a limpeza,
+      // mas a lógica para tirar a foto não está no seu código. 
+      // Por isso, vamos adicionar um alerta para avisar o usuário.
+      // Em uma implementação real, você chamaria `addCleaningPhoto` aqui.
+      // Por exemplo:
+      // await addCleaningPhoto(activeCleaning.id, 'caminho/para/foto.jpg');
+
+      // A API espera o qr_code_id
+      await finishCleaning(activeCleaning.sala, observation);
+      
       Toast.show({
         type: "success",
         text1: "Sucesso!",
-        text2: `A limpeza da "${infoLimpeza.salaNome}" foi registrada.`,
+        text2: `A limpeza da "${activeCleaning.sala_nome}" foi finalizada.`,
       });
 
-      await loadSalas();
+      await loadRooms();
 
-      setLimpezaIniciada(false);
-      setSalaSelecionada(null);
-      setObservacao("");
+      setCleaningStarted(false);
+      setActiveCleaning(null);
+      setQrCodeIdSelecionado(null);
+      setObservation("");
     } catch (error) {
       Toast.show({
         type: "error",
         text1: "Erro",
-        text2: "Não foi possível registrar a limpeza. Tente novamente.",
+        text2: "Não foi possível finalizar a limpeza. Verifique se fotos foram adicionadas.",
       });
     } finally {
-      setIsLoading(false);
+      setIsFinishing(false);
     }
   };
 
@@ -129,24 +157,24 @@ export function RecordCleaning() {
     <Container>
       <Header title="Registrar Limpeza" />
       <Content>
-        {!limpezaIniciada ? (
+        {!cleaningStarted ? (
           <>
             <Title>Salas com limpeza pendente</Title>
             <DropDownPicker
               open={open}
-              value={salaSelecionada}
+              value={qrCodeIdSelecionado}
               items={dropdownItems}
               setOpen={setOpen}
-              setValue={setSalaSelecionada}
+              setValue={setQrCodeIdSelecionado}
               placeholder="Selecionar sala"
               ListEmptyComponent={() => (
                 <View style={{ padding: 15, alignItems: "center" }}>
                   <Text style={{ color: theme.COLORS.TITLE, fontSize: 16 }}>
-                    Nenhuma sala com limpeza pendente
+                    Nenhuma sala com limpeza pendente ou suja
                   </Text>
                 </View>
               )}
-              listMode="FLATLIST"
+              listMode="SCROLLVIEW"
               zIndex={3000}
               zIndexInverse={1000}
               style={{
@@ -162,29 +190,32 @@ export function RecordCleaning() {
               placeholderStyle={{ color: theme.COLORS.TITLE }}
               textStyle={{ fontSize: 16, color: theme.COLORS.TITLE }}
             />
-            <Button onPress={handleIniciarLimpeza} disabled={isLoading}>
+            <Button onPress={handleStartCleaning} disabled={isLoading}>
               <ButtonText>Iniciar Limpeza</ButtonText>
             </Button>
           </>
         ) : (
           <CleaningContainer>
             <Title>Limpeza em andamento</Title>
-            <CleaningDetails>{infoLimpeza.salaNome}</CleaningDetails>
+            <CleaningDetails>{activeCleaning?.sala_nome}</CleaningDetails>
             <CleaningDetailsTime>
-              Limpeza Iniciada às {infoLimpeza.horaInicio}
+              Limpeza Iniciada às {new Date(activeCleaning?.data_hora_inicio || "").toLocaleTimeString("pt-BR", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
             </CleaningDetailsTime>
             <ObservationTitle>Observação</ObservationTitle>
             <ObservationInput
               placeholder="Digite uma observação (opcional)"
-              value={observacao}
-              onChangeText={setObservacao}
+              value={observation}
+              onChangeText={setObservation}
             />
             <Button
               variant="success"
-              onPress={handleFinalizarLimpeza}
-              disabled={isLoading}
+              onPress={handleFinishCleaning}
+              disabled={isFinishing}
             >
-              {isLoading ? (
+              {isFinishing ? (
                 <ActivityIndicator color="#FFF" />
               ) : (
                 <ButtonText>Finalizar limpeza</ButtonText>

@@ -1,5 +1,11 @@
 import api from './api';
 
+export interface DirtyRoomReport {
+  data_hora: string;
+  reportado_por: string;
+  observacoes: string | null;
+}
+
 export interface Room {
   id: number;
   qr_code_id: string;
@@ -11,11 +17,12 @@ export interface Room {
   instrucoes: string | null;
   localizacao: string;
   ativa: boolean;
-  responsaveis: { id: number; username: string; }[];
-  status_limpeza: 'Limpa' | 'Limpeza Pendente' | 'Em Limpeza' | 'Suja';
+
+  responsaveis: string[];
+  status_limpeza: 'Limpa' | 'Em Limpeza' | 'Limpeza Pendente' | 'Limpeza Urgente';
   ultima_limpeza_data_hora: string | null;
   ultima_limpeza_funcionario: string | null;
-  observacao_recente?: string; 
+  detalhes_suja: DirtyRoomReport | null;
 }
 
 export interface CreateRoomData {
@@ -26,7 +33,18 @@ export interface CreateRoomData {
   descricao?: string;
   instrucoes?: string;
   responsaveis?: number[];
-  imagem?: any; 
+  imagem?: any;
+}
+
+export interface CleaningRecord {
+  id: number;
+  sala: string;
+  sala_nome: string;
+  data_hora_inicio: string;
+  data_hora_fim: string | null;
+  funcionario_responsavel: string;
+  observacoes: string | null;
+  fotos: { id: number; imagem: string; }[];
 }
 
 export const fetchRooms = async (): Promise<Room[]> => {
@@ -39,16 +57,22 @@ export const fetchRooms = async (): Promise<Room[]> => {
   }
 };
 
-// --- FUNÇÃO RENOMEADA E ATUALIZADA ---
-// createSala virou createRoom. Agora envia os dados como multipart/form-data.
+export const fetchCleaningHistory = async (): Promise<CleaningRecord[]> => {
+  try {
+    const response = await api.get('/limpezas/');
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch cleaning history:", error);
+    throw error;
+  }
+};
+
 export const createRoom = async (data: CreateRoomData) => {
   const formData = new FormData();
 
-  // Adiciona cada campo ao FormData
   Object.keys(data).forEach(key => {
     const value = (data as any)[key];
     if (value !== undefined) {
-      // Trata o array de responsáveis de forma especial
       if (key === 'responsaveis' && Array.isArray(value)) {
         value.forEach(respId => formData.append('responsaveis', respId.toString()));
       } else {
@@ -70,10 +94,10 @@ export const createRoom = async (data: CreateRoomData) => {
 
 export const updateRoom = async (qr_code_id: string, data: Partial<CreateRoomData>) => {
   const formData = new FormData();
-   Object.keys(data).forEach(key => {
+  Object.keys(data).forEach(key => {
     const value = (data as any)[key];
     if (value !== undefined) {
-       if (key === 'responsaveis' && Array.isArray(value)) {
+      if (key === 'responsaveis' && Array.isArray(value)) {
         value.forEach(respId => formData.append('responsaveis', respId.toString()));
       } else {
         formData.append(key, value);
@@ -104,7 +128,7 @@ export const deleteRoom = async (qr_code_id: string): Promise<void> => {
 export const startCleaning = async (qr_code_id: string) => {
   try {
     const response = await api.post(`/salas/${qr_code_id}/iniciar_limpeza/`);
-    return response.data; 
+    return response.data;
   } catch (error) {
     console.error(`Failed to start cleaning for room ${qr_code_id}:`, error);
     throw error;
@@ -138,4 +162,14 @@ export const finishCleaning = async (qr_code_id: string, observacoes?: string) =
     console.error(`Failed to finish cleaning for room ${qr_code_id}:`, error);
     throw error;
   }
+};
+
+export const reportDirtyRoom = async (qr_code_id: string, observacoes?: string) => {
+    try {
+        const response = await api.post(`/salas/${qr_code_id}/marcar_como_suja/`, { observacoes });
+        return response.data;
+    } catch (error) {
+        console.error(`Failed to report dirty room ${qr_code_id}:`, error);
+        throw error;
+    }
 };

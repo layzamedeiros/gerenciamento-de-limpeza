@@ -15,8 +15,8 @@ export const Main = styled.View`
 
 export const Title = styled.Text`
   ${({ theme }) => css`
-    color: ${theme.COLORS.PRIMARY};
-    font-family: ${theme.FONT_FAMILY.SEMIBOLD};
+    color: ${theme.COLORS.TITLE};
+    font-family: ${theme.FONT_FAMILY.BOLD};
   `}
   font-size: 16px;
   margin-bottom: 10px;
@@ -26,6 +26,6 @@ export const ContainerButton = styled.View`
   flex: 1;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 16px;
+  justify-content: center;
+  gap: 14px;
 `;

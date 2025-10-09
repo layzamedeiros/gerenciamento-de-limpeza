@@ -13,12 +13,12 @@ import { Button, ButtonText, Container, Content } from "./styles";
 
 export function ManageEmployee() {
   const theme = useTheme();
-  const { funcionarios, isLoading, refreshFuncionarios } = useEmployees();
+  const { users, isLoading, refreshUsers } = useEmployees();
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
-      refreshFuncionarios();
+      refreshUsers();
     }, [])
   );
 
@@ -31,14 +31,14 @@ export function ManageEmployee() {
           <ButtonText>Cadastrar Funcionário</ButtonText>
         </Button>
 
-        {isLoading && funcionarios.length === 0 ? (
+        {isLoading && users.length === 0 ? (
           <ActivityIndicator size="large" color={theme.COLORS.PRIMARY} style={{ flex: 1 }} />
         ) : (
           <FlatList
-            data={funcionarios}
+            data={users}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
-              <CardEmployees title={item.username} subtitle={item.email} isAdmin={item.is_staff} />
+              <CardEmployees title={item.name || item.username} subtitle={item.email} isAdmin={item.is_superuser} />
             )}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: 20 }}
@@ -50,7 +50,7 @@ export function ManageEmployee() {
         visible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
         onEmployeeCreated={() => {
-          refreshFuncionarios(); 
+          refreshUsers(); 
         }}
       />
     </Container>

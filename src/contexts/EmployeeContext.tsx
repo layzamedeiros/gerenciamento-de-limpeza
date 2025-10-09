@@ -1,42 +1,46 @@
 import React, { createContext, useState, useContext, ReactNode, useCallback, useEffect } from 'react';
-import { Funcionario, fetchFuncionarios } from '@services/employee.service';
+import { User, fetchUsers } from '@services/employee.service';
 import { useAuth } from './AuthContext';
 
 interface EmployeeContextData {
-  funcionarios: Funcionario[];
+  users: User[];
   isLoading: boolean;
-  refreshFuncionarios: () => Promise<void>;
+  refreshUsers: () => Promise<void>;
 }
 
 const EmployeeContext = createContext<EmployeeContextData>({} as EmployeeContextData);
 
 function EmployeeProvider({ children }: { children: ReactNode }) {
-  const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { user } = useAuth(); 
-  const refreshFuncionarios = useCallback(async () => {
-    if (!user?.is_staff) {
-      setFuncionarios([]); 
+  const { isAdmin, isAppLoading } = useAuth(); 
+
+  const refreshUsers = useCallback(async () => {
+    if (!isAdmin) {
+      setUsers([]); 
       return;
     }
 
     setIsLoading(true);
     try {
-      const data = await fetchFuncionarios();
-      setFuncionarios(data);
+      const data = await fetchUsers();
+      setUsers(data);
     } catch (error) {
-      console.error("Falha ao carregar funcionários do contexto:", error);
-      setFuncionarios([]); 
+      console.error("Failed to load users in context:", error);
+      setUsers([]); 
     } finally {
       setIsLoading(false);
     }
-  }, [user]); 
+  }, [isAdmin]); 
+
   useEffect(() => {
-    refreshFuncionarios();
-  }, [refreshFuncionarios]);
+    if (!isAppLoading) {
+      refreshUsers();
+    }
+  }, [isAdmin, isAppLoading]);
 
   return (
-    <EmployeeContext.Provider value={{ funcionarios, isLoading, refreshFuncionarios }}>
+    <EmployeeContext.Provider value={{ users, isLoading, refreshUsers }}>
       {children}
     </EmployeeContext.Provider>
   );

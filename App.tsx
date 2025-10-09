@@ -9,8 +9,9 @@ import { Loading } from '@components/Loading';
 import theme from '@theme/index';
 import { Routes } from '@routes/index';
 import { AuthProvider } from '@contexts/AuthContext';
-import { SalasProvider } from '@contexts/RoomsContext';
+import { RoomsProvider } from '@contexts/RoomsContext';
 import { EmployeeProvider } from '@contexts/EmployeeContext';
+import { MenuProvider } from 'react-native-popup-menu';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -28,14 +29,16 @@ export default function App() {
     <SafeAreaProvider>
       <StatusBar style="dark" translucent />
       <ThemeProvider theme={theme}>
-        <AuthProvider>
-          <SalasProvider>
-            <EmployeeProvider>
-              <Routes />
-              <Toast />
-            </EmployeeProvider>
-          </SalasProvider>
-        </AuthProvider>
+        <MenuProvider>
+          <AuthProvider>
+            <RoomsProvider>
+              <EmployeeProvider>
+                <Routes />
+                <Toast />
+              </EmployeeProvider>
+            </RoomsProvider>
+          </AuthProvider>
+        </MenuProvider>
       </ThemeProvider>
     </SafeAreaProvider>
   );

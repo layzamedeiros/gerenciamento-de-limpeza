@@ -1,3 +1,4 @@
+import { SlidersHorizontalIcon } from "phosphor-react-native";
 import { TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import styled, { css } from "styled-components/native";
@@ -32,10 +33,9 @@ export const ButtonText = styled.Text`
   font-size: 16px;
 `;
 
-export const FilterContainer = styled.View` 
+export const FilterContainer = styled.View`
   flex-direction: row;
-  justify-content: center;
-  margin-bottom: 20px; 
+  margin-bottom: 20px;
 `;
 
 export const StyledScroll = styled.ScrollView.attrs(() => ({
@@ -45,3 +45,12 @@ export const StyledScroll = styled.ScrollView.attrs(() => ({
   },
 }))``;
 
+export const FilterButtonSearch = styled.TouchableOpacity`
+  padding: 4px;
+`;
+
+export const FilterIcon = styled(SlidersHorizontalIcon).attrs(({ theme }) => ({
+  size: 24,
+  color: theme.COLORS.PRIMARY,
+  weight: 'bold',
+}))``;

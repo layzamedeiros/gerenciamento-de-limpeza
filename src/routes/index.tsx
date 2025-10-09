@@ -1,5 +1,3 @@
-// src/routes/index.tsx
-
 import 'react-native-reanimated';
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { useTheme } from "styled-components/native";
