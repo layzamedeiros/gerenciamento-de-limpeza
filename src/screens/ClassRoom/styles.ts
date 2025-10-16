@@ -12,7 +12,7 @@ export const Container = styled(SafeAreaView).attrs({
 export const Content = styled.View`
   flex: 1;
   background-color: ${({ theme }) => theme.COLORS.BACKGROUND};
-  padding: 15px 20px 0px 20px;
+  padding: 15px 18px 0px 18px;
 `;
 
 export const Button = styled(TouchableOpacity)`

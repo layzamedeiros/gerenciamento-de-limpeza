@@ -19,7 +19,7 @@ export interface Room {
   ativa: boolean;
 
   responsaveis: string[];
-  status_limpeza: 'Limpa' | 'Em Limpeza' | 'Limpeza Pendente' | 'Limpeza Urgente';
+  status_limpeza: 'Limpa' | 'Em Limpeza' | 'Limpeza Pendente' | 'Suja';
   ultima_limpeza_data_hora: string | null;
   ultima_limpeza_funcionario: string | null;
   detalhes_suja: DirtyRoomReport | null;

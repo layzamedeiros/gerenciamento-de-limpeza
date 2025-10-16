@@ -37,7 +37,7 @@ export function Home() {
 
     const totalSalas = rooms.length;
 
-    const pendentes = rooms.filter(s => s.status_limpeza === 'Limpeza Pendente' || s.status_limpeza === 'Limpeza Urgente').length;
+    const pendentes = rooms.filter(s => s.status_limpeza === 'Limpeza Pendente' || s.status_limpeza === 'Suja').length;
     
     const limpas = rooms.filter(s => s.status_limpeza === 'Limpa').length;
     const progresso = Math.round((limpas / totalSalas) * 100);
