@@ -8,7 +8,7 @@ import {  CardContainer, Title, SubTitle, CardHeader, StatusTag, StatusTagText, 
 import { useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 import api from '@services/api';
-import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
+import { Menu, MenuOption, MenuOptions, MenuTrigger, renderers } from 'react-native-popup-menu';
 
 type Props = {
   room: Room;
@@ -64,6 +64,7 @@ export function CardRoom({ room, isSolicitante = false, isAdmin = false, onEdit,
                   backgroundColor: theme.COLORS.SURFACE,
                   borderRadius: 8,
                   marginTop: 30,
+
                 },
               }}>
                 {isAdmin && (

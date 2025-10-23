@@ -6,7 +6,7 @@ export const Container = styled.View`
   width: 100%;
   flex-direction: row;
   align-items: center;
-  height: 50px;
+  height: 45px;
   margin-bottom: 16px;
   gap: 10px;
 `;
@@ -22,7 +22,7 @@ export const InputContainer = styled.View`
 `;
 
 export const SearchIcon = styled(MagnifyingGlassIcon).attrs(({ theme }) => ({
-  size: 24,
+  size: 20,
   color: theme.COLORS.SUBTITLE,
 }))`
   margin-right: 8px;
@@ -42,7 +42,7 @@ export const FilterButton = styled.TouchableOpacity`
 `;
 
 export const FilterIcon = styled(SlidersHorizontalIcon).attrs(({ theme }) => ({
-  size: 32,
+  size: 30,
   color: theme.COLORS.PRIMARY,
   weight: 'bold',
 }))``;

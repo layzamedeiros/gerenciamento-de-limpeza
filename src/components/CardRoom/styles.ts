@@ -41,6 +41,7 @@ export const StatusTag = styled.View<StatusProps>`
   border-radius: 6px;
   width: 32%;
   align-items: center;
+  margin: auto 4px auto 0;
   background-color: ${({ theme, status }) =>
     status === 'Limpa'
       ? theme.COLORS.GREEN_LIGHT
