@@ -15,9 +15,13 @@ import { SearchBar } from "@components/Search";
 import { useRooms } from "@contexts/RoomsContext";
 import { useAuth } from "@contexts/AuthContext";
 import { Room } from "@services/rooms.service";
+import { CircleButton } from "@components/CircleButton";
+import { PlusCircleIcon } from "phosphor-react-native";
+import { useTheme } from "styled-components/native";
 
 export function ClassRoom() {
   const { isAdmin } = useAuth();
+  const theme = useTheme();
   const { rooms, refreshRooms } = useRooms();
 
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
@@ -116,6 +120,8 @@ export function ClassRoom() {
       >
         Deseja excluir <MessageHighlight>{selectedRoom?.nome_numero}</MessageHighlight>?
       </ConfirmationModal>
+
+      <CircleButton Icon={PlusCircleIcon} iconSize={48} colorIcon={theme.COLORS.WHITE} />
     </Container>
   );
 }

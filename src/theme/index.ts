@@ -15,6 +15,8 @@ export default {
     INFO_LIGHT: "#E6E9EA", 
     BLACK_SHADOW: "rgba(0, 0, 0, 0.09)",
     
+    ACCENT_PRESSING: "#f5c080ff",
+
     TITLE: "#1A1A1A",
     SUBTITLE: "#6B7280",
     BORDER: "#D4D4D8",
