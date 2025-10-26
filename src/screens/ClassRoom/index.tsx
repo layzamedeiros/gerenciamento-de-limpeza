@@ -121,7 +121,12 @@ export function ClassRoom() {
         Deseja excluir <MessageHighlight>{selectedRoom?.nome_numero}</MessageHighlight>?
       </ConfirmationModal>
 
-      <CircleButton Icon={PlusCircleIcon} iconSize={48} colorIcon={theme.COLORS.WHITE} />
+      <CircleButton 
+        Icon={PlusCircleIcon} 
+        iconSize={48} 
+        colorIcon={theme.COLORS.WHITE} 
+        onPress={() => setCreateModalVisible(true)}
+      />
     </Container>
   );
 }

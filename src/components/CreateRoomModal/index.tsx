@@ -9,8 +9,11 @@ import {
   ModalButtons,
   ModalButton,
   ModalButtonText,
+  InputContainer,
+  ExternalInputContainer,
+  InputFlexContainer,
 } from "./styles";
-import { createSala } from "@services/rooms.service";
+import { createRoom } from "@services/rooms.service";
 import Toast from "react-native-toast-message";
 
 type Props = ModalProps & {
@@ -28,7 +31,7 @@ export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
     setNome("");
     setCapacidade("");
     setDescricao("");
-    setLocalizacao("");
+    setLocalizacao("");84994226315
   };
 
   const handleClose = () => {
@@ -52,7 +55,7 @@ export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
     }
     setIsCreating(true);
     try {
-      await createSala({
+      await createRoom({
         nome_numero: nome,
         capacidade: Number(capacidade),
         descricao,
@@ -88,36 +91,65 @@ export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
     <Modal transparent={true} onRequestClose={handleClose} animationType="fade" {...rest}>
       <ModalOverlay>
         <ModalContainer>
-          <ModalTitle>Cadastrar nova sala</ModalTitle>
+          <ModalTitle>Criar nova sala</ModalTitle>
 
-          <TitleInput>Nome / Número</TitleInput>
-          <Input
-            placeholder="Ex: Auditório, Sala 101"
-            value={nome}
-            onChangeText={setNome}
-          />
+          <InputContainer>
+            <TitleInput>Nome*</TitleInput>
+            <Input
+              placeholder="Ex: Auditório, Sala 101"
+              value={nome}
+              onChangeText={setNome}
+            />
+          </InputContainer>
 
-          <TitleInput>Capacidade</TitleInput>
-          <Input
-            placeholder="Ex: 30"
-            value={capacidade}
-            onChangeText={setCapacidade}
-            keyboardType="numeric"
-          />
+          <InputContainer>
+            <TitleInput>Localização*</TitleInput>
+            <Input
+              placeholder="Ex: Bloco B"
+              value={localizacao}
+              onChangeText={setLocalizacao}
+            />
+          </InputContainer>
 
-          <TitleInput>Localização</TitleInput>
-          <Input
-            placeholder="Ex: Bloco B"
-            value={localizacao}
-            onChangeText={setLocalizacao}
-          />
+          <ExternalInputContainer>
+            <InputFlexContainer>
+              <TitleInput>Capacidade*</TitleInput>
+              <Input
+                placeholder="Ex: 30"
+                value={capacidade}
+                onChangeText={setCapacidade}
+                keyboardType="numeric"
+              />
+            </InputFlexContainer>
 
-          <TitleInput>Descrição (Opcional)</TitleInput>
-          <Input
-            placeholder="Ex: Sala com projetor e Notebook"
-            value={descricao}
-            onChangeText={setDescricao}
-          />
+            <InputFlexContainer>
+              <TitleInput>Validade da limpeza</TitleInput>
+                <Input
+                  placeholder="Ex: 4"
+                  value={capacidade}
+                  onChangeText={setCapacidade}
+                  keyboardType="numeric"
+                />
+            </InputFlexContainer>
+          </ExternalInputContainer>
+
+          <InputContainer>
+            <TitleInput>Descrição</TitleInput>
+            <Input
+              placeholder="Ex: Sala com projetor e notebook"
+              value={descricao}
+              onChangeText={setDescricao}
+            />
+
+          </InputContainer>
+          <InputContainer>
+            <TitleInput>Instruções</TitleInput>
+            <Input
+              placeholder="Ex: Desligue os equipamentos"
+              value={descricao}
+              onChangeText={setDescricao}
+            />
+          </InputContainer>
 
           <ModalButtons>
             <ModalButton variant="cancel" onPress={handleClose}>

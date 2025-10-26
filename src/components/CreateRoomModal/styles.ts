@@ -12,14 +12,28 @@ export const ModalContainer = styled.View`
   width: 90%;
   background-color: ${({ theme }) => theme.COLORS.BACKGROUND};
   border-radius: 12px;
-  padding: 24px;
-  align-items: stretch;
+  padding: 22px;
+`;
+
+
+export const InputContainer = styled.View`
+  
+`;
+
+export const InputFlexContainer = styled(InputContainer)`
+  flex: 1;
+`
+
+export const ExternalInputContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
 `;
 
 export const ModalTitle = styled.Text`
   font-size: 20px;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 2px;
   ${({ theme }) => css`
     color: ${theme.COLORS.PRIMARY};
     font-family: ${theme.FONT_FAMILY.BOLD};
@@ -31,7 +45,7 @@ export const TitleInput = styled.Text`
   margin-top: 12px;
   margin-bottom: 6px;
   ${({ theme }) => css`
-    color: ${theme.COLORS.SUBTITLE};
+    color: ${theme.COLORS.TITLE};
     font-family: ${theme.FONT_FAMILY.SEMIBOLD};
   `};
 `;
@@ -39,8 +53,8 @@ export const TitleInput = styled.Text`
 export const Input = styled(TextInput).attrs(({ theme }) => ({
   placeholderTextColor: theme.COLORS.PLACEHOLDER,
 }))`
-  width: 100%;
-  height: 50px;
+  /* width: 100%; */
+  height: 40px;
   background-color: ${({ theme }) => theme.COLORS.WHITE};
   border-radius: 8px; 
   border-width: 1px;
@@ -75,26 +89,31 @@ type ModalButtonProps = {
   variant: 'cancel' | 'success';
 }
 
-export const ModalButton = styled(TouchableOpacity)<ModalButtonProps>`
-  flex: 1;
-  padding: 10px;
-  border-radius: 8px;
-  align-items: center;
-  background-color: ${({ theme, variant }) => variant === 'success' ? theme.COLORS.ACCENT : theme.COLORS.PRIMARY};
-  
-  ${({ variant }) => variant === 'cancel' && css`
-    margin-right: 10px;
+export const ModalButton = styled(TouchableOpacity).attrs({
+  activeOpacity: 0.6
+})<ModalButtonProps>`
+  ${({ theme, variant }) => css`
+    background-color: ${variant === 'success' ? theme.COLORS.PRIMARY : theme.COLORS.WHITE};
+    ${variant === 'cancel' && css`
+      margin-right: 10px;
+    `}
+    ${variant === 'success' && css`
+      margin-left: 10px;
+    `};
+    border-color: ${theme.COLORS.PRIMARY};
   `}
   
-  ${({ variant }) => variant === 'success' && css`
-    margin-left: 10px;
-  `};
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border-width: 1px;
+  align-items: center;
 `;
 
 export const ModalButtonText = styled.Text<ModalButtonProps>`
   font-size: 14px;
-  ${({ theme }) => css`
+  ${({ theme, variant }) => css`
     font-family: ${theme.FONT_FAMILY.SEMIBOLD};
-    color: ${theme.COLORS.WHITE};
+    color: ${variant === "success" ? theme.COLORS.WHITE : theme.COLORS.PRIMARY};
   `};
 `;
