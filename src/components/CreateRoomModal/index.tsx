@@ -16,6 +16,7 @@ import {
 import { createRoom } from "@services/rooms.service";
 import Toast from "react-native-toast-message";
 import { Dropdown } from "@components/Dropdowm";
+import { FormInput } from "@components/FormInput";
 
 type Props = ModalProps & {
   onClose: () => void;
@@ -28,7 +29,7 @@ export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
   const [descricao, setDescricao] = useState("");
   const [localizacao, setLocalizacao] = useState("");
   const [responsableButtonPressed, setResponsableButtonPressed] = useState(false);
-  const responsables = ["Enzo Makenzy", "Layza Kathleen", "Maria Paula", "Enza Makenzy", "Layze Kathleen", "Marie Paula", "Enze Makenzy", "Layzi Kathleen", "Marii Paula", "Enzi Makenzy", "Layzo Kathleen", "Mario Paula"];
+  const responsables = ["Enzo Makenzy", "Layza Kathleen", "Maria Paula"];
 
   function pressResponsableButton() {
     setResponsableButtonPressed(oldValue => {
@@ -104,72 +105,61 @@ export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
         <ModalContainer>
           <ModalTitle>Criar nova sala</ModalTitle>
 
-          <InputContainer>
-            <TitleInput>Nome*</TitleInput>
-            <Input
-              placeholder="Ex: Auditório, Sala 101"
-              value={nome}
-              onChangeText={setNome}
-            />
-          </InputContainer>
+          <FormInput
+            inputName="Nome*"
+            placeholder="Ex: Auditório, Sala 101"
+            value={nome}
+            onChangeText={setNome}
+          />
+  
+          <FormInput
+            inputName="Localização*"
+            placeholder="Ex: Bloco B"
+            value={localizacao}
+            onChangeText={setLocalizacao}
+          />
 
-          <InputContainer>
-            <TitleInput>Localização*</TitleInput>
-            <Input
-              placeholder="Ex: Bloco B"
-              value={localizacao}
-              onChangeText={setLocalizacao}
-            />
-          </InputContainer>
 
           <ExternalInputContainer>
-            <InputFlexContainer>
-              <TitleInput>Capacidade*</TitleInput>
-              <Input
-                placeholder="Ex: 30"
-                value={capacidade}
-                onChangeText={setCapacidade}
-                keyboardType="numeric"
-              />
-            </InputFlexContainer>
+            <FormInput
+              inputName="Capacidade*"
+              placeholder="Ex: 30"
+              value={capacidade}
+              onChangeText={setCapacidade}
+              keyboardType="numeric"
+              flex={1}
+            />
 
-            <InputFlexContainer>
-              <TitleInput>Validade da limpeza</TitleInput>
-                <Input
-                  placeholder="Ex: 4"
-                  value={capacidade}
-                  onChangeText={setCapacidade}
-                  keyboardType="numeric"
-                  />
-            </InputFlexContainer>
+            <FormInput
+              inputName="Validade da limpeza"
+              placeholder="Ex: 4"
+              value={capacidade}
+              onChangeText={setCapacidade}
+              keyboardType="numeric"
+              flex={1}
+            />
           </ExternalInputContainer>
 
-          <InputContainer>
-            <TitleInput>Responsáveis</TitleInput>
-            <Dropdown 
-              pressed={responsableButtonPressed}
-              onPress={pressResponsableButton}
-              content={responsables}
-            />
-          </InputContainer>
+          <Dropdown 
+            dropdownText="Responsáveis"
+            pressed={responsableButtonPressed}
+            onPress={pressResponsableButton}
+            content={responsables}
+          />
 
-          <InputContainer>
-            <TitleInput>Descrição</TitleInput>
-            <Input
-              placeholder="Ex: Sala com projetor e notebook"
-              value={descricao}
-              onChangeText={setDescricao}
-            />
-          </InputContainer>
+          <FormInput
+            inputName="Descrição"
+            placeholder="Ex: Sala com projetor e notebook"
+            value={descricao}
+            onChangeText={setDescricao}
+          />
 
-          <InputContainer>
-            <TitleInput>Instruções</TitleInput>
-            <Input
-              placeholder="Ex: Desligue os equipamentos"
-              value={descricao}
-              onChangeText={setDescricao}
-            />
-          </InputContainer>
+          <FormInput
+            inputName="Instruções"
+            placeholder="Ex: Desligue os equipamentos"
+            value={descricao}
+            onChangeText={setDescricao}
+          />
 
           <ModalButtons>
             <ModalButton variant="cancel" onPress={handleClose}>

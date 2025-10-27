@@ -13,6 +13,7 @@ export const ModalContainer = styled.View`
   background-color: ${({ theme }) => theme.COLORS.BACKGROUND};
   border-radius: 12px;
   padding: 22px;
+  gap: 8px;
 `;
 
 
@@ -82,7 +83,7 @@ export const AdminTitle = styled.Text`
 export const ModalButtons = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  margin-top: 24px;
+  margin-top: 14px;
 `;
 
 type ModalButtonProps = {

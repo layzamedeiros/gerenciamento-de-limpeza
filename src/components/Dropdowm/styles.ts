@@ -15,7 +15,16 @@ export const Container = styled.View`
   flex-direction: column;
   position: relative;
   width: 100%;
+  gap: 3px;
 `;
+
+export const DropdownText = styled.Text`
+  ${({ theme }) => css`
+    font-family: ${theme.FONT_FAMILY.SEMIBOLD};
+    color: ${theme.COLORS.TITLE};
+  `}
+  font-size: 14px;
+`
 
 export const DropdownContainer = styled.Pressable<DropdownContainerProps>`
   ${({ theme, pressed }) => css`
