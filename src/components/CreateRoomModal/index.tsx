@@ -15,6 +15,7 @@ import {
 } from "./styles";
 import { createRoom } from "@services/rooms.service";
 import Toast from "react-native-toast-message";
+import { Dropdown } from "@components/Dropdowm";
 
 type Props = ModalProps & {
   onClose: () => void;
@@ -26,6 +27,16 @@ export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
   const [capacidade, setCapacidade] = useState("");
   const [descricao, setDescricao] = useState("");
   const [localizacao, setLocalizacao] = useState("");
+  const [responsableButtonPressed, setResponsableButtonPressed] = useState(false);
+  const responsables = ["Enzo Makenzy", "Layza Kathleen", "Maria Paula", "Enza Makenzy", "Layze Kathleen", "Marie Paula", "Enze Makenzy", "Layzi Kathleen", "Marii Paula", "Enzi Makenzy", "Layzo Kathleen", "Mario Paula"];
+
+  function pressResponsableButton() {
+    setResponsableButtonPressed(oldValue => {
+      const newValue = !oldValue;
+      console.log(newValue);
+      return newValue;
+    });
+  }
 
   const resetForm = () => {
     setNome("");
@@ -129,9 +140,18 @@ export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
                   value={capacidade}
                   onChangeText={setCapacidade}
                   keyboardType="numeric"
-                />
+                  />
             </InputFlexContainer>
           </ExternalInputContainer>
+
+          <InputContainer>
+            <TitleInput>Responsáveis</TitleInput>
+            <Dropdown 
+              pressed={responsableButtonPressed}
+              onPress={pressResponsableButton}
+              content={responsables}
+            />
+          </InputContainer>
 
           <InputContainer>
             <TitleInput>Descrição</TitleInput>
@@ -140,8 +160,8 @@ export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
               value={descricao}
               onChangeText={setDescricao}
             />
-
           </InputContainer>
+
           <InputContainer>
             <TitleInput>Instruções</TitleInput>
             <Input
