@@ -1,35 +1,60 @@
 import React, { useState } from "react";
-import { Modal, ActivityIndicator, ModalProps } from "react-native";
+import { Modal, ActivityIndicator, ModalProps, ScrollView } from "react-native";
 import {
   ModalOverlay,
   ModalContainer,
   ModalTitle,
-  TitleInput,
-  Input,
   ModalButtons,
   ModalButton,
   ModalButtonText,
-  InputContainer,
-  ExternalInputContainer,
-  InputFlexContainer,
+  ExternalInputContainer
 } from "./styles";
+
 import { createRoom } from "@services/rooms.service";
+
 import Toast from "react-native-toast-message";
+
 import { Dropdown } from "@components/Dropdowm";
 import { FormInput } from "@components/FormInput";
+
+import { useForm, Controller } from "react-hook-form";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 type Props = ModalProps & {
   onClose: () => void;
   onRoomCreated: () => Promise<void>;
 };
+
+const createRoomFormSchema = z.object({
+  nome_numero: z.string().trim().nonempty("Campo obrigatório"),
+  localizacao: z.string().trim().nonempty("Campo obrigatório"),
+  capacidade: z.string().trim().nonempty("Campo obrigatório"),
+  validade_horas: z.string().trim().optional(),
+  responsaveis: z.array(z.string()).optional(),
+  descricao: z.string().trim().optional(),
+  instrucoes: z.string().trim().optional()
+});
+
+type CreateRoomFormData = z.infer<typeof createRoomFormSchema>;
+
 export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
   const [isCreating, setIsCreating] = useState(false);
-  const [nome, setNome] = useState("");
-  const [capacidade, setCapacidade] = useState("");
-  const [descricao, setDescricao] = useState("");
-  const [localizacao, setLocalizacao] = useState("");
   const [responsableButtonPressed, setResponsableButtonPressed] = useState(false);
-  const responsables = ["Enzo Makenzy", "Layza Kathleen", "Maria Paula"];
+  const responsables = ["Enzo Makenzy", "Layza Kathleen", "Maria Paula", "Enza Makenzy", "Layzo Kathleen", "Marie Paula"];
+
+  const { control, handleSubmit, formState: { errors }, reset } = useForm<CreateRoomFormData>({
+    resolver: zodResolver(createRoomFormSchema),
+    defaultValues: {
+      nome_numero: "",
+      localizacao: "",
+      capacidade: "",
+      validade_horas: "",
+      responsaveis: [],
+      descricao: "",
+      instrucoes: ""
+    }
+  })
 
   function pressResponsableButton() {
     setResponsableButtonPressed(oldValue => {
@@ -39,51 +64,39 @@ export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
     });
   }
 
-  const resetForm = () => {
-    setNome("");
-    setCapacidade("");
-    setDescricao("");
-    setLocalizacao("");84994226315
-  };
-
   const handleClose = () => {
-    resetForm();
+    reset();
     onClose();
+    setResponsableButtonPressed(false);
   };
 
-  const handleCreateRoom = async () => {
-    if (!nome.trim() || !capacidade.trim() || !localizacao.trim()) {
-      return Toast.show({
-        type: "error",
-        text1: "Atenção",
-        text1Style: {
-          fontSize: 16,
-        },
-        text2: "Nome, capacidade e localização são obrigatórios.",
-        text2Style: {
-          fontSize: 14,
-        },
-      });
-    }
+  async function handleCreateRoom(data: CreateRoomFormData) {
     setIsCreating(true);
+
     try {
-      await createRoom({
-        nome_numero: nome,
-        capacidade: Number(capacidade),
-        descricao,
-        localizacao,
-      });
-      Toast.show({
-        type: "success",
-        text1: "Sucesso",
-        text1Style: {
-          fontSize: 16,
-        },
-        text2: "Sala cadastrada com sucesso!",
-        text2Style: {
-          fontSize: 12,
-        },
-      });
+      const formData = new FormData();
+
+      formData.append('nome_numero', data.nome_numero);
+      formData.append('localizacao', data.localizacao);
+      formData.append('capacidade', data.capacidade);
+      
+      if (data.validade_horas) {
+        formData.append('validade_horas', data.validade_horas);
+      }
+      if (data.descricao) {
+        formData.append('descricao', data.descricao);
+      }
+      if (data.instrucoes) {
+        formData.append('instrucoes', data.instrucoes);
+      }
+
+      if (data.responsaveis && data.responsaveis.length > 0) {
+        data.responsaveis.forEach(responsavel => {
+          formData.append('responsaveis', responsavel);
+        });
+      }
+      
+      console.log("Enviando para a API:", formData); 
       onRoomCreated();
       handleClose();
     } catch (error: any) {
@@ -101,73 +114,137 @@ export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
 
   return (
     <Modal transparent={true} onRequestClose={handleClose} animationType="fade" {...rest}>
-      <ModalOverlay>
+      <ModalOverlay onPress={() => setResponsableButtonPressed(false)}>
         <ModalContainer>
           <ModalTitle>Criar nova sala</ModalTitle>
 
-          <FormInput
-            inputName="Nome*"
-            placeholder="Ex: Auditório, Sala 101"
-            value={nome}
-            onChangeText={setNome}
+          <ScrollView 
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ gap: 8, flexDirection: "column" }}
+          >
+          <Controller 
+            control={control}
+            name="nome_numero"
+            render={({ field: { onChange, value } }) => (
+              <FormInput
+                inputName="Nome*"
+                placeholder="Ex: Auditório, Sala 101"
+                value={value}
+                onChangeText={onChange}
+                errorMessage={errors.nome_numero?.message}
+                onFocus={() => setResponsableButtonPressed(false)}
+              />
+            )}
+          />
+
+          <Controller 
+            control={control}
+            name="localizacao"
+            render={({ field: { onChange, value } }) => (
+              <FormInput
+                inputName="Localização*"
+                placeholder="Ex: Bloco B"
+                value={value}
+                onChangeText={onChange}
+                errorMessage={errors.localizacao?.message}
+                onFocus={() => setResponsableButtonPressed(false)}
+              />
+            )}
           />
   
-          <FormInput
-            inputName="Localização*"
-            placeholder="Ex: Bloco B"
-            value={localizacao}
-            onChangeText={setLocalizacao}
-          />
-
 
           <ExternalInputContainer>
-            <FormInput
-              inputName="Capacidade*"
-              placeholder="Ex: 30"
-              value={capacidade}
-              onChangeText={setCapacidade}
-              keyboardType="numeric"
-              flex={1}
+            <Controller 
+              control={control}
+              name="capacidade"
+              render={({ field: { onChange, value } }) => (
+                <FormInput
+                  inputName="Capacidade*"
+                  placeholder="Ex: 30"
+                  value={value}
+                  onChangeText={onChange}
+                  keyboardType="numeric"
+                  flex={1}
+                  errorMessage={errors.capacidade?.message}
+                  onFocus={() => setResponsableButtonPressed(false)}
+                />
+              )}
             />
 
-            <FormInput
-              inputName="Validade da limpeza"
-              placeholder="Ex: 4"
-              value={capacidade}
-              onChangeText={setCapacidade}
-              keyboardType="numeric"
-              flex={1}
+            <Controller 
+              control={control}
+              name="validade_horas"
+              render={({ field: { onChange, value } }) => (
+                <FormInput
+                  inputName="Validade da limpeza"
+                  placeholder="Ex: 4"
+                  value={value}
+                  onChangeText={onChange}
+                  keyboardType="numeric"
+                  flex={1}
+                  errorMessage={errors.validade_horas?.message}
+                  style={errors.capacidade?.message ? { marginBottom: 19 } : { }}
+                  onFocus={() => setResponsableButtonPressed(false)}
+                />
+              )}
             />
           </ExternalInputContainer>
 
-          <Dropdown 
-            dropdownText="Responsáveis"
-            pressed={responsableButtonPressed}
-            onPress={pressResponsableButton}
-            content={responsables}
+          <Controller
+            control={control}
+            name="responsaveis"
+            render={({ field: { onChange, value } }) => (
+              <Dropdown 
+                dropdownText="Responsáveis"
+                pressed={responsableButtonPressed}
+                onPress={pressResponsableButton}
+                content={responsables}
+                value={value || []}
+                onChange={onChange}
+                errorMessage={errors.responsaveis?.message}
+                onFocus={() => setResponsableButtonPressed(false)}
+              />
+            )}
           />
 
-          <FormInput
-            inputName="Descrição"
-            placeholder="Ex: Sala com projetor e notebook"
-            value={descricao}
-            onChangeText={setDescricao}
+          <Controller 
+            control={control}
+            name="descricao"
+            render={({ field: { onChange, value } }) => (
+              <FormInput
+                inputName="Descrição"
+                placeholder="Ex: Sala com projetor e notebook"
+                value={value}
+                onChangeText={onChange}
+                errorMessage={errors.descricao?.message}
+                onFocus={() => setResponsableButtonPressed(false)}
+              />
+            )}
           />
 
-          <FormInput
-            inputName="Instruções"
-            placeholder="Ex: Desligue os equipamentos"
-            value={descricao}
-            onChangeText={setDescricao}
+          <Controller 
+            control={control}
+            name="instrucoes"
+            render={({ field: { onChange, value } }) => (
+              <FormInput
+                inputName="Instruções"
+                placeholder="Ex: Desligue os equipamentos"
+                value={value}
+                onChangeText={onChange}
+                errorMessage={errors.instrucoes?.message}
+                onFocus={() => setResponsableButtonPressed(false)}
+              />
+            )}
           />
 
+          </ScrollView>
           <ModalButtons>
             <ModalButton variant="cancel" onPress={handleClose}>
               <ModalButtonText variant="cancel">Cancelar</ModalButtonText>
             </ModalButton>
             <ModalButton
               variant="success"
-              onPress={handleCreateRoom}
+              onPress={handleSubmit(handleCreateRoom)}
               disabled={isCreating}
             >
               {isCreating ? (

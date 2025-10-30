@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components/native';
-import { TouchableOpacity, TextInput } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 
-export const ModalOverlay = styled.View`
+export const ModalOverlay = styled.Pressable`
   flex: 1;
   justify-content: center;
   align-items: center;
@@ -10,20 +10,12 @@ export const ModalOverlay = styled.View`
 
 export const ModalContainer = styled.View`
   width: 90%;
+  max-height: 85%;
   background-color: ${({ theme }) => theme.COLORS.BACKGROUND};
   border-radius: 12px;
   padding: 22px;
   gap: 8px;
 `;
-
-
-export const InputContainer = styled.View`
-  
-`;
-
-export const InputFlexContainer = styled(InputContainer)`
-  flex: 1;
-`
 
 export const ExternalInputContainer = styled.View`
   flex-direction: row;
@@ -39,30 +31,6 @@ export const ModalTitle = styled.Text`
     color: ${theme.COLORS.PRIMARY};
     font-family: ${theme.FONT_FAMILY.BOLD};
   `};
-`;
-
-export const TitleInput = styled.Text`
-  font-size: 14px;
-  margin-top: 12px;
-  margin-bottom: 6px;
-  ${({ theme }) => css`
-    color: ${theme.COLORS.TITLE};
-    font-family: ${theme.FONT_FAMILY.SEMIBOLD};
-  `};
-`;
-
-export const Input = styled(TextInput).attrs(({ theme }) => ({
-  placeholderTextColor: theme.COLORS.PLACEHOLDER,
-}))`
-  /* width: 100%; */
-  height: 40px;
-  background-color: ${({ theme }) => theme.COLORS.WHITE};
-  border-radius: 8px; 
-  border-width: 1px;
-  border-color: ${({ theme }) => theme.COLORS.BORDER};
-  padding: 0 15px;
-  font-size: 14px;
-  color: ${({ theme }) => theme.COLORS.TITLE};
 `;
 
 export const AdminContainer = styled.View`
@@ -117,4 +85,13 @@ export const ModalButtonText = styled.Text<ModalButtonProps>`
     font-family: ${theme.FONT_FAMILY.SEMIBOLD};
     color: ${variant === "success" ? theme.COLORS.WHITE : theme.COLORS.PRIMARY};
   `};
+`;
+
+export const ErrorCapacity = styled.Text`
+  ${({ theme }) => css`
+    font-family: ${theme.FONT_FAMILY.REGULAR};
+    color: ${theme.COLORS.DANGER};
+  `}
+  font-size: 12px;
+  margin-left: 8px;
 `;

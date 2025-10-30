@@ -1,40 +1,61 @@
 import { TouchableOpacityProps } from "react-native";
 import { ArrowDown, ArrowUp, Container, DropdownContainer, DropdownItemContainer, DropdownText, ListContainer, TextDropdown, TextDropdownPlaceholder } from "./styles";
-import { FlatList } from "react-native";
-import { useTheme } from "styled-components/native";
-
-// Container externo para abrigar todos, um fixo em cima, e abaixo dele uma flatlist que vai renderizar uma lista das opcoes com base no array de items que receber
 
 type Props = TouchableOpacityProps & {
   dropdownText?: string
   content: string[];
   pressed: boolean;
+  errorMessage?: string;
+  value?: string[];
+  onChange: (newValue: string[]) => void;
 }
 
-export function Dropdown({ dropdownText, content, pressed, ...rest }: Props) {
+export function Dropdown({ dropdownText, content, pressed, errorMessage, value = [], onChange, ...rest }: Props) {
+  const isInvalid = !!errorMessage;
+
+  function handleSelectItem(item: string) {
+    const isSelected = value.includes(item);
+    let newSelected: string[];
+
+    if (isSelected) {
+      newSelected = value.filter(selectedItem => selectedItem !== item);
+    } else {
+      newSelected = [...value, item];
+    }
+
+    onChange(newSelected);
+  }  
+
+  const displayText = value.length > 0 ? value.join(', ') : "Selecionar zeladores";
+
   return (
     <Container>
       { dropdownText && <DropdownText>{dropdownText}</DropdownText>}
 
-      <DropdownContainer pressed={pressed} {...rest}>
-        <TextDropdownPlaceholder>Selecionar zeladores</TextDropdownPlaceholder>
+      <DropdownContainer isInvalid={isInvalid} pressed={pressed} {...rest}>
+        <TextDropdownPlaceholder>{displayText}</TextDropdownPlaceholder>
 
-        { pressed ?
-            <ArrowUp />
-          :
-            <ArrowDown />
-        }
+        { pressed ? <ArrowUp /> : <ArrowDown /> }
       </DropdownContainer>
 
       { pressed &&
           <ListContainer
             data={content}
             keyExtractor={item => item as string}
-            renderItem={({ item , index }) => (
-              <DropdownItemContainer index={index} lenght={content.length}>
+            renderItem={({ item , index }) => {
+              const isItemSelected = value.includes(item);
+
+              return (
+              <DropdownItemContainer 
+                index={index} 
+                lenght={content.length} 
+                onPress={() =>  handleSelectItem(item)} 
+                style={{ backgroundColor: isItemSelected ? '#e0e0e0' : 'transparent' }
+              }>
                 <TextDropdown>{item}</TextDropdown>
               </DropdownItemContainer>
-            )}
+              )
+            }}
             showsVerticalScrollIndicator={false}
           />
       }

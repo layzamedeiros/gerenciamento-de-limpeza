@@ -4,6 +4,7 @@ import { FlatList } from "react-native";
 
 type DropdownContainerProps = {
   pressed: boolean;
+  isInvalid: boolean;
 }
 
 type DropdownItemContainerProps = {
@@ -27,9 +28,9 @@ export const DropdownText = styled.Text`
 `
 
 export const DropdownContainer = styled.Pressable<DropdownContainerProps>`
-  ${({ theme, pressed }) => css`
+  ${({ theme, pressed, isInvalid }) => css`
     background-color: ${theme.COLORS.WHITE};
-    border-color: ${theme.COLORS.BORDER};
+    border-color: ${isInvalid ? theme.COLORS.DANGER : theme.COLORS.BORDER};
     
     border-bottom-width: 1px;
 
@@ -54,6 +55,7 @@ export const TextDropdown = styled.Text`
     color: ${theme.COLORS.TITLE};
   `}
   font-size: 14px;
+  max-width: 90%;
 `;
 
 export const TextDropdownPlaceholder = styled(TextDropdown)`
