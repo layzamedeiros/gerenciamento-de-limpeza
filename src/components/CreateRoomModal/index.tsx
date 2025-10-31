@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Modal, ActivityIndicator, ModalProps, ScrollView } from "react-native";
 import {
   ModalOverlay,
@@ -7,7 +7,12 @@ import {
   ModalButtons,
   ModalButton,
   ModalButtonText,
-  ExternalInputContainer
+  ExternalInputContainer,
+  PhotoRoomContainer,
+  PhotoIcon,
+  PhotoText,
+  InputName,
+  AddPhotoRoomContainer
 } from "./styles";
 
 import { createRoom } from "@services/rooms.service";
@@ -20,6 +25,9 @@ import { FormInput } from "@components/FormInput";
 import { useForm, Controller } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import api from "@services/api";
+import { fetchUsers, User } from "@services/employee.service";
+import { useFocusEffect } from "@react-navigation/native";
 
 type Props = ModalProps & {
   onClose: () => void;
@@ -36,12 +44,13 @@ const createRoomFormSchema = z.object({
   instrucoes: z.string().trim().optional()
 });
 
-type CreateRoomFormData = z.infer<typeof createRoomFormSchema>;
+export type CreateRoomFormData = z.infer<typeof createRoomFormSchema>;
 
 export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
   const [isCreating, setIsCreating] = useState(false);
   const [responsableButtonPressed, setResponsableButtonPressed] = useState(false);
-  const responsables = ["Enzo Makenzy", "Layza Kathleen", "Maria Paula", "Enza Makenzy", "Layzo Kathleen", "Marie Paula"];
+  const [ responsables, setResponsables ] = useState<User[]>({} as User[]);
+  const [photo, setPhoto] = useState(false);
 
   const { control, handleSubmit, formState: { errors }, reset } = useForm<CreateRoomFormData>({
     resolver: zodResolver(createRoomFormSchema),
@@ -70,33 +79,40 @@ export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
     setResponsableButtonPressed(false);
   };
 
+  async function getEmplooyes() {
+    try {
+      const data = await fetchUsers("group", "zeladoria");
+
+      setResponsables(data);
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.nome_numero?.[0] || "Não foi possível resgatar os zeladores";
+      Toast.show({
+        type: "error",
+        text1: "Erro no Cadastro",
+        text2: errorMessage,
+      });
+    }
+  }
+
   async function handleCreateRoom(data: CreateRoomFormData) {
     setIsCreating(true);
 
     try {
-      const formData = new FormData();
+      createRoom(data);
 
-      formData.append('nome_numero', data.nome_numero);
-      formData.append('localizacao', data.localizacao);
-      formData.append('capacidade', data.capacidade);
+      Toast.show({
+        type: "success",
+        text1: "Sucesso",
+        text1Style: {
+          fontSize: 16,
+        },
+        text2: "Sala cadastrada com sucesso!",
+        text2Style: {
+          fontSize: 12,
+        },
+      });
       
-      if (data.validade_horas) {
-        formData.append('validade_horas', data.validade_horas);
-      }
-      if (data.descricao) {
-        formData.append('descricao', data.descricao);
-      }
-      if (data.instrucoes) {
-        formData.append('instrucoes', data.instrucoes);
-      }
-
-      if (data.responsaveis && data.responsaveis.length > 0) {
-        data.responsaveis.forEach(responsavel => {
-          formData.append('responsaveis', responsavel);
-        });
-      }
-      
-      console.log("Enviando para a API:", formData); 
       onRoomCreated();
       handleClose();
     } catch (error: any) {
@@ -111,6 +127,12 @@ export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
       setIsCreating(false);
     }
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      getEmplooyes()
+    }, [])
+  )
 
   return (
     <Modal transparent={true} onRequestClose={handleClose} animationType="fade" {...rest}>
@@ -207,6 +229,20 @@ export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
               />
             )}
           />
+
+          <PhotoRoomContainer>
+            <InputName>Foto da sala</InputName>
+            <AddPhotoRoomContainer>
+              { photo ?
+                  <></>
+                :
+                  <>
+                  <PhotoIcon />
+                  <PhotoText>Adicionar imagem da sala</PhotoText>
+                  </>
+              }
+            </AddPhotoRoomContainer>
+          </PhotoRoomContainer>
 
           <Controller 
             control={control}

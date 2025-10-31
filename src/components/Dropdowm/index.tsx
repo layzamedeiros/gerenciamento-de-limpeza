@@ -1,9 +1,10 @@
 import { TouchableOpacityProps } from "react-native";
 import { ArrowDown, ArrowUp, Container, DropdownContainer, DropdownItemContainer, DropdownText, ListContainer, TextDropdown, TextDropdownPlaceholder } from "./styles";
+import { User } from "@services/employee.service";
 
 type Props = TouchableOpacityProps & {
   dropdownText?: string
-  content: string[];
+  content: User[];
   pressed: boolean;
   errorMessage?: string;
   value?: string[];
@@ -45,17 +46,17 @@ export function Dropdown({ dropdownText, content, pressed, errorMessage, value =
             showsVerticalScrollIndicator={false}
           >
             {content.map((item, index) => {
-              const isItemSelected = value.includes(item);
+              const isItemSelected = value.includes(item.username);
 
               return (
                 <DropdownItemContainer 
-                  key={item}
+                  key={item.username}
                   index={index} 
                   lenght={content.length}
-                  onPress={() => handleSelectItem(item)} 
+                  onPress={() => handleSelectItem(item.username)} 
                   style={{ backgroundColor: isItemSelected ? '#e0e0e0' : 'transparent' }} 
                 >
-                  <TextDropdown>{item}</TextDropdown>
+                  <TextDropdown>{item.username}</TextDropdown>
                 </DropdownItemContainer>
               );
             })}

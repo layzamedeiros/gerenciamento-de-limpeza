@@ -27,9 +27,16 @@ export interface CreateUserData {
   is_superuser?: boolean;
 }
 
-export const fetchUsers = async (): Promise<User[]> => {
+export const fetchUsers = async (key: string, value: string): Promise<User[]> => {
   try {
-    const response = await api.get('/accounts/list_users/');
+    let response: any;
+
+    if (key && value) {
+      response = await api.get(`/accounts/list_users/?${key}=${value}`);
+    } else {
+      response = await api.get('/accounts/list_users/');
+    }
+
     return response.data;
   } catch (error) {
     console.error("Failed to fetch users:", error); 

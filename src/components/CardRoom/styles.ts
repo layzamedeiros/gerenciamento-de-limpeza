@@ -18,6 +18,7 @@ export const CardHeader = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: flex-start;
+  gap: 5px;
   margin-bottom: 8px;
 `;
 
@@ -34,6 +35,7 @@ export const Title = styled.Text`
     color: ${theme.COLORS.TITLE};
     font-family: ${theme.FONT_FAMILY.SEMIBOLD};
   `};
+  width: 1000px;
 `;
 
 export const StatusTag = styled.View<StatusProps>`
@@ -41,7 +43,7 @@ export const StatusTag = styled.View<StatusProps>`
   border-radius: 6px;
   width: 32%;
   align-items: center;
-  margin: auto 4px auto 0;
+  margin: 2px 0px 0 0;
   background-color: ${({ theme, status }) =>
     status === 'Limpa'
       ? theme.COLORS.GREEN_LIGHT

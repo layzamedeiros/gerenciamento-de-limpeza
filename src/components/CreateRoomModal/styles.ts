@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components/native';
 import { TouchableOpacity } from 'react-native';
+import { CameraPlusIcon } from 'phosphor-react-native';
 
 export const ModalOverlay = styled.Pressable`
   flex: 1;
@@ -95,3 +96,41 @@ export const ErrorCapacity = styled.Text`
   font-size: 12px;
   margin-left: 8px;
 `;
+
+export const PhotoRoomContainer = styled.View`
+  flex-direction: column;
+  gap: 3px;
+`
+
+export const InputName = styled.Text`
+  ${({ theme }) => css`
+    font-family: ${theme.FONT_FAMILY.SEMIBOLD};
+    color: ${theme.COLORS.TITLE};
+  `}
+  font-size: 14px;
+`
+
+export const AddPhotoRoomContainer = styled.Pressable`
+  flex-direction: row;
+  border-width: 1px;
+  border-color: ${({ theme }) => theme.COLORS.BORDER};
+  border-style: dotted;
+  border-radius: 8px;
+  padding: 0 5px;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+`;
+
+export const PhotoIcon = styled(CameraPlusIcon).attrs(({ theme }) => ({
+  size: 24,
+  color: theme.COLORS.TITLE
+}))``;
+
+export const PhotoText = styled.Text`
+  ${({ theme }) => css`
+    font-family: ${theme.FONT_FAMILY.REGULAR};
+    color: ${theme.COLORS.TITLE};
+  `}
+`

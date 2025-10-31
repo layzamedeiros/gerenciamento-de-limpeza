@@ -1,4 +1,5 @@
 import api from './api';
+import { CreateRoomFormData } from '@components/CreateRoomModal';
 
 export interface DirtyRoomReport {
   data_hora: string;
@@ -67,19 +68,28 @@ export const fetchCleaningHistory = async (): Promise<CleaningRecord[]> => {
   }
 };
 
-export const createRoom = async (data: CreateRoomData) => {
+export const createRoom = async (data: CreateRoomFormData) => {
   const formData = new FormData();
 
-  Object.keys(data).forEach(key => {
-    const value = (data as any)[key];
-    if (value !== undefined) {
-      if (key === 'responsaveis' && Array.isArray(value)) {
-        value.forEach(respId => formData.append('responsaveis', respId.toString()));
-      } else {
-        formData.append(key, value);
-      }
-    }
-  });
+  formData.append('nome_numero', data.nome_numero);
+  formData.append('localizacao', data.localizacao);
+  formData.append('capacidade', data.capacidade);
+  
+  if (data.validade_horas) {
+    formData.append('validade_horas', data.validade_horas);
+  }
+  if (data.descricao) {
+    formData.append('descricao', data.descricao);
+  }
+  if (data.instrucoes) {
+    formData.append('instrucoes', data.instrucoes);
+  }
+
+  if (data.responsaveis && data.responsaveis.length > 0) {
+    data.responsaveis.forEach(responsavel => {
+      formData.append('responsaveis', responsavel);
+    });
+  }
 
   try {
     const response = await api.post('/salas/', formData, {
