@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components/native";
 import { CaretDownIcon, CaretUpIcon } from "phosphor-react-native";
-import { FlatList } from "react-native";
+import { FlatList, ScrollView } from "react-native";
 
 type DropdownContainerProps = {
   pressed: boolean;
@@ -74,7 +74,7 @@ export const ArrowUp = styled(CaretUpIcon).attrs(({ theme }) => ({
   weight: "bold"
 }))``;
 
-export const ListContainer = styled(FlatList<string>)`
+export const ListContainer = styled.ScrollView`
   position: absolute;
   top: 100%;
   left: 0;
@@ -88,7 +88,7 @@ export const ListContainer = styled(FlatList<string>)`
   border-bottom-left-radius: 8px;
   
   z-index: 10;
-  max-height: 200px;
+  max-height: 130px;
   
   ${({ theme }) => css`
     border-color: ${theme.COLORS.BORDER};

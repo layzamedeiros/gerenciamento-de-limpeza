@@ -40,24 +40,27 @@ export function Dropdown({ dropdownText, content, pressed, errorMessage, value =
 
       { pressed &&
           <ListContainer
-            data={content}
-            keyExtractor={item => item as string}
-            renderItem={({ item , index }) => {
+            style={{ zIndex: 100 }} 
+            nestedScrollEnabled={true}
+            showsVerticalScrollIndicator={false}
+          >
+            {content.map((item, index) => {
               const isItemSelected = value.includes(item);
 
               return (
-              <DropdownItemContainer 
-                index={index} 
-                lenght={content.length} 
-                onPress={() =>  handleSelectItem(item)} 
-                style={{ backgroundColor: isItemSelected ? '#e0e0e0' : 'transparent' }
-              }>
-                <TextDropdown>{item}</TextDropdown>
-              </DropdownItemContainer>
-              )
-            }}
-            showsVerticalScrollIndicator={false}
-          />
+                <DropdownItemContainer 
+                  key={item}
+                  index={index} 
+                  lenght={content.length}
+                  onPress={() => handleSelectItem(item)} 
+                  style={{ backgroundColor: isItemSelected ? '#e0e0e0' : 'transparent' }} 
+                >
+                  <TextDropdown>{item}</TextDropdown>
+                </DropdownItemContainer>
+              );
+            })}
+
+          </ListContainer>
       }
     </Container>
   );

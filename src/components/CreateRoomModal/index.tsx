@@ -119,6 +119,7 @@ export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
           <ModalTitle>Criar nova sala</ModalTitle>
 
           <ScrollView 
+            nestedScrollEnabled
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ gap: 8, flexDirection: "column" }}
           >
