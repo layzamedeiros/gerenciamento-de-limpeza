@@ -1,4 +1,4 @@
-import api from './api';
+import api from "./api";
 
 export interface Group {
   id: number;
@@ -27,14 +27,14 @@ export interface CreateUserData {
   is_superuser?: boolean;
 }
 
-export const fetchUsers = async (key: string, value: string): Promise<User[]> => {
+export const fetchUsers = async (key?: string, value?: string): Promise<User[]> => {
   try {
     let response: any;
 
     if (key && value) {
       response = await api.get(`/accounts/list_users/?${key}=${value}`);
     } else {
-      response = await api.get('/accounts/list_users/');
+      response = await api.get("/accounts/list_users/");
     }
 
     return response.data;
@@ -46,7 +46,7 @@ export const fetchUsers = async (key: string, value: string): Promise<User[]> =>
 
 export const createUser = async (data: CreateUserData): Promise<{ user: User }> => {
   try {
-    const response = await api.post('/accounts/create_user/', data);
+    const response = await api.post("/accounts/create_user/", data);
     return response.data;
   } catch (error) {
     console.error("Failed to create user:", error); 
@@ -56,7 +56,7 @@ export const createUser = async (data: CreateUserData): Promise<{ user: User }> 
 
 export const fetchGroups = async (): Promise<Group[]> => {
   try {
-    const response = await api.get('/accounts/list_groups/');
+    const response = await api.get("/accounts/list_groups/");
     return response.data;
   } catch (error) {
     console.error("Failed to fetch groups:", error);

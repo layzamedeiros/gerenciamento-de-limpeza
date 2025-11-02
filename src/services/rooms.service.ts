@@ -1,5 +1,5 @@
-import api from './api';
-import { CreateRoomFormData } from '@components/CreateRoomModal';
+import api from "./api";
+import { CreateRoomFormData } from "@components/CreateRoomModal";
 
 export interface DirtyRoomReport {
   data_hora: string;
@@ -20,7 +20,7 @@ export interface Room {
   ativa: boolean;
 
   responsaveis: string[];
-  status_limpeza: 'Limpa' | 'Em Limpeza' | 'Limpeza Pendente' | 'Suja';
+  status_limpeza: "Limpa" | "Em Limpeza" | "Limpeza Pendente" | "Suja";
   ultima_limpeza_data_hora: string | null;
   ultima_limpeza_funcionario: string | null;
   detalhes_suja: DirtyRoomReport | null;
@@ -50,7 +50,7 @@ export interface CleaningRecord {
 
 export const fetchRooms = async (): Promise<Room[]> => {
   try {
-    const response = await api.get('/salas/');
+    const response = await api.get("/salas/");
     return response.data;
   } catch (error) {
     console.error("Failed to fetch rooms:", error);
@@ -60,7 +60,7 @@ export const fetchRooms = async (): Promise<Room[]> => {
 
 export const fetchCleaningHistory = async (): Promise<CleaningRecord[]> => {
   try {
-    const response = await api.get('/limpezas/');
+    const response = await api.get("/limpezas/");
     return response.data;
   } catch (error) {
     console.error("Failed to fetch cleaning history:", error);
@@ -71,29 +71,29 @@ export const fetchCleaningHistory = async (): Promise<CleaningRecord[]> => {
 export const createRoom = async (data: CreateRoomFormData) => {
   const formData = new FormData();
 
-  formData.append('nome_numero', data.nome_numero);
-  formData.append('localizacao', data.localizacao);
-  formData.append('capacidade', data.capacidade);
+  formData.append("nome_numero", data.nome_numero);
+  formData.append("localizacao", data.localizacao);
+  formData.append("capacidade", data.capacidade);
   
   if (data.validade_horas) {
-    formData.append('validade_horas', data.validade_horas);
+    formData.append("validade_horas", data.validade_horas);
   }
   if (data.descricao) {
-    formData.append('descricao', data.descricao);
+    formData.append("descricao", data.descricao);
   }
   if (data.instrucoes) {
-    formData.append('instrucoes', data.instrucoes);
+    formData.append("instrucoes", data.instrucoes);
   }
 
   if (data.responsaveis && data.responsaveis.length > 0) {
     data.responsaveis.forEach(responsavel => {
-      formData.append('responsaveis', responsavel);
+      formData.append("responsaveis", responsavel);
     });
   }
 
   try {
-    const response = await api.post('/salas/', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+    const response = await api.post("/salas/", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
     });
     return response.data;
   } catch (error) {
@@ -107,8 +107,8 @@ export const updateRoom = async (qr_code_id: string, data: Partial<CreateRoomDat
   Object.keys(data).forEach(key => {
     const value = (data as any)[key];
     if (value !== undefined) {
-      if (key === 'responsaveis' && Array.isArray(value)) {
-        value.forEach(respId => formData.append('responsaveis', respId.toString()));
+      if (key === "responsaveis" && Array.isArray(value)) {
+        value.forEach(respId => formData.append("responsaveis", respId.toString()));
       } else {
         formData.append(key, value);
       }
@@ -117,7 +117,7 @@ export const updateRoom = async (qr_code_id: string, data: Partial<CreateRoomDat
 
   try {
     const response = await api.patch(`/salas/${qr_code_id}/`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+      headers: { "Content-Type": "multipart/form-data" },
     });
     return response.data;
   } catch (error) {
@@ -147,15 +147,15 @@ export const startCleaning = async (qr_code_id: string) => {
 
 export const addCleaningPhoto = async (cleaningRecordId: number, imageUri: string) => {
   const formData = new FormData();
-  const fileName = imageUri.split('/').pop() || 'photo.jpg';
-  const fileType = `image/${fileName.split('.').pop()?.toLowerCase()}`;
+  const fileName = imageUri.split("/").pop() || "photo.jpg";
+  const fileType = `image/${fileName.split(".").pop()?.toLowerCase()}`;
 
-  formData.append('registro_limpeza', cleaningRecordId.toString());
-  formData.append('imagem', { uri: imageUri, name: fileName, type: fileType } as any);
+  formData.append("registro_limpeza", cleaningRecordId.toString());
+  formData.append("imagem", { uri: imageUri, name: fileName, type: fileType } as any);
   
   try {
-    const response = await api.post('/fotos_limpeza/', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+    const response = await api.post("/fotos_limpeza/", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
     });
     return response.data;
   } catch (error) {

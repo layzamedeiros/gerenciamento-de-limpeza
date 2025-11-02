@@ -89,7 +89,7 @@ export function ClassRoom() {
             <CardRoom
               room={item}
               onEdit={handleEdit}
-              onDelete={handleDelete}
+              onDelete={() => handleDelete(item)}
               onReport={() => {}} 
               isAdmin={isAdmin}
             />
