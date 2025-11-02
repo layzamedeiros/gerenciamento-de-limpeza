@@ -53,7 +53,7 @@ export const fetchRooms = async (): Promise<Room[]> => {
     const response = await api.get("/salas/");
     return response.data;
   } catch (error) {
-    console.error("Failed to fetch rooms:", error);
+    console.log("Failed to fetch rooms:", error);
     throw error;
   }
 };
@@ -63,7 +63,7 @@ export const fetchCleaningHistory = async (): Promise<CleaningRecord[]> => {
     const response = await api.get("/limpezas/");
     return response.data;
   } catch (error) {
-    console.error("Failed to fetch cleaning history:", error);
+    console.log("Failed to fetch cleaning history:", error);
     throw error;
   }
 };
@@ -97,7 +97,7 @@ export const createRoom = async (data: CreateRoomFormData) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Failed to create room:", error);
+    console.log("Failed to create room:", error);
     throw error;
   }
 };
@@ -121,7 +121,7 @@ export const updateRoom = async (qr_code_id: string, data: Partial<CreateRoomDat
     });
     return response.data;
   } catch (error) {
-    console.error(`Failed to update room ${qr_code_id}:`, error);
+    console.log(`Failed to update room ${qr_code_id}:`, error);
     throw error;
   }
 };
@@ -129,8 +129,8 @@ export const updateRoom = async (qr_code_id: string, data: Partial<CreateRoomDat
 export const deleteRoom = async (qr_code_id: string): Promise<void> => {
   try {
     await api.delete(`/salas/${qr_code_id}/`);
-  } catch (error) {
-    console.error(`Failed to delete room ${qr_code_id}:`, error);
+  } catch (error: any) {
+    console.log(`Failed to delete room ${qr_code_id}:`, error.message);
     throw error;
   }
 };
@@ -140,7 +140,7 @@ export const startCleaning = async (qr_code_id: string) => {
     const response = await api.post(`/salas/${qr_code_id}/iniciar_limpeza/`);
     return response.data;
   } catch (error) {
-    console.error(`Failed to start cleaning for room ${qr_code_id}:`, error);
+    console.log(`Failed to start cleaning for room ${qr_code_id}:`, error);
     throw error;
   }
 };
@@ -159,7 +159,7 @@ export const addCleaningPhoto = async (cleaningRecordId: number, imageUri: strin
     });
     return response.data;
   } catch (error) {
-    console.error(`Failed to add photo to cleaning record ${cleaningRecordId}:`, error);
+    console.log(`Failed to add photo to cleaning record ${cleaningRecordId}:`, error);
     throw error;
   }
 };
@@ -169,7 +169,7 @@ export const finishCleaning = async (qr_code_id: string, observacoes?: string) =
     const response = await api.post(`/salas/${qr_code_id}/concluir_limpeza/`, { observacoes });
     return response.data;
   } catch (error) {
-    console.error(`Failed to finish cleaning for room ${qr_code_id}:`, error);
+    console.log(`Failed to finish cleaning for room ${qr_code_id}:`, error);
     throw error;
   }
 };
@@ -179,7 +179,7 @@ export const reportDirtyRoom = async (qr_code_id: string, observacoes?: string) 
         const response = await api.post(`/salas/${qr_code_id}/marcar_como_suja/`, { observacoes });
         return response.data;
     } catch (error) {
-        console.error(`Failed to report dirty room ${qr_code_id}:`, error);
+        console.log(`Failed to report dirty room ${qr_code_id}:`, error);
         throw error;
     }
 };

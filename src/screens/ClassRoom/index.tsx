@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { FlatList } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 
@@ -14,10 +14,12 @@ import { SearchBar } from "@components/Search";
 
 import { useRooms } from "@contexts/RoomsContext";
 import { useAuth } from "@contexts/AuthContext";
-import { Room } from "@services/rooms.service";
+import { deleteRoom, fetchRooms, Room } from "@services/rooms.service";
 import { CircleButton } from "@components/CircleButton";
 import { PlusCircleIcon } from "phosphor-react-native";
 import { useTheme } from "styled-components/native";
+import Toast from "react-native-toast-message";
+import { AppError } from "src/utils/AppError";
 
 export function ClassRoom() {
   const { isAdmin } = useAuth();
@@ -28,7 +30,7 @@ export function ClassRoom() {
   const [isEditModalVisible, setEditModalVisible] = useState(false);
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   
-  const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+  const [selectedRoom, setSelectedRoom] = useState<Room>({} as Room);
   const [activeFilter, setActiveFilter] = useState<FilterStatus>("todas");
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -58,10 +60,49 @@ export function ClassRoom() {
     setEditModalVisible(true);
   };
 
-  const handleDelete = (room: Room) => {
+  const handleOpenDeleteModal =(room: Room) => {
     setSelectedRoom(room);
     setDeleteModalVisible(true);
   };
+
+  const handleDelete = async () => {
+    try {
+      await deleteRoom(selectedRoom.qr_code_id);
+      refreshRooms();
+
+      Toast.show({
+        type: "success",
+        text1: "Sucesso",
+        text1Style: {
+          fontSize: 16,
+        },
+        text2: "Sala apagada com sucesso!",
+        text2Style: {
+          fontSize: 12,
+        },
+      });
+
+      setDeleteModalVisible(false);
+    } catch (error) {
+      setDeleteModalVisible(false);
+      const isAppError = error instanceof AppError;
+      const errorMessage = isAppError ? error.message : "Não foi possível deletar a sala";
+
+      if (errorMessage !== "Token inválido.") {
+        Toast.show({
+          type: "error",
+          text1: "Erro",
+          text2: errorMessage,
+          text1Style: {
+            fontSize: 18
+          },
+          text2Style: {
+            fontSize: 16
+          }
+        });
+      }
+    } 
+  }
 
   const handleFilterPress = () => {
     console.log("Filtros avançados clicado");
@@ -89,7 +130,7 @@ export function ClassRoom() {
             <CardRoom
               room={item}
               onEdit={handleEdit}
-              onDelete={() => handleDelete(item)}
+              onDelete={() => handleOpenDeleteModal(item)}
               onReport={() => {}} 
               isAdmin={isAdmin}
             />
@@ -115,7 +156,7 @@ export function ClassRoom() {
       <ConfirmationModal
         visible={isDeleteModalVisible}
         onClose={() => setDeleteModalVisible(false)}
-        onConfirm={() => console.log("Confirmar exclusão")} 
+        onConfirm={handleDelete} 
         title="Excluir sala"
       >
         Deseja excluir <MessageHighlight>{selectedRoom?.nome_numero}</MessageHighlight>?
