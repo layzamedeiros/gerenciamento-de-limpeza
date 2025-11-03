@@ -4,7 +4,7 @@ import styled, { css } from "styled-components/native";
 
 export const Container = styled(SafeAreaView)`
   flex: 1;
-  background-color: ${({ theme }) => theme.COLORS.BACKGROUND};
+  background-color: ${({ theme }) => theme.COLORS.WHITE};
 `;
 
 export const Content = styled.View`
@@ -21,7 +21,7 @@ export const AvatarPlaceholder = styled.View`
   justify-content: center;
   align-items: center;
   margin-top: 30px;
-  margin-bottom: 22px;
+  margin-bottom: 2%;
 `;
 
 export const UserName = styled.Text`
@@ -38,27 +38,33 @@ export const UserEmail = styled.Text`
     color: ${theme.COLORS.PLACEHOLDER};
     font-family: ${theme.FONT_FAMILY.REGULAR};
   `}
-  margin-bottom: 20px;
+  margin-bottom: 1%;
 `;
 
-export const Divider = styled.View`
-  width: 100%;                         
-  height: 1px;                         
-  background-color: ${({ theme }) => theme.COLORS.BORDER};       
-  margin-bottom: 32px;    
+export const UserRole = styled.Text`
+  font-size: 14px;
+  ${({ theme }) => css`
+    color: ${theme.COLORS.PLACEHOLDER};
+    font-family: ${theme.FONT_FAMILY.REGULAR};
+  `}
+  margin-bottom: 15%;
 `;
 
-export const Button = styled(TouchableOpacity)`
-  width: 100%;
+export const AccountButton = styled(TouchableOpacity)`
+  width: 105%;
   min-height: 50px;
   background-color: ${({ theme }) => theme.COLORS.PRIMARY};
   border-radius: 8px;
-  justify-content: center;
   align-items: center;
   padding: 10px;
+  margin-bottom: 2%;
+  flex-direction: row;
+  justify-content: space-between;
+  border: 0.8px;
+  border-color: ${({ theme }) => theme.COLORS.GREY};
 `;
 
-export const ButtonText = styled.Text`
+export const AccountButtonText = styled.Text`
   ${({ theme }) => css`
     color: ${theme.COLORS.WHITE};
     font-family: ${theme.FONT_FAMILY.SEMIBOLD};
@@ -66,14 +72,39 @@ export const ButtonText = styled.Text`
   font-size: 16px;
 `;
 
-export const LogoutButton = styled(TouchableOpacity)`
-  width: 100%;
+export const PasswordButton = styled(TouchableOpacity)`
+  width: 105%;
   min-height: 50px;
-  flex-direction: row;
+  background-color: ${({ theme }) => theme.COLORS.BACKGROUND};
+  border-radius: 8px;
   align-items: center;
-  justify-content: center;
-  padding: 14px;
-  margin-top: auto;
+  padding: 10px;
+  margin-bottom: 7%;
+  flex-direction: row;
+  justify-content: space-between;
+  border: 0.8px;
+  border-color: ${({ theme }) => theme.COLORS.GREY};
+`;
+
+export const ButtonText = styled.Text`
+  ${({ theme }) => css`
+    color: ${theme.COLORS.PRIMARY};
+    font-family: ${theme.FONT_FAMILY.SEMIBOLD};
+  `}
+  font-size: 16px;
+`;
+
+export const LogoutButton = styled(TouchableOpacity)`
+  width: 105%;
+  min-height: 50px;
+  background-color: ${({ theme }) => theme.COLORS.BACKGROUND};
+  border-radius: 8px;
+  align-items: center;
+  padding: 10px;
+  flex-direction: row;
+  justify-content: space-between;
+  border: 0.8px;
+  border-color: ${({ theme }) => theme.COLORS.GREY};
 `;
 
 export const LogoutButtonText = styled.Text`

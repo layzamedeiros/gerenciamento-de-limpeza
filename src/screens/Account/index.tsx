@@ -1,13 +1,39 @@
 import React, { useState } from 'react';
 import { useTheme } from 'styled-components/native';
 
-import { UserIcon, SignOutIcon } from 'phosphor-react-native'; 
-import { Container, Content, AvatarPlaceholder, UserName, UserEmail, LogoutButton, LogoutButtonText, ButtonText, Button, Divider } from './styles';
+import { UserIcon, SignOutIcon, LockIcon, PersonIcon, CaretCircleRightIcon, CaretRightIcon, LockKeyIcon, UserCircleIcon } from 'phosphor-react-native'; 
+import { Container, Content, AvatarPlaceholder, UserName, UserEmail, LogoutButton, LogoutButtonText, ButtonText, AccountButtonText, AccountButton, PasswordButton, UserRole } from './styles';
 
 import { useAuth } from '@contexts/AuthContext';
 import { ChangePasswordModal } from '@components/ChangePasswordModal';
 import { ConfirmationModal } from '@components/ConfirmationModal'; 
 import { Header } from '@components/Header';
+
+/**
+ * @param {Array<number> | undefined} groupIdsArray
+ * @returns {String} 
+ */
+export const getRoleName = (groupIdsArray: number[] | undefined): string => {
+  if (!Array.isArray(groupIdsArray) || groupIdsArray.length === 0) {
+    return ""; 
+  }
+
+  const groupIds = new Set(groupIdsArray);
+
+  if (groupIds.has(1) && groupIds.has(2)) {
+    return "Administrador Pleno";
+  }
+
+  if (groupIds.has(1) && groupIds.size === 1) {
+    return "Zeladoria";
+  }
+
+  if (groupIds.has(2) && groupIds.size === 1) {
+    return "Solicitante de Serviços";
+  }
+
+  return "Permissão desconhecida"; 
+};
 
 export function Account() {
   const theme = useTheme(); 
@@ -25,21 +51,30 @@ export function Account() {
       <Header title="Minha Conta" showNotificationIcon={false} />
       <Content>
         <AvatarPlaceholder>
-          <UserIcon size={60} color={theme.COLORS.PLACEHOLDER} />
+          <UserIcon size={80} color={theme.COLORS.WHITE}/>
         </AvatarPlaceholder>
 
         <UserName>{user?.username || ""}</UserName>
-        <UserEmail>{user?.email || ""}</UserEmail>
+        <UserEmail>{user?.email || "Email@gmail.com"}</UserEmail>
+        <UserRole>{getRoleName(user?.groups || [])}</UserRole>
 
-        <Divider/>
+        <AccountButton>
+          <UserIcon size={24} color={theme.COLORS.WHITE}></UserIcon>
+          <AccountButtonText>Editar perfil</AccountButtonText>
+          <CaretRightIcon size={16} color={theme.COLORS.WHITE}></CaretRightIcon>
+        </AccountButton>
         
-        <Button onPress={() => setPasswordModalVisible(true)}>
+        <PasswordButton onPress={() => setPasswordModalVisible(true)}>
+          <LockKeyIcon size={24} color={theme.COLORS.PRIMARY}></LockKeyIcon>
           <ButtonText>Alterar senha</ButtonText>
-        </Button>
+          <CaretRightIcon size={16} color={theme.COLORS.PRIMARY}></CaretRightIcon>
+        </PasswordButton>
 
         <LogoutButton onPress={handleSignOut}>
           <SignOutIcon size={24} color={theme.COLORS.DANGER} />
           <LogoutButtonText>Sair</LogoutButtonText>
+          <CaretRightIcon size={16} color={theme.COLORS.DANGER}></CaretRightIcon>
+
         </LogoutButton>
       </Content>
 

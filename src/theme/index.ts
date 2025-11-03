@@ -4,7 +4,8 @@ export default {
     ACCENT: "#F7941D",
     DANGER: "#DC2626",
     GREEN: "#16a34a",
-    INFO: "#264653", 
+    INFO: "#264653",
+    GREY: "#E8E5E5", 
 
     BACKGROUND: "#FBFBFB",
     SURFACE: "#FFFFFF",
