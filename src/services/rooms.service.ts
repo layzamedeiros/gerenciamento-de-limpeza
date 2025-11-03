@@ -1,3 +1,4 @@
+import { EditRoomFormData } from "@components/EditRoomModal";
 import api from "./api";
 import { CreateRoomFormData } from "@components/CreateRoomModal";
 
@@ -102,18 +103,28 @@ export const createRoom = async (data: CreateRoomFormData) => {
   }
 };
 
-export const updateRoom = async (qr_code_id: string, data: Partial<CreateRoomData>) => {
+export const updateRoom = async (qr_code_id: string, data: EditRoomFormData) => {
   const formData = new FormData();
-  Object.keys(data).forEach(key => {
-    const value = (data as any)[key];
-    if (value !== undefined) {
-      if (key === "responsaveis" && Array.isArray(value)) {
-        value.forEach(respId => formData.append("responsaveis", respId.toString()));
-      } else {
-        formData.append(key, value);
-      }
-    }
-  });
+
+  formData.append("nome_numero", data.nome_numero);
+  formData.append("localizacao", data.localizacao);
+  formData.append("capacidade", data.capacidade);
+  
+  if (data.validade_limpeza_horas) {
+    formData.append("validade_horas", data.validade_limpeza_horas);
+  }
+  if (data.descricao) {
+    formData.append("descricao", data.descricao);
+  }
+  if (data.instrucoes) {
+    formData.append("instrucoes", data.instrucoes);
+  }
+
+  if (data.responsaveis && data.responsaveis.length > 0) {
+    data.responsaveis.forEach(responsavel => {
+      formData.append("responsaveis", responsavel);
+    });
+  }
 
   try {
     const response = await api.patch(`/salas/${qr_code_id}/`, formData, {
@@ -121,7 +132,7 @@ export const updateRoom = async (qr_code_id: string, data: Partial<CreateRoomDat
     });
     return response.data;
   } catch (error) {
-    console.log(`Failed to update room ${qr_code_id}:`, error);
+    console.log("Failed to create room:", error);
     throw error;
   }
 };

@@ -22,6 +22,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ScrollView } from "react-native";
 import { FormInput } from "@components/FormInput";
 import { Dropdown } from "@components/Dropdowm";
+import { fetchUsers, User } from "@services/employee.service";
 
 type Props = ModalProps & {
   room: Room;
@@ -33,7 +34,7 @@ const editRoomFormSchema = z.object({
   nome_numero: z.string().trim().nonempty("Campo obrigatório"),
   localizacao: z.string().trim().nonempty("Campo obrigatório"),
   capacidade: z.string().trim().nonempty("Campo obrigatório"),
-  validade_horas: z.string().trim().optional(),
+  validade_limpeza_horas: z.string().trim().optional(),
   responsaveis: z.array(z.string()).optional(),
   descricao: z.string().trim().optional().nullable(),
   instrucoes: z.string().trim().optional().nullable()
@@ -44,52 +45,56 @@ export type EditRoomFormData = z.infer<typeof editRoomFormSchema>;
 export function EditRoomModal({ room, onClose, onRoomUpdated, ...rest }: Props) {
   const [isUpdating, setIsUpdating] = useState(false);
   const [responsableButtonPressed, setResponsableButtonPressed] = useState(false);
+  const [responsables, setResponsables] = useState<User[]>({} as User[]);
   const [photo, setPhoto] = useState(false);
 
   const { control, handleSubmit, formState: { errors }, reset } = useForm<EditRoomFormData>({
     resolver: zodResolver(editRoomFormSchema)
   });
 
-  function closeModal() {
-    onClose()
-    reset()
-  }
+  async function getEmplooyes() {
+    try {
+      const data = await fetchUsers("group", "zeladoria");
 
-  useEffect(() => {
-    if (room) {
-      reset({
-        nome_numero: room.nome_numero,
-        localizacao: room.localizacao,
-        
-        capacidade: room.capacidade?.toString() ?? '', 
-        validade_horas: room.validade_limpeza_horas?.toString() ?? '',
-        
-        descricao: room.descricao,
-        instrucoes: room.instrucoes
+      setResponsables(data);
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.nome_numero?.[0] || "Não foi possível resgatar os zeladores";
+      Toast.show({
+        type: "error",
+        text1: "Erro no Cadastro",
+        text2: errorMessage,
       });
     }
-  }, [room, reset])
+  }
 
-  useEffect(() => {
-    
-  }, [room]);
+  function pressResponsableButton() {
+    setResponsableButtonPressed(oldValue => !oldValue);
+  }
 
+  const handleClose = () => {
+    reset();
+    onClose();
+    setResponsableButtonPressed(false);
+  };
+  
   const handleUpdateRoom = async (data: EditRoomFormData) => {
     setIsUpdating(true);
-    try {
-      console.log(data);
 
-      // Toast.show({
-      //   type: "success",
-      //   text1: "Sucesso",
-      //   text1Style: {
-      //     fontSize: 16,
-      //   },
-      //   text2: "Sala editada com sucesso!",
-      //   text2Style: {
-      //     fontSize: 12,
-      //   },
-      // });
+    try {
+      updateRoom(room.qr_code_id, data);
+
+      Toast.show({
+        type: "success",
+        text1: "Sucesso",
+        text1Style: {
+          fontSize: 16,
+        },
+        text2: "Sala editada com sucesso!",
+        text2Style: {
+          fontSize: 12,
+        },
+      });
 
       onRoomUpdated();
       onClose();
@@ -106,6 +111,27 @@ export function EditRoomModal({ room, onClose, onRoomUpdated, ...rest }: Props) 
       setIsUpdating(false);
     }
   };
+
+  useEffect(() => {
+    if (room) {
+      reset({
+        nome_numero: room.nome_numero,
+        localizacao: room.localizacao,
+        
+        capacidade: room.capacidade?.toString() ?? '', 
+        validade_limpeza_horas: room.validade_limpeza_horas?.toString() ?? '',
+
+        responsaveis: room.responsaveis,
+        
+        descricao: room.descricao,
+        instrucoes: room.instrucoes
+      });
+    }
+  }, [room, reset])
+
+  useEffect(() => {
+    getEmplooyes();
+  }, []);
 
   return (
     <Modal transparent={true} onRequestClose={onClose} animationType="fade" {...rest}>
@@ -168,7 +194,7 @@ export function EditRoomModal({ room, onClose, onRoomUpdated, ...rest }: Props) 
     
                 <Controller 
                   control={control}
-                  name="validade_horas"
+                  name="validade_limpeza_horas"
                   render={({ field: { onChange, value } }) => (
                     <FormInput
                       inputName="Validade da limpeza"
@@ -177,7 +203,7 @@ export function EditRoomModal({ room, onClose, onRoomUpdated, ...rest }: Props) 
                       onChangeText={onChange}
                       keyboardType="numeric"
                       flex={1}
-                      errorMessage={errors.validade_horas?.message}
+                      errorMessage={errors.validade_limpeza_horas?.message}
                       style={errors.capacidade?.message ? { marginBottom: 19 } : { }}
                       onFocus={() => setResponsableButtonPressed(false)}
                     />
@@ -185,7 +211,7 @@ export function EditRoomModal({ room, onClose, onRoomUpdated, ...rest }: Props) 
                 />
               </ExternalInputContainer>
     
-              {/* <Controller
+              <Controller
                 control={control}
                 name="responsaveis"
                 render={({ field: { onChange, value } }) => (
@@ -194,13 +220,13 @@ export function EditRoomModal({ room, onClose, onRoomUpdated, ...rest }: Props) 
                     pressed={responsableButtonPressed}
                     onPress={pressResponsableButton}
                     content={responsables}
-                    value={value || []}
+                    value={value || room.responsaveis}
                     onChange={onChange}
                     errorMessage={errors.responsaveis?.message}
                     onFocus={() => setResponsableButtonPressed(false)}
                   />
                 )}
-              /> */}
+              /> 
     
               <PhotoRoomContainer>
                 <InputName>Foto da sala</InputName>
@@ -248,7 +274,7 @@ export function EditRoomModal({ room, onClose, onRoomUpdated, ...rest }: Props) 
   
             </ScrollView>
           <ModalButtons>
-            <ModalButton variant="cancel" onPress={closeModal}>
+            <ModalButton variant="cancel" onPress={handleClose}>
               <ModalButtonText variant="cancel">Cancelar</ModalButtonText>
             </ModalButton>
             <ModalButton

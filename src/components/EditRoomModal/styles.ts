@@ -11,10 +11,11 @@ export const ModalOverlay = styled.View`
 
 export const ModalContainer = styled.View`
   width: 90%;
+  max-height: 85%;
   background-color: ${({ theme }) => theme.COLORS.BACKGROUND};
   border-radius: 12px;
-  padding: 24px;
-  align-items: stretch;
+  padding: 22px;
+  gap: 8px;
 `;
 
 export const ModalTitle = styled.Text`

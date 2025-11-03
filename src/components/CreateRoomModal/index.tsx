@@ -129,7 +129,7 @@ export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
 
   useFocusEffect(
     useCallback(() => {
-      getEmplooyes()
+      getEmplooyes();
     }, [])
   )
 
