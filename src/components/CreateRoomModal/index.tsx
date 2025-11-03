@@ -37,7 +37,7 @@ const createRoomFormSchema = z.object({
   nome_numero: z.string().trim().nonempty("Campo obrigatório"),
   localizacao: z.string().trim().nonempty("Campo obrigatório"),
   capacidade: z.string().trim().nonempty("Campo obrigatório"),
-  validade_horas: z.string().trim().optional(),
+  validade_limpeza_horas: z.string().trim().optional(),
   responsaveis: z.array(z.string()).optional(),
   descricao: z.string().trim().optional(),
   instrucoes: z.string().trim().optional()
@@ -57,7 +57,7 @@ export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
       nome_numero: "",
       localizacao: "",
       capacidade: "",
-      validade_horas: "",
+      validade_limpeza_horas: "",
       responsaveis: [],
       descricao: "",
       instrucoes: ""
@@ -195,7 +195,7 @@ export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
 
             <Controller 
               control={control}
-              name="validade_horas"
+              name="validade_limpeza_horas"
               render={({ field: { onChange, value } }) => (
                 <FormInput
                   inputName="Validade da limpeza"
@@ -204,7 +204,7 @@ export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
                   onChangeText={onChange}
                   keyboardType="numeric"
                   flex={1}
-                  errorMessage={errors.validade_horas?.message}
+                  errorMessage={errors.validade_limpeza_horas?.message}
                   style={errors.capacidade?.message ? { marginBottom: 19 } : { }}
                   onFocus={() => setResponsableButtonPressed(false)}
                 />

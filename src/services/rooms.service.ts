@@ -75,8 +75,8 @@ export const createRoom = async (data: CreateRoomFormData) => {
   formData.append("localizacao", data.localizacao);
   formData.append("capacidade", data.capacidade);
   
-  if (data.validade_horas) {
-    formData.append("validade_horas", data.validade_horas);
+  if (data.validade_limpeza_horas) {
+    formData.append("validade_horas", data.validade_limpeza_horas);
   }
   if (data.descricao) {
     formData.append("descricao", data.descricao);

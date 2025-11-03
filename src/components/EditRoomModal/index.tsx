@@ -45,24 +45,30 @@ export function EditRoomModal({ room, onClose, onRoomUpdated, ...rest }: Props) 
   const [isUpdating, setIsUpdating] = useState(false);
   const [responsableButtonPressed, setResponsableButtonPressed] = useState(false);
   const [photo, setPhoto] = useState(false);
-  console.log(room)
 
   const { control, handleSubmit, formState: { errors }, reset } = useForm<EditRoomFormData>({
-    resolver: zodResolver(editRoomFormSchema),
-    defaultValues: {
-      nome_numero: room.nome_numero,
-      localizacao: room.localizacao,
-      capacidade: "",
-      validade_horas: "",
-      descricao: room.descricao,
-      instrucoes: room.instrucoes
-    }
+    resolver: zodResolver(editRoomFormSchema)
   });
 
   function closeModal() {
     onClose()
     reset()
   }
+
+  useEffect(() => {
+    if (room) {
+      reset({
+        nome_numero: room.nome_numero,
+        localizacao: room.localizacao,
+        
+        capacidade: room.capacidade?.toString() ?? '', 
+        validade_horas: room.validade_limpeza_horas?.toString() ?? '',
+        
+        descricao: room.descricao,
+        instrucoes: room.instrucoes
+      });
+    }
+  }, [room, reset])
 
   useEffect(() => {
     
