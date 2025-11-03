@@ -1,9 +1,12 @@
-import React, { useState, useMemo, useCallback, useEffect } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { FlatList } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 
-import { Header } from "@components/Header";
 import { Container, Content, FilterContainer } from "./styles";
+import { useTheme } from "styled-components/native";
+import { PlusCircleIcon } from "phosphor-react-native";
+
+import { Header } from "@components/Header";
 import { CardRoom } from "@components/CardRoom";
 import FilterButton, { FilterStatus } from "@components/FilterButton";
 import { CreateRoomModal } from "@components/CreateRoomModal";
@@ -11,13 +14,12 @@ import { EditRoomModal } from "@components/EditRoomModal";
 import { ConfirmationModal } from "@components/ConfirmationModal";
 import { MessageHighlight } from "@components/ConfirmationModal/styles";
 import { SearchBar } from "@components/Search";
+import { CircleButton } from "@components/CircleButton";
 
 import { useRooms } from "@contexts/RoomsContext";
 import { useAuth } from "@contexts/AuthContext";
-import { deleteRoom, fetchRooms, Room } from "@services/rooms.service";
-import { CircleButton } from "@components/CircleButton";
-import { PlusCircleIcon } from "phosphor-react-native";
-import { useTheme } from "styled-components/native";
+import { deleteRoom, Room } from "@services/rooms.service";
+
 import Toast from "react-native-toast-message";
 import { AppError } from "src/utils/AppError";
 
@@ -150,7 +152,7 @@ export function ClassRoom() {
         visible={isEditModalVisible}
         onClose={() => setEditModalVisible(false)}
         onRoomUpdated={refreshRooms}
-        sala={selectedRoom}
+        room={selectedRoom}
       />
       
       <ConfirmationModal

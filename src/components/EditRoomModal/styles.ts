@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components/native';
 import { TouchableOpacity, TextInput } from 'react-native';
+import { CameraPlusIcon } from 'phosphor-react-native';
 
 export const ModalOverlay = styled.View`
   flex: 1;
@@ -24,30 +25,6 @@ export const ModalTitle = styled.Text`
     color: ${theme.COLORS.PRIMARY};
     font-family: ${theme.FONT_FAMILY.BOLD};
   `};
-`;
-
-export const TitleInput = styled.Text`
-  font-size: 14px;
-  margin-top: 12px;
-  margin-bottom: 6px;
-  ${({ theme }) => css`
-    color: ${theme.COLORS.SUBTITLE};
-    font-family: ${theme.FONT_FAMILY.SEMIBOLD};
-  `};
-`;
-
-export const Input = styled(TextInput).attrs(({ theme }) => ({
-  placeholderTextColor: theme.COLORS.PLACEHOLDER,
-}))`
-  width: 100%;
-  height: 50px;
-  background-color: ${({ theme }) => theme.COLORS.WHITE};
-  border-radius: 8px; 
-  border-width: 1px;
-  border-color: ${({ theme }) => theme.COLORS.BORDER};
-  padding: 0 15px;
-  font-size: 14px;
-  color: ${({ theme }) => theme.COLORS.TITLE};
 `;
 
 export const AdminContainer = styled.View`
@@ -98,3 +75,47 @@ export const ModalButtonText = styled.Text<ModalButtonProps>`
     color: ${theme.COLORS.WHITE};
   `};
 `;
+
+export const ExternalInputContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+`;
+
+export const PhotoRoomContainer = styled.View`
+  flex-direction: column;
+  gap: 3px;
+`
+
+export const InputName = styled.Text`
+  ${({ theme }) => css`
+    font-family: ${theme.FONT_FAMILY.SEMIBOLD};
+    color: ${theme.COLORS.TITLE};
+  `}
+  font-size: 14px;
+`
+
+export const AddPhotoRoomContainer = styled.Pressable`
+  flex-direction: row;
+  border-width: 1px;
+  border-color: ${({ theme }) => theme.COLORS.BORDER};
+  border-style: dotted;
+  border-radius: 8px;
+  padding: 0 5px;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+`;
+
+export const PhotoIcon = styled(CameraPlusIcon).attrs(({ theme }) => ({
+  size: 24,
+  color: theme.COLORS.TITLE
+}))``;
+
+export const PhotoText = styled.Text`
+  ${({ theme }) => css`
+    font-family: ${theme.FONT_FAMILY.REGULAR};
+    color: ${theme.COLORS.TITLE};
+  `}
+`

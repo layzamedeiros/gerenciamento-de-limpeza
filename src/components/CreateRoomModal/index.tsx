@@ -16,6 +16,7 @@ import {
 } from "./styles";
 
 import { createRoom } from "@services/rooms.service";
+import { fetchUsers, User } from "@services/employee.service";
 
 import Toast from "react-native-toast-message";
 
@@ -25,8 +26,6 @@ import { FormInput } from "@components/FormInput";
 import { useForm, Controller } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import api from "@services/api";
-import { fetchUsers, User } from "@services/employee.service";
 import { useFocusEffect } from "@react-navigation/native";
 
 type Props = ModalProps & {
@@ -49,7 +48,7 @@ export type CreateRoomFormData = z.infer<typeof createRoomFormSchema>;
 export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
   const [isCreating, setIsCreating] = useState(false);
   const [responsableButtonPressed, setResponsableButtonPressed] = useState(false);
-  const [ responsables, setResponsables ] = useState<User[]>({} as User[]);
+  const [responsables, setResponsables] = useState<User[]>({} as User[]);
   const [photo, setPhoto] = useState(false);
 
   const { control, handleSubmit, formState: { errors }, reset } = useForm<CreateRoomFormData>({

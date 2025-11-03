@@ -1,70 +1,90 @@
 import React, { useState, useEffect } from "react";
 import { Modal, ActivityIndicator, ModalProps } from "react-native";
 import Toast from "react-native-toast-message";
-import { Sala, updateSala } from "@services/rooms.service";
 import {
   ModalOverlay,
   ModalContainer,
   ModalTitle,
-  Input,
   ModalButtons,
   ModalButton,
   ModalButtonText,
-  TitleInput,
+  ExternalInputContainer,
+  PhotoRoomContainer,
+  InputName,
+  AddPhotoRoomContainer,
+  PhotoIcon,
+  PhotoText,
 } from "./styles";
+import { Room, updateRoom } from "@services/rooms.service";
+import { Controller, useForm } from "react-hook-form";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ScrollView } from "react-native";
+import { FormInput } from "@components/FormInput";
+import { Dropdown } from "@components/Dropdowm";
 
 type Props = ModalProps & {
-  sala: Sala | null;
+  room: Room;
   onClose: () => void;
   onRoomUpdated: () => void;
 };
 
-export function EditRoomModal({ sala, onClose, onRoomUpdated, ...rest }: Props) {
+const editRoomFormSchema = z.object({
+  nome_numero: z.string().trim().nonempty("Campo obrigatório"),
+  localizacao: z.string().trim().nonempty("Campo obrigatório"),
+  capacidade: z.string().trim().nonempty("Campo obrigatório"),
+  validade_horas: z.string().trim().optional(),
+  responsaveis: z.array(z.string()).optional(),
+  descricao: z.string().trim().optional().nullable(),
+  instrucoes: z.string().trim().optional().nullable()
+});
+
+export type EditRoomFormData = z.infer<typeof editRoomFormSchema>;
+
+export function EditRoomModal({ room, onClose, onRoomUpdated, ...rest }: Props) {
   const [isUpdating, setIsUpdating] = useState(false);
-  const [nome, setNome] = useState("");
-  const [capacidade, setCapacidade] = useState("");
-  const [descricao, setDescricao] = useState("");
-  const [localizacao, setLocalizacao] = useState("");
+  const [responsableButtonPressed, setResponsableButtonPressed] = useState(false);
+  const [photo, setPhoto] = useState(false);
+  console.log(room)
+
+  const { control, handleSubmit, formState: { errors }, reset } = useForm<EditRoomFormData>({
+    resolver: zodResolver(editRoomFormSchema),
+    defaultValues: {
+      nome_numero: room.nome_numero,
+      localizacao: room.localizacao,
+      capacidade: "",
+      validade_horas: "",
+      descricao: room.descricao,
+      instrucoes: room.instrucoes
+    }
+  });
+
+  function closeModal() {
+    onClose()
+    reset()
+  }
 
   useEffect(() => {
-    if (sala) {
-      setNome(sala.nome_numero);
-      setCapacidade(String(sala.capacidade));
-      setDescricao(sala.descricao || "");
-      setLocalizacao(sala.localizacao || "");
-    }
-  }, [sala]);
+    
+  }, [room]);
 
-  const handleUpdateRoom = async () => {
-    if (!sala) return;
-
-    if (!nome.trim() || !capacidade.trim() || !localizacao.trim()) {
-      return Toast.show({
-        type: "error",
-        text1: "Atenção",
-        text1Style: {
-          fontSize: 14,
-        },
-        text2: "Nome, capacidade e localização são obrigatórios.",
-        text2Style: {
-          fontSize: 14,
-        },
-      });
-    }
-
+  const handleUpdateRoom = async (data: EditRoomFormData) => {
     setIsUpdating(true);
     try {
-      await updateSala(sala.id, {
-        nome_numero: nome,
-        capacidade: Number(capacidade),
-        descricao,
-        localizacao,
-      });
-      Toast.show({
-        type: "success",
-        text1: "Sucesso!",
-        text2: "Sala atualizada com sucesso!",
-      });
+      console.log(data);
+
+      // Toast.show({
+      //   type: "success",
+      //   text1: "Sucesso",
+      //   text1Style: {
+      //     fontSize: 16,
+      //   },
+      //   text2: "Sala editada com sucesso!",
+      //   text2Style: {
+      //     fontSize: 12,
+      //   },
+      // });
+
       onRoomUpdated();
       onClose();
     } catch (error: any) {
@@ -86,21 +106,148 @@ export function EditRoomModal({ sala, onClose, onRoomUpdated, ...rest }: Props) 
       <ModalOverlay>
         <ModalContainer>
           <ModalTitle>Editar sala</ModalTitle>
-          <TitleInput>Nome / Número</TitleInput>
-          <Input value={nome} onChangeText={setNome} />
-          <TitleInput>Capacidade</TitleInput>
-          <Input value={capacidade} onChangeText={setCapacidade} keyboardType="numeric" />
-          <TitleInput>Localização</TitleInput>
-          <Input value={localizacao} onChangeText={setLocalizacao} />
-          <TitleInput>Descrição (Opcional)</TitleInput>
-          <Input value={descricao} onChangeText={setDescricao} />
+            <ScrollView 
+              nestedScrollEnabled
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ gap: 8, flexDirection: "column" }}
+            >
+              <Controller
+                control={control}
+                name="nome_numero"
+                render={({ field: { onChange, value } }) => (
+                  <FormInput
+                    inputName="Nome*"
+                    placeholder="Ex: Auditório, Sala 101"
+                    value={value}
+                    onChangeText={onChange}
+                    errorMessage={errors.nome_numero?.message}
+                    onFocus={() => setResponsableButtonPressed(false)}
+                  />
+                )}
+              />
+    
+              <Controller 
+                control={control}
+                name="localizacao"
+                render={({ field: { onChange, value } }) => (
+                  <FormInput
+                    inputName="Localização*"
+                    placeholder="Ex: Bloco B"
+                    value={value}
+                    onChangeText={onChange}
+                    errorMessage={errors.localizacao?.message}
+                    onFocus={() => setResponsableButtonPressed(false)}
+                  />
+                )}
+              />
+      
+    
+              <ExternalInputContainer>
+                <Controller 
+                  control={control}
+                  name="capacidade"
+                  render={({ field: { onChange, value } }) => (
+                    <FormInput
+                      inputName="Capacidade*"
+                      placeholder="Ex: 30"
+                      value={value}
+                      onChangeText={onChange}
+                      keyboardType="numeric"
+                      flex={1}
+                      errorMessage={errors.capacidade?.message}
+                      onFocus={() => setResponsableButtonPressed(false)}
+                    />
+                  )}
+                />
+    
+                <Controller 
+                  control={control}
+                  name="validade_horas"
+                  render={({ field: { onChange, value } }) => (
+                    <FormInput
+                      inputName="Validade da limpeza"
+                      placeholder="Ex: 4"
+                      value={value}
+                      onChangeText={onChange}
+                      keyboardType="numeric"
+                      flex={1}
+                      errorMessage={errors.validade_horas?.message}
+                      style={errors.capacidade?.message ? { marginBottom: 19 } : { }}
+                      onFocus={() => setResponsableButtonPressed(false)}
+                    />
+                  )}
+                />
+              </ExternalInputContainer>
+    
+              {/* <Controller
+                control={control}
+                name="responsaveis"
+                render={({ field: { onChange, value } }) => (
+                  <Dropdown
+                    dropdownText="Responsáveis"
+                    pressed={responsableButtonPressed}
+                    onPress={pressResponsableButton}
+                    content={responsables}
+                    value={value || []}
+                    onChange={onChange}
+                    errorMessage={errors.responsaveis?.message}
+                    onFocus={() => setResponsableButtonPressed(false)}
+                  />
+                )}
+              /> */}
+    
+              <PhotoRoomContainer>
+                <InputName>Foto da sala</InputName>
+                <AddPhotoRoomContainer>
+                  { photo ?
+                      <></>
+                    :
+                      <>
+                      <PhotoIcon />
+                      <PhotoText>Adicionar imagem da sala</PhotoText>
+                      </>
+                  }
+                </AddPhotoRoomContainer>
+              </PhotoRoomContainer>
+    
+              <Controller 
+                control={control}
+                name="descricao"
+                render={({ field: { onChange, value } }) => (
+                  <FormInput
+                    inputName="Descrição"
+                    placeholder="Ex: Sala com projetor e notebook"
+                    value={value ?? ""}
+                    onChangeText={onChange}
+                    errorMessage={errors.descricao?.message}
+                    onFocus={() => setResponsableButtonPressed(false)}
+                  />
+                )}
+              />
+    
+              <Controller 
+                control={control}
+                name="instrucoes"
+                render={({ field: { onChange, value } }) => (
+                  <FormInput
+                    inputName="Instruções"
+                    placeholder="Ex: Desligue os equipamentos"
+                    value={value ?? ""}
+                    onChangeText={onChange}
+                    errorMessage={errors.instrucoes?.message}
+                    onFocus={() => setResponsableButtonPressed(false)}
+                  />
+                )}
+              />
+  
+            </ScrollView>
           <ModalButtons>
-            <ModalButton variant="cancel" onPress={onClose}>
+            <ModalButton variant="cancel" onPress={closeModal}>
               <ModalButtonText variant="cancel">Cancelar</ModalButtonText>
             </ModalButton>
             <ModalButton
               variant="success"
-              onPress={handleUpdateRoom}
+              onPress={handleSubmit(handleUpdateRoom)}
               disabled={isUpdating}
             >
               {isUpdating ? (
