@@ -5,7 +5,7 @@ import { useTheme } from "styled-components/native";
 import { Room } from '@services/rooms.service';
 
 import {  CardContainer, Title, SubTitle, CardHeader, StatusTag, StatusTagText, ExpandedContent, DetailsContainer, RoomImage, MenuItem, MenuSeparator, MenuItemText, Line, DetailLabel, } from "./styles";
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 import api from '@services/api';
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
@@ -63,11 +63,11 @@ export function CardRoom({ room, isSolicitante = false, isAdmin = false, onEdit,
                 optionsContainer: {
                   backgroundColor: theme.COLORS.SURFACE,
                   borderRadius: 8,
-                  marginTop: 30,
+                  marginTop: 30
                 },
               }}>
                 {isAdmin && (
-                  <>
+                  <Fragment>
                     <MenuOption onSelect={() => onEdit(room)}>
                       <MenuItem> 
                         <MenuItemText>Editar</MenuItemText>
@@ -81,11 +81,11 @@ export function CardRoom({ room, isSolicitante = false, isAdmin = false, onEdit,
                         <TrashIcon size={20} color={theme.COLORS.DANGER} />
                       </MenuItem>
                     </MenuOption>
-                  </>
+                  </Fragment>
                 )}
 
                 {(isAdmin || isSolicitante) && (
-                  <>
+                  <Fragment>
                     {isAdmin && <MenuSeparator />}
                     <MenuOption onSelect={() => onReport(room)}>
                       <MenuItem>
@@ -93,7 +93,7 @@ export function CardRoom({ room, isSolicitante = false, isAdmin = false, onEdit,
                         <SealWarningIcon size={20} color={theme.COLORS.DANGER}/>
                       </MenuItem>
                     </MenuOption>
-                  </>
+                  </Fragment>
                 )}
               </MenuOptions>
             </Menu>

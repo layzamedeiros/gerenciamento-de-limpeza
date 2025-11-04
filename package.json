@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.4.1",
+    "@hookform/resolvers": "^5.2.2",
     "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-navigation/bottom-tabs": "^7.4.6",
     "@react-navigation/native": "^7.1.17",
@@ -25,6 +26,7 @@
     "phosphor-react-native": "^3.0.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "react-hook-form": "^7.65.0",
     "react-native": "0.81.4",
     "react-native-circular-progress-indicator": "^4.4.2",
     "react-native-dropdown-picker": "^5.4.6",
@@ -34,7 +36,8 @@
     "react-native-screens": "~4.16.0",
     "react-native-svg": "15.12.1",
     "react-native-toast-message": "^2.3.3",
-    "styled-components": "^6.1.19"
+    "styled-components": "^6.1.19",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

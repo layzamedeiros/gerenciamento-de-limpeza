@@ -1,0 +1,72 @@
+import { TouchableOpacityProps } from "react-native";
+import { ArrowDown, ArrowUp, Container, DropdownContainer, DropdownItemContainer, DropdownText, ListContainer, TextDropdown, TextDropdownPlaceholder } from "./styles";
+import { User } from "@services/employee.service";
+
+type Props = TouchableOpacityProps & {
+  dropdownText?: string
+  content: User[];
+  pressed: boolean;
+  errorMessage?: string;
+  value?: string[];
+  onChange: (newValue: string[]) => void;
+}
+
+export function Dropdown({ dropdownText, content, pressed, errorMessage, value = [], onChange, ...rest }: Props) {
+  const isInvalid = !!errorMessage;
+
+  function handleSelectItem(item: string) {
+    const isSelected = value.includes(item);
+    let newSelected: string[];
+
+    if (isSelected) {
+      newSelected = value.filter(selectedItem => selectedItem !== item);
+    } else {
+      newSelected = [...value, item];
+    }
+
+    onChange(newSelected);
+
+    if (rest.onPress) {
+      rest.onPress(null as any)
+    }
+  }  
+
+  const displayText = value.length > 0 ? value.join(', ') : "Selecionar zeladores";
+
+  return (
+    <Container>
+      { dropdownText && <DropdownText>{dropdownText}</DropdownText>}
+
+      <DropdownContainer isInvalid={isInvalid} pressed={pressed} {...rest}>
+        <TextDropdownPlaceholder>{displayText}</TextDropdownPlaceholder>
+
+        { pressed ? <ArrowUp /> : <ArrowDown /> }
+      </DropdownContainer>
+
+      { pressed &&
+          <ListContainer
+            style={{ zIndex: 100 }} 
+            nestedScrollEnabled={true}
+            showsVerticalScrollIndicator={false}
+          >
+            {content.map((item, index) => {
+              const isItemSelected = value.includes(item.username);
+
+              return (
+                <DropdownItemContainer 
+                  key={item.username}
+                  index={index} 
+                  lenght={content.length}
+                  onPress={() => handleSelectItem(item.username)} 
+                  style={{ backgroundColor: isItemSelected ? '#e0e0e0' : 'transparent' }} 
+                >
+                  <TextDropdown>{item.username}</TextDropdown>
+                </DropdownItemContainer>
+              );
+            })}
+
+          </ListContainer>
+      }
+    </Container>
+  );
+}

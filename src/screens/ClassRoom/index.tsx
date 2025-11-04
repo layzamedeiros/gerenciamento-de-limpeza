@@ -2,8 +2,11 @@ import React, { useState, useMemo, useCallback } from "react";
 import { FlatList } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 
-import { Header } from "@components/Header";
 import { Container, Content, FilterContainer } from "./styles";
+import { useTheme } from "styled-components/native";
+import { PlusCircleIcon } from "phosphor-react-native";
+
+import { Header } from "@components/Header";
 import { CardRoom } from "@components/CardRoom";
 import FilterButton, { FilterStatus } from "@components/FilterButton";
 import { CreateRoomModal } from "@components/CreateRoomModal";
@@ -11,20 +14,25 @@ import { EditRoomModal } from "@components/EditRoomModal";
 import { ConfirmationModal } from "@components/ConfirmationModal";
 import { MessageHighlight } from "@components/ConfirmationModal/styles";
 import { SearchBar } from "@components/Search";
+import { CircleButton } from "@components/CircleButton";
 
 import { useRooms } from "@contexts/RoomsContext";
 import { useAuth } from "@contexts/AuthContext";
-import { Room } from "@services/rooms.service";
+import { deleteRoom, Room } from "@services/rooms.service";
+
+import Toast from "react-native-toast-message";
+import { AppError } from "src/utils/AppError";
 
 export function ClassRoom() {
   const { isAdmin } = useAuth();
+  const theme = useTheme();
   const { rooms, refreshRooms } = useRooms();
 
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const [isEditModalVisible, setEditModalVisible] = useState(false);
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   
-  const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+  const [selectedRoom, setSelectedRoom] = useState<Room>({} as Room);
   const [activeFilter, setActiveFilter] = useState<FilterStatus>("todas");
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -54,10 +62,49 @@ export function ClassRoom() {
     setEditModalVisible(true);
   };
 
-  const handleDelete = (room: Room) => {
+  const handleOpenDeleteModal =(room: Room) => {
     setSelectedRoom(room);
     setDeleteModalVisible(true);
   };
+
+  const handleDelete = async () => {
+    try {
+      await deleteRoom(selectedRoom.qr_code_id);
+      refreshRooms();
+
+      Toast.show({
+        type: "success",
+        text1: "Sucesso",
+        text1Style: {
+          fontSize: 16,
+        },
+        text2: "Sala apagada com sucesso!",
+        text2Style: {
+          fontSize: 12,
+        },
+      });
+
+      setDeleteModalVisible(false);
+    } catch (error) {
+      setDeleteModalVisible(false);
+      const isAppError = error instanceof AppError;
+      const errorMessage = isAppError ? error.message : "Não foi possível deletar a sala";
+
+      if (errorMessage !== "Token inválido.") {
+        Toast.show({
+          type: "error",
+          text1: "Erro",
+          text2: errorMessage,
+          text1Style: {
+            fontSize: 18
+          },
+          text2Style: {
+            fontSize: 16
+          }
+        });
+      }
+    } 
+  }
 
   const handleFilterPress = () => {
     console.log("Filtros avançados clicado");
@@ -85,7 +132,7 @@ export function ClassRoom() {
             <CardRoom
               room={item}
               onEdit={handleEdit}
-              onDelete={handleDelete}
+              onDelete={() => handleOpenDeleteModal(item)}
               onReport={() => {}} 
               isAdmin={isAdmin}
             />
@@ -105,17 +152,24 @@ export function ClassRoom() {
         visible={isEditModalVisible}
         onClose={() => setEditModalVisible(false)}
         onRoomUpdated={refreshRooms}
-        sala={selectedRoom}
+        room={selectedRoom}
       />
       
       <ConfirmationModal
         visible={isDeleteModalVisible}
         onClose={() => setDeleteModalVisible(false)}
-        onConfirm={() => console.log("Confirmar exclusão")} 
+        onConfirm={handleDelete} 
         title="Excluir sala"
       >
         Deseja excluir <MessageHighlight>{selectedRoom?.nome_numero}</MessageHighlight>?
       </ConfirmationModal>
+
+      <CircleButton 
+        Icon={PlusCircleIcon} 
+        iconSize={48} 
+        colorIcon={theme.COLORS.WHITE} 
+        onPress={() => setCreateModalVisible(true)}
+      />
     </Container>
   );
 }

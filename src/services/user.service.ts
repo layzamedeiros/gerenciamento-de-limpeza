@@ -1,4 +1,4 @@
-import api from './api';
+import api from "./api";
 
 interface ChangePasswordData {
   old_password: string;
@@ -8,7 +8,7 @@ interface ChangePasswordData {
 
 export const changePassword = async (data: ChangePasswordData) => {
   try {
-    const response = await api.post('/accounts/change_password/', data);
+    const response = await api.post("/accounts/change_password/", data);
     return response.data;
   } catch (error) {
     console.error("Falha ao alterar a senha:", error);
@@ -19,19 +19,19 @@ export const changePassword = async (data: ChangePasswordData) => {
 export const updateUserProfilePicture = async (imageUri: string) => {
   const formData = new FormData();
 
-  const fileName = imageUri.split('/').pop() || 'profile.jpg';
-  const fileType = `image/${fileName.split('.').pop()?.toLowerCase()}`;
+  const fileName = imageUri.split("/").pop() || "profile.jpg";
+  const fileType = `image/${fileName.split(".").pop()?.toLowerCase()}`;
 
-  formData.append('profile_picture', {
+  formData.append("profile_picture", {
     uri: imageUri,
     name: fileName,
     type: fileType,
   } as any);
 
   try {
-    const response = await api.patch('/accounts/profile/', formData, {
+    const response = await api.patch("/accounts/profile/", formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
       },
     });
     return response.data;
