@@ -20,6 +20,8 @@
     "axios": "^1.11.0",
     "date-fns": "^4.1.0",
     "expo": "^54.0.13",
+    "expo-barcode-scanner": "^13.0.1",
+    "expo-camera": "~17.0.8",
     "expo-font": "~14.0.9",
     "expo-status-bar": "~3.0.8",
     "phosphor-react-native": "^3.0.0",
