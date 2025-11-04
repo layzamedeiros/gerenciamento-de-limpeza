@@ -1,7 +1,8 @@
-import { EditRoomFormData } from "@components/EditRoomModal";
 import api from "./api";
 import { CreateRoomFormData } from "@components/CreateRoomModal";
+import { EditRoomFormData } from "@components/EditRoomModal";
 
+// Interfaces (estão corretas)
 export interface DirtyRoomReport {
   data_hora: string;
   reportado_por: string;
@@ -19,7 +20,6 @@ export interface Room {
   instrucoes: string | null;
   localizacao: string;
   ativa: boolean;
-
   responsaveis: string[];
   status_limpeza: "Limpa" | "Em Limpeza" | "Limpeza Pendente" | "Suja";
   ultima_limpeza_data_hora: string | null;
@@ -34,7 +34,7 @@ export interface CreateRoomData {
   validade_limpeza_horas?: number;
   descricao?: string;
   instrucoes?: string;
-  responsaveis?: number[];
+  responsaveis?: string[];
   imagem?: any;
 }
 
@@ -48,6 +48,8 @@ export interface CleaningRecord {
   observacoes: string | null;
   fotos: { id: number; imagem: string; }[];
 }
+
+// Funções da API (estão corretas)
 
 export const fetchRooms = async (): Promise<Room[]> => {
   try {
@@ -68,6 +70,7 @@ export const fetchCleaningHistory = async (): Promise<CleaningRecord[]> => {
     throw error;
   }
 };
+
 
 export const createRoom = async (data: CreateRoomFormData) => {
   const formData = new FormData();
@@ -103,7 +106,42 @@ export const createRoom = async (data: CreateRoomFormData) => {
     console.log("Failed to create room:", error);
     throw error;
   }
-};
+}
+
+
+// ALTERACAO DE LAYZA
+
+// const createFormData = (data: object) => {
+//   const formData = new FormData();
+//   Object.keys(data).forEach(key => {
+//     const value = (data as any)[key];
+//     if (value !== undefined && value !== null) {
+//       if (key === 'responsaveis' && Array.isArray(value)) {
+//         value.forEach(resp => formData.append('responsaveis', resp.toString()));
+//       } else if (key === 'imagem' && typeof value === 'object' && value.uri) {
+//         formData.append('imagem', value);
+//       } else {
+//         formData.append(key, value);
+//       }
+//     }
+//   });
+//   return formData;
+// };
+
+
+// export const createRoom = async (data: CreateRoomData) => {
+//   const formData = createFormData(data);
+//   try {
+//     const response = await api.post("/salas/", formData, {
+//       headers: { "Content-Type": "multipart/form-data" },
+//     });
+//     return response.data;
+//   } catch (error) {
+//     console.log("Failed to create room:", error);
+//     throw error;
+//   }
+// };
+
 
 export const updateRoom = async (qr_code_id: string, data: EditRoomFormData) => {
   const formData = new FormData();
@@ -130,8 +168,6 @@ export const updateRoom = async (qr_code_id: string, data: EditRoomFormData) => 
     formData.append("responsaveis", "");
   }
 
-  console.log(formData)
-
   try {
     const response = await api.patch(`/salas/${qr_code_id}/`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
@@ -141,7 +177,22 @@ export const updateRoom = async (qr_code_id: string, data: EditRoomFormData) => 
     console.log("Failed to create room:", error);
     throw error;
   }
-};
+}
+// ALTERACAO DE LAYZA
+
+// export const updateRoom = async (qr_code_id: string, data: Partial<CreateRoomData>) => {
+//   const formData = createFormData(data);
+
+//   try {
+//     const response = await api.patch(`/salas/${qr_code_id}/`, formData, {
+//       headers: { "Content-Type": "multipart/form-data" },
+//     });
+//     return response.data;
+//   } catch (error) {
+//     console.log("Failed to create room:", error);
+//     throw error;
+//   }
+// };
 
 export const deleteRoom = async (qr_code_id: string): Promise<void> => {
   try {
@@ -164,8 +215,8 @@ export const startCleaning = async (qr_code_id: string) => {
 
 export const addCleaningPhoto = async (cleaningRecordId: number, imageUri: string) => {
   const formData = new FormData();
-  const fileName = imageUri.split("/").pop() || "photo.jpg";
-  const fileType = `image/${fileName.split(".").pop()?.toLowerCase()}`;
+  const fileName = imageUri.split('/').pop() || 'photo.jpg';
+  const fileType = `image/${fileName.split('.').pop()?.toLowerCase() || 'jpeg'}`;
 
   formData.append("registro_limpeza", cleaningRecordId.toString());
   formData.append("imagem", { uri: imageUri, name: fileName, type: fileType } as any);
@@ -181,9 +232,19 @@ export const addCleaningPhoto = async (cleaningRecordId: number, imageUri: strin
   }
 };
 
+export const deleteCleaningPhoto = async (photoId: number): Promise<void> => {
+  try {
+    await api.delete(`/fotos_limpeza/${photoId}/`);
+  } catch (error) {
+    console.error(`Falha ao deletar a foto ${photoId}:`, error);
+    throw error;
+  }
+};
+
 export const finishCleaning = async (qr_code_id: string, observacoes?: string) => {
   try {
-    const response = await api.post(`/salas/${qr_code_id}/concluir_limpeza/`, { observacoes });
+    const data = observacoes ? { observacoes } : {};
+    const response = await api.post(`/salas/${qr_code_id}/concluir_limpeza/`, data);
     return response.data;
   } catch (error) {
     console.log(`Failed to finish cleaning for room ${qr_code_id}:`, error);
@@ -192,11 +253,12 @@ export const finishCleaning = async (qr_code_id: string, observacoes?: string) =
 };
 
 export const reportDirtyRoom = async (qr_code_id: string, observacoes?: string) => {
-    try {
-        const response = await api.post(`/salas/${qr_code_id}/marcar_como_suja/`, { observacoes });
-        return response.data;
-    } catch (error) {
-        console.log(`Failed to report dirty room ${qr_code_id}:`, error);
-        throw error;
-    }
-};
+  try {
+    const data = observacoes ? { observacoes } : {};
+    const response = await api.post(`/salas/${qr_code_id}/marcar_como_suja/`, data);
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to report dirty room ${qr_code_id}:`, error);
+    throw error;
+  }
+}

@@ -141,35 +141,46 @@ export function ClassRoom() {
           contentContainerStyle={{ paddingBottom: 40, gap: 8 }}
         />
       </Content>
-
-      <CreateRoomModal
-        visible={isCreateModalVisible}
-        onClose={() => setCreateModalVisible(false)}
-        onRoomCreated={refreshRooms}
-      />
-
-      <EditRoomModal
-        visible={isEditModalVisible}
-        onClose={() => setEditModalVisible(false)}
-        onRoomUpdated={refreshRooms}
-        room={selectedRoom}
-      />
       
-      <ConfirmationModal
-        visible={isDeleteModalVisible}
-        onClose={() => setDeleteModalVisible(false)}
-        onConfirm={handleDelete} 
-        title="Excluir sala"
-      >
-        Deseja excluir <MessageHighlight>{selectedRoom?.nome_numero}</MessageHighlight>?
-      </ConfirmationModal>
+      { isAdmin &&
+          (
+            <CreateRoomModal
+              visible={isCreateModalVisible}
+              onClose={() => setCreateModalVisible(false)}
+              onRoomCreated={refreshRooms}
+            />
+          )
+          &&
+          (
+            <EditRoomModal
+              visible={isEditModalVisible}
+              onClose={() => setEditModalVisible(false)}
+              onRoomUpdated={refreshRooms}
+              room={selectedRoom}
+            />
+          )
+          &&
+          (        
+            <ConfirmationModal
+              visible={isDeleteModalVisible}
+              onClose={() => setDeleteModalVisible(false)}
+              onConfirm={handleDelete} 
+              title="Excluir sala"
+            >
+              Deseja excluir <MessageHighlight>{selectedRoom?.nome_numero}</MessageHighlight>?
+            </ConfirmationModal>
+          )
+        &&
+          (
+            <CircleButton 
+              Icon={PlusCircleIcon} 
+              iconSize={48} 
+              colorIcon={theme.COLORS.WHITE} 
+              onPress={() => setCreateModalVisible(true)}
+            />
+          )
 
-      <CircleButton 
-        Icon={PlusCircleIcon} 
-        iconSize={48} 
-        colorIcon={theme.COLORS.WHITE} 
-        onPress={() => setCreateModalVisible(true)}
-      />
+      }
     </Container>
   );
 }
