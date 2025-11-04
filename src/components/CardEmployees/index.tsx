@@ -1,30 +1,33 @@
-import { 
-  CardContainer, Title, SubTitle, InfoContainer, TagContainer, TagText 
+
+import {
+  CardContainer, Title, SubTitle, InfoContainer, TagContainer, TagText
 } from "./styles";
+
+type RoleType = 'admin' | 'collaborator' | 'zeladoria';
 
 type Props = {
   title: string;
   subtitle?: string;
-  isAdmin: boolean;
+  roleLabel: string;
 }
 
-export function CardEmployees({ title, subtitle, isAdmin }: Props) {
+export function CardEmployees({ title, subtitle, roleLabel }: Props) {
+  const tagType: RoleType =
+    roleLabel.toLowerCase() === 'admin'
+      ? 'admin'
+      : roleLabel.toLowerCase() === 'zeladoria'
+        ? 'zeladoria'
+        : 'collaborator';
   return (
     <CardContainer>
       <InfoContainer>
         <Title>{title}</Title>
         {subtitle && <SubTitle>{subtitle}</SubTitle>}
       </InfoContainer>
-      
-      {isAdmin ? (
-        <TagContainer type="admin">
-          <TagText type="admin">Admin</TagText>
-        </TagContainer>
-      ) : (
-        <TagContainer type="collaborator">
-          <TagText type="collaborator">Colaborador</TagText>
-        </TagContainer>
-      )}
+
+      <TagContainer type={tagType}>
+        <TagText type={tagType}>{roleLabel}</TagText>
+      </TagContainer>
     </CardContainer>
   )
 }
