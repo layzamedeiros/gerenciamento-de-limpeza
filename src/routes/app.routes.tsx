@@ -3,10 +3,12 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import { BottomApp } from './bottomApp.routes'; 
 import { ClassRoom } from '@screens/ClassRoom';  
+import { Notification } from '@screens/Notification';
 
 export type AppRoutesParamList = {
   MainTabs: undefined; 
   ClassRoom: undefined; 
+  Notification: undefined;
 };
 
 const { Navigator, Screen } = createStackNavigator();
@@ -23,6 +25,12 @@ export function AppRoutes() {
         name="ClassRoom" 
         component={ClassRoom} 
       />
+
+      <Screen 
+        name="Notification" 
+        component={Notification} 
+      />
+
     </Navigator>
   );
 }
