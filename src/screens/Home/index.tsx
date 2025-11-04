@@ -7,7 +7,7 @@ import { ptBR } from 'date-fns/locale';
 import { Header } from "@components/Header";
 import { Container, ContainerButton, Main, Title } from "./styles";
 import { DashboardButton } from "@components/DashboardButton";
-import { BroomIcon, ClockCountdownIcon } from "phosphor-react-native";
+import { BroomIcon } from "phosphor-react-native";
 
 import { StackNavigationProp } from '@react-navigation/stack';
 import { AppRoutesParamList } from '@routes/app.routes';
@@ -26,27 +26,33 @@ export function Home() {
   );
 
   const dashboardStats = useMemo(() => {
-    if (rooms.length === 0) {
-      return { 
-        pendentes: 0, 
-        progresso: 0, 
-        ultimaLimpezaSubtitle: '',
-        limpezaEmAndamentoSubtitle: '',
+    const salasAtivas = rooms.filter(s => s.ativa === true);
+
+    if (salasAtivas.length === 0) {
+      return {
+        pendentes: 0,
+        progresso: 0,
+        limpas: 0,
+        ultimaLimpezaSubtitle: 'Nenhuma registrada',
+        limpezaEmAndamentoSubtitle: 'Nenhuma em andamento',
       };
     }
 
-    const totalSalas = rooms.length;
+    const totalSalas = salasAtivas.length;
 
-    const pendentes = rooms.filter(s => s.status_limpeza === 'Limpeza Pendente' || s.status_limpeza === 'Suja').length;
-    
-    const limpas = rooms.filter(s => s.status_limpeza === 'Limpa').length;
-    const progresso = Math.round((limpas / totalSalas) * 100);
-    
-    const ultimaLimpezaObj = rooms
+    const pendentes = salasAtivas.filter(
+      s => s.status_limpeza === 'Limpeza Pendente' || s.status_limpeza === 'Suja'
+    ).length;
+
+    const limpas = salasAtivas.filter(s => s.status_limpeza === 'Limpa').length;
+
+    const progresso = totalSalas > 0 ? Math.round((limpas / totalSalas) * 100) : 0;
+
+    const ultimaLimpezaObj = salasAtivas 
       .filter(s => s.ultima_limpeza_data_hora)
       .sort((a, b) => new Date(b.ultima_limpeza_data_hora!).getTime() - new Date(a.ultima_limpeza_data_hora!).getTime())[0];
 
-    const limpezaEmAndamentoObj = rooms.filter(s => s.status_limpeza === 'Em Limpeza');
+    // const limpezaEmAndamentoObj = salasAtivas.filter(s => s.status_limpeza === 'Em Limpeza'); 
 
     let ultimaLimpezaSubtitle = 'Nenhuma registrada';
 
