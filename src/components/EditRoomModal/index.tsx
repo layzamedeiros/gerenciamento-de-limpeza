@@ -82,7 +82,7 @@ export function EditRoomModal({ room, onClose, onRoomUpdated, ...rest }: Props) 
     setIsUpdating(true);
 
     try {
-      updateRoom(room.qr_code_id, data);
+      await updateRoom(room.qr_code_id, data);
 
       Toast.show({
         type: "success",

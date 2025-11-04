@@ -90,6 +90,8 @@ export const createRoom = async (data: CreateRoomFormData) => {
     data.responsaveis.forEach(responsavel => {
       formData.append("responsaveis", responsavel);
     });
+  } else {
+    formData.append("responsaveis", "");
   }
 
   try {
@@ -124,7 +126,11 @@ export const updateRoom = async (qr_code_id: string, data: EditRoomFormData) => 
     data.responsaveis.forEach(responsavel => {
       formData.append("responsaveis", responsavel);
     });
+  } else {
+    formData.append("responsaveis", "");
   }
+
+  console.log(formData)
 
   try {
     const response = await api.patch(`/salas/${qr_code_id}/`, formData, {

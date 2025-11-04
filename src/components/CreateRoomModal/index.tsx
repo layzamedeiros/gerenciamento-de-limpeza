@@ -98,7 +98,7 @@ export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
     setIsCreating(true);
 
     try {
-      createRoom(data);
+      await createRoom(data);
 
       Toast.show({
         type: "success",
