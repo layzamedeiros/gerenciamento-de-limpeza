@@ -17,7 +17,7 @@ export const Content = styled.View`
   padding: 20px;
   flex: 1;
   align-items: center;
-  gap: 35px;
+  gap: 25px;
   flex-direction: row;
 `;
 
@@ -28,6 +28,7 @@ export const IconWrapper = styled.View`
 export const Description = styled.View`
   flex-direction: column;
   justify-content: center;
+  width: 80%;
 `;
 
 export const Title = styled.Text`
