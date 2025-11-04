@@ -25,6 +25,10 @@ export function Dropdown({ dropdownText, content, pressed, errorMessage, value =
     }
 
     onChange(newSelected);
+
+    if (rest.onPress) {
+      rest.onPress(null as any)
+    }
   }  
 
   const displayText = value.length > 0 ? value.join(', ') : "Selecionar zeladores";
