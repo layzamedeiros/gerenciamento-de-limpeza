@@ -1,8 +1,8 @@
 import styled, { css } from "styled-components/native";
 
 type TagProps = {
-  type: 'admin' | 'collaborator';
-}
+  type: "admin" | "collaborator" | "zeladoria";
+};
 
 export const CardContainer = styled.View`
   width: 100%;
@@ -40,14 +40,33 @@ export const TagContainer = styled.View<TagProps>`
   padding: 4px 12px;
   border-radius: 20px;
   margin-left: 10px;
-  background-color: ${({ theme, type }) => 
-    type === 'admin' ? theme.COLORS.PRIMARY_LIGHT : `${theme.COLORS.ACCENT}30`}; 
+  background-color: ${({ theme, type }) => {
+    switch (type) {
+      case "admin":
+        return theme.COLORS.PRIMARY_LIGHT;
+      case "zeladoria":
+        return theme.COLORS.GREEN_LIGHT;
+      case "collaborator":
+      default:
+        return `${theme.COLORS.ACCENT}30`;
+    }
+  }};
 `;
 
 export const TagText = styled.Text<TagProps>`
   font-size: 12px;
   ${({ theme, type }) => css`
     font-family: ${theme.FONT_FAMILY.BOLD};
-    color: ${type === 'admin' ? theme.COLORS.PRIMARY : theme.COLORS.ACCENT};
+    color: ${() => {
+      switch (type) {
+        case "admin":
+          return theme.COLORS.PRIMARY;
+        case "zeladoria":
+          return theme.COLORS.GREEN;
+        case "collaborator":
+        default:
+          return theme.COLORS.ACCENT;
+      }
+    }};
   `}
 `;
