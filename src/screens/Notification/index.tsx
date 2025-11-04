@@ -1,10 +1,16 @@
-import React from 'react'; // Removemos o useEffect
+import React from 'react'; 
 import { FlatList, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { CaretLeftIcon, Check, Clock, Warning } from 'phosphor-react-native';
 
+import { formatDistanceToNow, parseISO } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+
 import { Header } from "@components/Header";
 import theme from "@theme/index";
+
+import { useNotifications } from '@contexts/NotificationContext';
+import { Notification as ApiNotification } from '@services/notification.service';
 
 import {
   Container,
@@ -25,62 +31,38 @@ import {
   NotificationTime,
 } from "./styles";
 
-// 1. DEFINIMOS o tipo 'NotificationType' localmente
-type NotificationType = {
-  id: number;
-  lida: boolean;
-  message: string;
-  time: string;
-  type: 'warning' | 'info';
-};
+function inferNotificationType(message: string): 'warning' | 'info' {
+  const lowerCaseMessage = message.toLowerCase();
+  if (lowerCaseMessage.includes('suja') || lowerCaseMessage.includes('reportada')) {
+    return 'warning';
+  }
+  if (lowerCaseMessage.includes('expirou')) {
+    return 'info';
+  }
+  return 'info'; // Padrão
+}
 
-// 2. CRIAMOS os dados de exemplo (mock)
-const MOCK_NOTIFICATIONS: NotificationType[] = [
-  {
-    id: 1,
-    lida: false, // Não lida
-    message: "A sala Laboratório de informática foi reportada com suja.",
-    time: "há 5 minutos",
-    type: "warning"
-  },
-  {
-    id: 2,
-    lida: false, // Não lida
-    message: "A limpeza da Sala Teórica 06 expirou.",
-    time: "há 2 horas",
-    type: "info"
-  },
-  {
-    id: 3,
-    lida: true, // Lida
-    message: "A limpeza da Sala Teórica 06 expirou.",
-    time: "há 2 horas",
-    type: "info"
-  },
-  {
-    id: 4,
-    lida: true, // Lida
-    message: "A sala Laboratório de informática foi reportada com suja.",
-    time: "há 5 dias",
-    type: "warning"
-  },
-];
+function formatRelativeTime(dateString: string): string {
+  try {
+    const date = parseISO(dateString);
+    return formatDistanceToNow(date, { addSuffix: true, locale: ptBR });
+  } catch (error) {
+    console.error("Erro ao formatar data:", error);
+    return "agora";
+  }
+}
 
 export function Notification() {
   const navigation = useNavigation();
-  const notifications = MOCK_NOTIFICATIONS;
-  const loading = false; 
-  const markAsRead = (id: number) => {
-    console.log(`[Mock] Marcar como lida: ${id}`);
-  };
 
-  const markAllAsRead = () => {
-    console.log("[Mock] Marcar todas como lidas");
-  };
+  const { 
+    notifications, 
+    isLoading: loading,
+    markAsRead, 
+    markAllAsRead 
+  } = useNotifications();
 
-  // REMOVEMOS o useEffect
 
-  // Função para renderizar o ícone correto (sem alterações)
   function getNotificationIcon(type: 'warning' | 'info') {
     if (type === 'warning') {
       return <Warning size={24} color={theme.COLORS.ACCENT} />;
@@ -88,23 +70,25 @@ export function Notification() {
     return <Clock size={24} color={theme.COLORS.ACCENT} />;
   }
 
-  // Renderiza cada item da lista (sem alterações)
-  function renderNotificationItem({ item }: { item: NotificationType }) {
+  function renderNotificationItem({ item }: { item: ApiNotification }) {
+    const type = inferNotificationType(item.mensagem);
+    const time = formatRelativeTime(item.data_criacao);
+
     return (
-      <NotificationItemContainer onPress={() => markAsRead(item.id)}>
+      <NotificationItemContainer onPress={() => !item.lida && markAsRead(item.id)}>
         {!item.lida && <UnreadIndicator />}
 
         <IconContainer>
-          {getNotificationIcon(item.type)}
+          {getNotificationIcon(type)}
         </IconContainer>
 
         <MainContent>
           <TopRow>
             <NotificationText>
-              {item.message}
+              {item.mensagem}
             </NotificationText>
             <NotificationTime>
-              {item.time}
+              {time}
             </NotificationTime>
           </TopRow>
         </MainContent>
@@ -112,7 +96,7 @@ export function Notification() {
     );
   }
 
-  // Conteúdo principal da tela (sem alterações)
+
   function renderContent() {
     if (loading) {
       return (
@@ -124,7 +108,7 @@ export function Notification() {
 
     return (
       <FlatList
-        data={notifications} // <-- Agora usa os dados de exemplo
+        data={notifications}
         keyExtractor={item => String(item.id)}
         renderItem={renderNotificationItem}
         ListEmptyComponent={
