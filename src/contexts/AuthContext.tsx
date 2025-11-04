@@ -5,11 +5,16 @@ import { User } from '@services/employee.service';
 
 interface AuthUser extends User {}
 
+const ZELADORIA_GROUP_ID = 1;
+const SOLICITANTE_GROUP_ID = 2;
+
 interface AuthContextData {
   user: AuthUser | null;
   token: string | null;
   isLoading: boolean;
   isAppLoading: boolean;
+  isZeladoria: boolean; 
+  isSolicitante: boolean; 
   isAdmin: boolean; 
   login: (username: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -25,6 +30,10 @@ function AuthProvider({ children }: { children: ReactNode }) {
   const [isAppLoading, setIsAppLoading] = useState(true);
 
   const isAdmin = !!user?.is_superuser;
+  
+  const isZeladoria = !isAdmin && !!user?.groups.includes(ZELADORIA_GROUP_ID);
+  
+  const isSolicitante = !isAdmin && !isZeladoria && !!user?.groups.includes(SOLICITANTE_GROUP_ID);
 
   useEffect(() => {
     async function loadStorageData() {
@@ -88,7 +97,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, isAppLoading, isAdmin, login, logout, refreshUser }}>
+    <AuthContext.Provider value={{ user, token, isLoading, isSolicitante, isZeladoria, isAppLoading, isAdmin, login, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );
