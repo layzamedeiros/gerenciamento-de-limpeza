@@ -6,7 +6,7 @@ type TagProps = {
 
 export const CardContainer = styled.View`
   width: 100%;
-  min-height: 90px;
+  min-height: 75px;
   border-radius: 11px;
   background-color: ${({ theme }) => theme.COLORS.WHITE};
   flex-direction: row;

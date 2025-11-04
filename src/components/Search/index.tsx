@@ -4,9 +4,10 @@ import { Container, InputContainer, SearchIcon, Input, FilterButton, FilterIcon 
 
 interface Props extends TextInputProps {
   onFilterPress: () => void;
+  filter?: boolean;
 }
 
-export function SearchBar({ placeholder, onFilterPress, ...rest }: Props) {
+export function SearchBar({ placeholder, onFilterPress, filter = true, ...rest }: Props) {
   return (
     <Container>
       <InputContainer>
@@ -17,9 +18,11 @@ export function SearchBar({ placeholder, onFilterPress, ...rest }: Props) {
         />
       </InputContainer>
 
-      <FilterButton onPress={onFilterPress}>
-        <FilterIcon />
-      </FilterButton>
+      { !filter &&
+        <FilterButton onPress={onFilterPress}>
+          <FilterIcon />
+        </FilterButton>
+      }
     </Container>
   );
 }

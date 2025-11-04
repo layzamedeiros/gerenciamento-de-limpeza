@@ -25,6 +25,7 @@ import { deleteRoom, reportDirtyRoom, Room } from "@services/rooms.service";
 
 import Toast from "react-native-toast-message";
 import { AppError } from "src/utils/AppError";
+import { FilterAdvancedRooms } from "@components/FilterAdvancedRooms";
 
 export function ClassRoom() {
   const { isAdmin, isMemberOfSolicitante } = useAuth(); 
@@ -34,6 +35,7 @@ export function ClassRoom() {
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const [isEditModalVisible, setEditModalVisible] = useState(false);
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
   
   const [isReportModalVisible, setReportModalVisible] = useState(false);
   const [isReporting, setIsReporting] = useState(false);
@@ -169,8 +171,7 @@ export function ClassRoom() {
 
 
   const handleFilterPress = () => {
-    console.log("Filtros avançados clicado");
-    console.log(isAdmin);
+    setIsFilterModalVisible(true);
   };
 
   return (
@@ -182,6 +183,7 @@ export function ClassRoom() {
           onChangeText={setSearchTerm}
           onFilterPress={handleFilterPress}
           placeholder="Buscar sala"
+          filter={false}
         />
 
         <FilterContainer>
@@ -257,6 +259,12 @@ export function ClassRoom() {
             />
           )}
 
+        { isAdmin &&
+          <FilterAdvancedRooms
+            visible={isFilterModalVisible}
+            onClose={() => setIsFilterModalVisible(false)}
+          />
+        }
     </Container>
   );
 }

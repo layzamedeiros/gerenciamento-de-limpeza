@@ -63,7 +63,7 @@ export function ManageEmployee() {
           placeholder='Buscar usuário'
           onChangeText={setSearchTerm}
           value={searchTerm}
-          onFilterPress={() => console.log('Filtro detalhado pressionado')}
+          onFilterPress={() => {}}
         />
 
         <FilterContainer>
