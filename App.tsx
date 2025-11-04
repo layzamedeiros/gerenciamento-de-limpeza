@@ -33,8 +33,8 @@ export default function App() {
           <AuthProvider>
             <RoomsProvider>
               <EmployeeProvider>
-                <Routes />
-                <Toast />
+                  <Routes />
+                  <Toast />
               </EmployeeProvider>
             </RoomsProvider>
           </AuthProvider>

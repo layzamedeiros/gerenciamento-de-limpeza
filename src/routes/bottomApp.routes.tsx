@@ -11,12 +11,14 @@ import { Account } from "@screens/Account";
 import { ManageEmployee } from "@screens/ManageEmployee";
 import { TabBarItem } from "@components/TabBarItem"; 
 import { TouchableOpacity } from "react-native";
+import { ReportRoom } from "@screens/ReportRoom";
 
 export type BottomTabParamList = {
   Home: undefined; 
   ClassRoom: undefined;
   ManageEmployee: undefined;
   RecordCleaning: undefined;
+  ReportRoom: undefined;
   Account: undefined;
 };
 
@@ -26,7 +28,7 @@ export function BottomApp() {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   
-  const { isAdmin } = useAuth(); 
+  const { isAdmin, isZeladoria, isSolicitante } = useAuth();
 
   return (
     <Navigator
@@ -48,57 +50,82 @@ export function BottomApp() {
         tabBarInactiveTintColor: theme.COLORS.DISABLED, 
       }}
     >
-      <Screen 
-        name="Home"
-        component={Home}
-        options={{
-          tabBarIcon: ({ color, focused, size }) => (
-            <TabBarItem name="Início" iconName="Home" focused={focused} color={color} size={size} />
-          )
-        }}
-      />
-
-      <Screen 
-        name="ClassRoom"
-        component={ClassRoom}
-        options={{
-          tabBarIcon: ({ color, focused, size }) => (
-            <TabBarItem name="Salas" iconName="ClassRoom" focused={focused} color={color} size={size} />
-          )
-        }}
-      />
-      
-      {isAdmin ? (
-        <Screen 
-          name="ManageEmployee"
-          component={ManageEmployee}
-          options={{
-            tabBarIcon: ({ color, focused, size }) => (
-              <TabBarItem name="Usuários" iconName="ManageEmployee" focused={focused} color={color} size={size} />
-            )
-          }}
-        />
+      {isSolicitante ? (
+        <>
+          <Screen 
+            name="ReportRoom"
+            component={ReportRoom}
+            options={{
+              tabBarIcon: ({ color, focused, size }) => (
+                <TabBarItem name="Reportar Sala" iconName="ReportRoom" focused={focused} color={color} size={size} />
+              )
+            }}
+          />
+          <Screen 
+            name="Account"
+            component={Account}
+            options={{
+              tabBarIcon: ({ color, focused, size }) => (
+                <TabBarItem name="Minha Conta" iconName="Account" focused={focused} color={color} size={size} />
+              )
+            }}
+          />
+        </>
       ) : (
-        <Screen 
-          name="RecordCleaning"
-          component={RecordCleaning}
-          options={{
-            tabBarIcon: ({ color, focused, size }) => (
-              <TabBarItem name="Limpar" iconName="RecordCleaning" focused={focused} color={color} size={size} />
-            )
-          }}
-        />
-      )}
+        <>
+          <Screen 
+            name="Home"
+            component={Home}
+            options={{
+              tabBarIcon: ({ color, focused, size }) => (
+                <TabBarItem name="Início" iconName="Home" focused={focused} color={color} size={size} />
+              )
+            }}
+          />
 
-      <Screen 
-        name="Account"
-        component={Account}
-        options={{
-          tabBarIcon: ({ color, focused, size }) => (
-            <TabBarItem name="Minha Conta" iconName="Account" focused={focused} color={color} size={size} />
-          )
-        }}
-      />
+          <Screen 
+            name="ClassRoom"
+            component={ClassRoom}
+            options={{
+              tabBarIcon: ({ color, focused, size }) => (
+                <TabBarItem name="Salas" iconName="ClassRoom" focused={focused} color={color} size={size} />
+              )
+            }}
+          />
+          
+          {isAdmin ? (
+            <Screen 
+              name="ManageEmployee"
+              component={ManageEmployee}
+              options={{
+                tabBarIcon: ({ color, focused, size }) => (
+                  <TabBarItem name="Usuários" iconName="ManageEmployee" focused={focused} color={color} size={size} />
+                )
+              }}
+            />
+          ) : isZeladoria ? ( 
+            <Screen 
+              name="RecordCleaning"
+              component={RecordCleaning}
+              options={{
+                tabBarIcon: ({ color, focused, size }) => (
+                  <TabBarItem name="Limpar" iconName="RecordCleaning" focused={focused} color={color} size={size} />
+                )
+              }}
+            />
+          ) : null }
+
+          <Screen 
+            name="Account"
+            component={Account}
+            options={{
+              tabBarIcon: ({ color, focused, size }) => (
+                <TabBarItem name="Minha Conta" iconName="Account" focused={focused} color={color} size={size} />
+              )
+            }}
+          />
+        </>
+      )}
     </Navigator>
   )
 }
