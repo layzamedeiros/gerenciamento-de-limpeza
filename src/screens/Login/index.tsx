@@ -106,7 +106,7 @@ export function Login() {
 
           <LoginButton onPress={handleLogin} disabled={isLoading}>
             {isLoading ? (
-              <ActivityIndicator size="large" color={theme.COLORS.PRIMARY} />
+              <ActivityIndicator size="large" color={theme.COLORS.WHITE} />
             ) : (
               <LoginButtonText>Entrar</LoginButtonText>
             )}

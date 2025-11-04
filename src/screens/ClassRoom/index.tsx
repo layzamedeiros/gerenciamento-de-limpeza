@@ -58,13 +58,17 @@ export function ClassRoom() {
   }, [rooms, activeFilter, searchTerm]);
 
   const handleEdit = (room: Room) => {
-    setSelectedRoom(room);
-    setEditModalVisible(true);
+    if (isAdmin) {
+      setSelectedRoom(room);
+      setEditModalVisible(true);
+    }
   };
 
   const handleOpenDeleteModal =(room: Room) => {
-    setSelectedRoom(room);
-    setDeleteModalVisible(true);
+    if (isAdmin) {
+      setSelectedRoom(room);
+      setDeleteModalVisible(true);
+    }
   };
 
   const handleDelete = async () => {
@@ -108,6 +112,7 @@ export function ClassRoom() {
 
   const handleFilterPress = () => {
     console.log("Filtros avançados clicado");
+    console.log(isAdmin);
   };
 
   return (
@@ -142,7 +147,8 @@ export function ClassRoom() {
         />
       </Content>
       
-      { isAdmin &&
+
+        { isAdmin &&
           (
             <CreateRoomModal
               visible={isCreateModalVisible}
@@ -150,7 +156,9 @@ export function ClassRoom() {
               onRoomCreated={refreshRooms}
             />
           )
-          &&
+        }
+          
+        {  isAdmin &&
           (
             <EditRoomModal
               visible={isEditModalVisible}
@@ -158,8 +166,8 @@ export function ClassRoom() {
               onRoomUpdated={refreshRooms}
               room={selectedRoom}
             />
-          )
-          &&
+          )}
+          {isAdmin &&
           (        
             <ConfirmationModal
               visible={isDeleteModalVisible}
@@ -169,8 +177,8 @@ export function ClassRoom() {
             >
               Deseja excluir <MessageHighlight>{selectedRoom?.nome_numero}</MessageHighlight>?
             </ConfirmationModal>
-          )
-        &&
+          )}
+        {isAdmin&&
           (
             <CircleButton 
               Icon={PlusCircleIcon} 
@@ -178,9 +186,10 @@ export function ClassRoom() {
               colorIcon={theme.COLORS.WHITE} 
               onPress={() => setCreateModalVisible(true)}
             />
-          )
+          )}
 
-      }
+      
+          
     </Container>
   );
 }
