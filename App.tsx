@@ -1,4 +1,3 @@
-// O import da StatusBar agora vem de 'expo-status-bar'
 import { StatusBar } from 'expo-status-bar';
 import { ThemeProvider } from 'styled-components/native';
 import { useFonts, Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold } from '@expo-google-fonts/inter';
@@ -12,6 +11,7 @@ import { AuthProvider } from '@contexts/AuthContext';
 import { RoomsProvider } from '@contexts/RoomsContext';
 import { EmployeeProvider } from '@contexts/EmployeeContext';
 import { MenuProvider } from 'react-native-popup-menu';
+import { NotificationProvider } from '@contexts/NotificationContext';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -33,8 +33,10 @@ export default function App() {
           <AuthProvider>
             <RoomsProvider>
               <EmployeeProvider>
+                <NotificationProvider>
                   <Routes />
                   <Toast />
+                </NotificationProvider>
               </EmployeeProvider>
             </RoomsProvider>
           </AuthProvider>

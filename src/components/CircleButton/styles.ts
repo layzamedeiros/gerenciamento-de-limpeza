@@ -6,6 +6,6 @@ export const Container = styled.Pressable`
   border-radius: 50%;
   position: absolute;
   z-index: 50;
-  right: 20;
-  bottom: 15;
+  right: 20px;
+  bottom: 15px;
 `;
