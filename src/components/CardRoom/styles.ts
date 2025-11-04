@@ -139,3 +139,20 @@ export const MenuSeparator = styled.View`
   height: 0.5px;
   background-color: ${({ theme }) => theme.COLORS.BORDER};
 `;
+
+export const InativaTag = styled.View`
+  padding: 1.5px;
+  border-radius: 6px;
+  width: 32%; 
+  align-items: center;
+  margin: 2px 0px 0 0;
+  background-color: ${({ theme }) => theme.COLORS.DISABLED}; 
+`;
+
+export const InativaTagText = styled.Text`
+  font-size: 11px;
+  ${({ theme }) => css`
+    font-family: ${theme.FONT_FAMILY.BOLD};
+    color: ${theme.COLORS.TITLE}; 
+  `}
+`;

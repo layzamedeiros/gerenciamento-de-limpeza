@@ -4,8 +4,8 @@ import { DotsThreeVerticalIcon, PencilSimpleIcon, SealWarningIcon, TrashIcon } f
 import { useTheme } from "styled-components/native";
 import { Room } from '@services/rooms.service';
 
-import {  CardContainer, Title, SubTitle, CardHeader, StatusTag, StatusTagText, ExpandedContent, DetailsContainer, RoomImage, MenuItem, MenuSeparator, MenuItemText, Line, DetailLabel, } from "./styles";
-import { Fragment, useEffect, useState } from 'react';
+import {  CardContainer, Title, SubTitle, CardHeader, StatusTag, StatusTagText, ExpandedContent, DetailsContainer, RoomImage, MenuItem, MenuSeparator, MenuItemText, Line, DetailLabel, InativaTag, InativaTagText, } from "./styles";
+import { useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 import api from '@services/api';
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
@@ -25,12 +25,12 @@ export function CardRoom({ room, isSolicitante = false, isAdmin = false, onEdit,
   const [roomStatusName, setRoomStatusName] = useState<'Limpa' | 'Em Limpeza' | 'Limpeza Pendente' | 'Limpeza Urgente'>();
 
   useEffect(() => {
-    if (room.status_limpeza === "Suja") {
+    if (room.status_limpeza === "Suja") { //
       setRoomStatusName("Limpeza Urgente");
     } else {
       setRoomStatusName(room.status_limpeza);
     }
-  }, []);
+  }, [room.status_limpeza]); 
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) {
@@ -43,17 +43,32 @@ export function CardRoom({ room, isSolicitante = false, isAdmin = false, onEdit,
     }
   };
   
+  const canReport = room.ativa && isSolicitante && (room.status_limpeza === 'Limpa' || room.status_limpeza === 'Limpeza Pendente');
+  
+  const showMenu = isAdmin || canReport;
+
   return (
     <TouchableOpacity style={{ marginHorizontal: 2, marginTop: 2 }} onPress={() => setIsExpanded(!isExpanded)} activeOpacity={0.8}>
       <CardContainer style={{ boxShadow: `0px 0.5px 3px ${theme.COLORS.BLACK_SHADOW}` }}>
         <CardHeader>
           <Title>{room.nome_numero}</Title>
-          <StatusTag status={room.status_limpeza}>
-            <StatusTagText status={room.status_limpeza}>
-              {roomStatusName}
-            </StatusTagText>
-          </StatusTag>
-          {(isAdmin || isSolicitante) && (
+        {room.ativa ? (
+            
+            <StatusTag status={room.status_limpeza}>
+              <StatusTagText status={room.status_limpeza}>
+                {roomStatusName}
+              </StatusTagText>
+            </StatusTag>
+
+          ) : (
+            
+            <InativaTag> 
+              <InativaTagText>Inativa</InativaTagText>
+            </InativaTag>
+            
+          )}
+          
+          {showMenu && ( 
             <Menu>
               <MenuTrigger>
                 <DotsThreeVerticalIcon size={24} color={theme.COLORS.TITLE} weight="bold" />
@@ -63,11 +78,12 @@ export function CardRoom({ room, isSolicitante = false, isAdmin = false, onEdit,
                 optionsContainer: {
                   backgroundColor: theme.COLORS.SURFACE,
                   borderRadius: 8,
-                  marginTop: 30
+                  marginTop: 30,
                 },
               }}>
+
                 {isAdmin && (
-                  <Fragment>
+                  <>
                     <MenuOption onSelect={() => onEdit(room)}>
                       <MenuItem> 
                         <MenuItemText>Editar</MenuItemText>
@@ -81,20 +97,22 @@ export function CardRoom({ room, isSolicitante = false, isAdmin = false, onEdit,
                         <TrashIcon size={20} color={theme.COLORS.DANGER} />
                       </MenuItem>
                     </MenuOption>
-                  </Fragment>
+                  </>
                 )}
 
-                {(isAdmin || isSolicitante) && (
-                  <Fragment>
-                    {isAdmin && <MenuSeparator />}
+                {canReport && ( 
+                  <>
+                    {isAdmin && <MenuSeparator />} 
+                    
                     <MenuOption onSelect={() => onReport(room)}>
                       <MenuItem>
                         <MenuItemText isDelete>Solicitar Limpeza</MenuItemText>
                         <SealWarningIcon size={20} color={theme.COLORS.DANGER}/>
                       </MenuItem>
                     </MenuOption>
-                  </Fragment>
+                  </>
                 )}
+                
               </MenuOptions>
             </Menu>
           )}
