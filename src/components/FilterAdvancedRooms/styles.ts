@@ -53,7 +53,7 @@ export const CleanFilterButton = styled.TouchableOpacity.attrs({
 export const StatusRoomButtonContainer = styled.View`
   flex-direction: row;
   align-items: center;
-  gap: 26px;
+  gap: 12px;
 `;
 
 export const StatusRoomButton = styled.TouchableOpacity.attrs({ 

@@ -1,6 +1,7 @@
 import { Modal, ModalProps } from "react-native";
 import { CapacityContainer, CleanFilterButton, CleanFilterText, InputContainer, Label, LabelContainer, ModalButton, ModalButtons, ModalButtonText, ModalContainer, ModalOverlay, ModalTitle, StatusRoomButton, StatusRoomButtonContainer, StatusRoomText } from "./styles";
 import { FormInput } from "@components/FormInput";
+import { Dropdown } from "@components/Dropdowm";
 
 type Props = ModalProps & {
   onClose: () => void;
@@ -18,7 +19,7 @@ export function FilterAdvancedRooms({ onClose, ...rest }: Props) {
               <Label>Status da sala</Label>
 
               <CleanFilterButton>
-                <CleanFilterText>Limpar filtro</CleanFilterText>
+                <CleanFilterText>Limpar filtros</CleanFilterText>
               </CleanFilterButton>
             </LabelContainer>
 
@@ -57,8 +58,8 @@ export function FilterAdvancedRooms({ onClose, ...rest }: Props) {
           <InputContainer>
             <Label>Responsável</Label>
 
-            <FormInput 
-              placeholder="Ex: Zelador"
+            <Dropdown 
+              
             />
           </InputContainer>
 
@@ -74,7 +75,7 @@ export function FilterAdvancedRooms({ onClose, ...rest }: Props) {
               {/* {isCreating ? (
                 <ActivityIndicator color="#FFF" />
               ) : ( */}
-                <ModalButtonText variant="success">Cadastrar</ModalButtonText>
+                <ModalButtonText variant="success">Filtrar</ModalButtonText>
               {/* //  */}
             </ModalButton>
           </ModalButtons>

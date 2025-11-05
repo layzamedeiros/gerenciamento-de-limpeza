@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components/native';
 import { TouchableOpacity } from 'react-native';
-import { CameraPlusIcon } from 'phosphor-react-native';
+import { CameraPlusIcon, XCircleIcon } from 'phosphor-react-native';
 
 export const ModalOverlay = styled.Pressable`
   flex: 1;
@@ -110,17 +110,19 @@ export const InputName = styled.Text`
   font-size: 14px;
 `
 
-export const AddPhotoRoomContainer = styled.Pressable`
+export const AddPhotoRoomContainer = styled.Pressable<{ photoExists: boolean }>`
+  ${({ theme, photoExists }) => css`
+    border-color: ${theme.COLORS.BORDER};
+    height: ${photoExists ? "110px" : "60px"};
+    width: ${photoExists ? "40%" : "auto"};
+  `}
   flex-direction: row;
   border-width: 1px;
-  border-color: ${({ theme }) => theme.COLORS.BORDER};
-  border-style: dotted;
+  border-style: dashed;
   border-radius: 8px;
-  padding: 0 5px;
   gap: 6px;
   align-items: center;
   justify-content: center;
-  height: 60px;
 `;
 
 export const PhotoIcon = styled(CameraPlusIcon).attrs(({ theme }) => ({
@@ -133,4 +135,76 @@ export const PhotoText = styled.Text`
     font-family: ${theme.FONT_FAMILY.REGULAR};
     color: ${theme.COLORS.TITLE};
   `}
+  text-align: center;
+  font-size: 12px;
+  
 `
+
+export const PhotoPreview = styled.Image`
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+`;
+
+export const RemovePhotoButton = styled(TouchableOpacity).attrs({
+  activeOpacity: 0.7
+})`
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  justify-content: center;
+  align-items: center;
+  padding: 2px;
+`;
+
+export const RemovePhotoIcon = styled(XCircleIcon)`
+  background-color: ${({ theme }) => theme.COLORS.PRIMARY_LIGHT};
+  border-radius: 50%;
+  color: #004A8D;
+  font-size: 16px;
+  font-weight: bold;
+`;
+
+// --- Estilos para o Modal da Câmera ---
+
+export const CameraModalContainer = styled.View`
+  flex: 1;
+  background-color: black;
+`;
+
+export const CameraPermissionDenied = styled.View`
+  flex: 1;
+  background-color: black;
+  justify-content: center;
+  align-items: center;
+`;
+
+
+export const CameraControls = styled.View`
+  position: absolute;
+  bottom: 0;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background-color: rgba(0,0,0,0.4);
+  padding: 20px 30px;
+`;
+
+export const CameraButton = styled(TouchableOpacity)`
+  padding: 10px;
+`;
+
+export const CameraButtonText = styled.Text`
+  color: white;
+  font-size: 16px;
+`;
+
+export const CaptureButton = styled.View`
+  width: 70px;
+  height: 70px;
+  border-radius: 35px;
+  background-color: #FFF;
+  border-width: 5px;
+  border-color: grey;
+`;

@@ -72,7 +72,7 @@ export const fetchCleaningHistory = async (): Promise<CleaningRecord[]> => {
 };
 
 
-export const createRoom = async (data: CreateRoomFormData) => {
+export const createRoom = async (data: CreateRoomFormData, photoUri: string | null) => {
   const formData = new FormData();
 
   formData.append("nome_numero", data.nome_numero);
@@ -95,6 +95,17 @@ export const createRoom = async (data: CreateRoomFormData) => {
     });
   } else {
     formData.append("responsaveis", "");
+  }
+
+  if (photoUri) {
+    const filename = photoUri.split('/').pop() || 'foto_sala.jpg';
+    console.log(filename)
+
+    formData.append('imagem', { 
+      uri: photoUri,
+      name: filename,
+      type: 'image/jpeg' 
+    } as any);
   }
 
   try {

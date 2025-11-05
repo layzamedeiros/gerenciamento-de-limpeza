@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from "react";
-import { Modal, ActivityIndicator, ModalProps, ScrollView } from "react-native";
+import React, { useCallback, useRef, useState } from "react";
+import { Modal, Modal as CameraModal, ActivityIndicator, ModalProps, ScrollView, Image, TouchableOpacity } from "react-native";
 import {
   ModalOverlay,
   ModalContainer,
@@ -12,7 +12,16 @@ import {
   PhotoIcon,
   PhotoText,
   InputName,
-  AddPhotoRoomContainer
+  AddPhotoRoomContainer,
+  PhotoPreview,
+  RemovePhotoButton,
+  CameraModalContainer,
+  CameraPermissionDenied,
+  CameraButtonText,
+  CameraControls,
+  CameraButton,
+  CaptureButton,
+  RemovePhotoIcon
 } from "./styles";
 
 import { createRoom } from "@services/rooms.service";
@@ -33,6 +42,11 @@ type Props = ModalProps & {
   onRoomCreated: () => Promise<void>;
 };
 
+import { CameraView, useCameraPermissions } from "expo-camera";
+import { Text } from "react-native";
+import { StyleSheet } from "react-native";
+import { View } from "react-native";
+
 const createRoomFormSchema = z.object({
   nome_numero: z.string().trim().nonempty("Campo obrigatório"),
   localizacao: z.string().trim().nonempty("Campo obrigatório"),
@@ -49,7 +63,11 @@ export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
   const [isCreating, setIsCreating] = useState(false);
   const [responsableButtonPressed, setResponsableButtonPressed] = useState(false);
   const [responsables, setResponsables] = useState<User[]>({} as User[]);
-  const [photo, setPhoto] = useState(false);
+  const [photoUri, setPhotoUri] = useState<string | null>(null);
+
+  const [isCameraVisible, setCameraVisible] = useState(false);
+  const [permission, requestPermission] = useCameraPermissions();
+  const cameraRef = useRef<CameraView>(null);
 
   const { control, handleSubmit, formState: { errors }, reset } = useForm<CreateRoomFormData>({
     resolver: zodResolver(createRoomFormSchema),
@@ -65,18 +83,55 @@ export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
   })
 
   function pressResponsableButton() {
-    setResponsableButtonPressed(oldValue => {
-      const newValue = !oldValue;
-      console.log(newValue);
-      return newValue;
-    });
+    setResponsableButtonPressed(oldValue =>  !oldValue);
   }
 
   const handleClose = () => {
     reset();
     onClose();
     setResponsableButtonPressed(false);
+    setPhotoUri(null);
   };
+
+  async function handleOpenCam() {
+    if (permission && permission.granted) {
+      setCameraVisible(true);
+      return;
+    }
+
+    const response = await requestPermission();
+    if (!response.granted) {
+      Toast.show({
+        type: "error",
+        text1: "Permissão Negada",
+        text1Style: {
+          fontSize: 16,
+        },
+        text2: "Permita o acesso da câmera para tirar fotos.",
+        text2Style: {
+          fontSize: 12,
+        },
+      });
+      return;
+    }
+    setCameraVisible(true);
+  }
+
+  async function handleTakePhoto() {
+    if (!cameraRef.current) return;
+
+    try {
+      const photo = await cameraRef.current.takePictureAsync({ quality: 0.7 });
+      if (photo) {
+        setPhotoUri(photo.uri); 
+      }
+    } catch (error) {
+      console.error("Erro ao tirar foto: ", error);
+      Toast.show({ type: "error", text1: "Erro ao tirar foto." });
+    } finally {
+      setCameraVisible(false); 
+    }
+  }
 
   async function getEmplooyes() {
     try {
@@ -98,7 +153,7 @@ export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
     setIsCreating(true);
 
     try {
-      await createRoom(data);
+      await createRoom(data, photoUri);
 
       Toast.show({
         type: "success",
@@ -173,7 +228,6 @@ export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
               />
             )}
           />
-  
 
           <ExternalInputContainer>
             <Controller 
@@ -229,19 +283,30 @@ export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
             )}
           />
 
-          <PhotoRoomContainer>
-            <InputName>Foto da sala</InputName>
-            <AddPhotoRoomContainer>
-              { photo ?
-                  <></>
-                :
-                  <>
-                  <PhotoIcon />
-                  <PhotoText>Adicionar imagem da sala</PhotoText>
-                  </>
-              }
-            </AddPhotoRoomContainer>
-          </PhotoRoomContainer>
+<PhotoRoomContainer>
+              <InputName>Foto da sala</InputName>
+              
+              {/* Remova o "style" e o "onPress" condicional daqui */}
+              <AddPhotoRoomContainer onPress={!photoUri ? handleOpenCam : undefined} photoExists={!!photoUri} >
+                { photoUri ?
+                  ( // Estado de PREVIEW (agora com styled-components)
+                    <>
+                      <PhotoPreview source={{ uri: photoUri }} />
+                      <RemovePhotoButton onPress={() => setPhotoUri(null)}>
+                        <RemovePhotoIcon color="#004A8D" />
+                      </RemovePhotoButton>
+                    </>
+                  )
+                  :
+                  ( // Estado VAZIO (como estava)
+                    <>
+                      <PhotoIcon />
+                      <PhotoText>Adicionar imagem da sala</PhotoText>
+                    </>
+                  )
+                }
+              </AddPhotoRoomContainer>
+            </PhotoRoomContainer>
 
           <Controller 
             control={control}
@@ -292,6 +357,40 @@ export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
           </ModalButtons>
         </ModalContainer>
       </ModalOverlay>
+
+      <CameraModal 
+        visible={isCameraVisible} 
+        animationType="slide" 
+        onRequestClose={() => setCameraVisible(false)}
+      >
+        <CameraModalContainer>
+          {permission?.granted ? (
+            // A câmera agora ocupa a tela inteira (flex: 1)
+            <CameraView 
+              ref={cameraRef} 
+              style={{ flex: 1 }} // <<== MUDANÇA AQUI
+              facing="back" 
+            />
+          ) : (
+            <CameraPermissionDenied>
+              <CameraButtonText>Aguardando permissão...</CameraButtonText>
+            </CameraPermissionDenied>
+          )}
+          
+          <CameraControls>
+             <CameraButton onPress={() => setCameraVisible(false)}>
+              <CameraButtonText>Voltar</CameraButtonText>
+            </CameraButton>
+            
+            <TouchableOpacity 
+              onPress={handleTakePhoto} 
+              disabled={!permission?.granted}
+            >
+              <CaptureButton />
+            </TouchableOpacity>
+          </CameraControls>
+        </CameraModalContainer>
+      </CameraModal>
     </Modal>
   );
 }
