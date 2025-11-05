@@ -154,7 +154,7 @@ export const createRoom = async (data: CreateRoomFormData, photoUri: string | nu
 // };
 
 
-export const updateRoom = async (qr_code_id: string, data: EditRoomFormData) => {
+export const updateRoom = async (qr_code_id: string, data: EditRoomFormData, deleteExistingPhoto: boolean, photoUri?: string | null) => {
   const formData = new FormData();
 
   formData.append("nome_numero", data.nome_numero);
@@ -177,6 +177,22 @@ export const updateRoom = async (qr_code_id: string, data: EditRoomFormData) => 
     });
   } else {
     formData.append("responsaveis", "");
+  }
+
+if (photoUri) {
+    // 1. Se tem foto NOVA, anexe-a.
+    // O backend (Django/DRF) geralmente substitui a imagem antiga automaticamente.
+    const filename = photoUri.split('/').pop() || 'foto_sala.jpg';
+    formData.append('imagem', { 
+      uri: photoUri,
+      name: filename,
+      type: 'image/jpeg' 
+    } as any);
+
+  } else if (deleteExistingPhoto) {
+    // 2. Se NÃO tem foto nova, MAS o usuário removeu a antiga
+    // (Enviamos 'null' explicitamente para o campo 'imagem' para limpá-lo)
+    formData.append('imagem', null as any);
   }
 
   try {

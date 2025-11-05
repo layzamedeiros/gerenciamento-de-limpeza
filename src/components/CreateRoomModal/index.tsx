@@ -43,9 +43,6 @@ type Props = ModalProps & {
 };
 
 import { CameraView, useCameraPermissions } from "expo-camera";
-import { Text } from "react-native";
-import { StyleSheet } from "react-native";
-import { View } from "react-native";
 
 const createRoomFormSchema = z.object({
   nome_numero: z.string().trim().nonempty("Campo obrigatório"),
@@ -283,13 +280,12 @@ export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
             )}
           />
 
-<PhotoRoomContainer>
+            <PhotoRoomContainer>
               <InputName>Foto da sala</InputName>
               
-              {/* Remova o "style" e o "onPress" condicional daqui */}
               <AddPhotoRoomContainer onPress={!photoUri ? handleOpenCam : undefined} photoExists={!!photoUri} >
                 { photoUri ?
-                  ( // Estado de PREVIEW (agora com styled-components)
+                  ( 
                     <>
                       <PhotoPreview source={{ uri: photoUri }} />
                       <RemovePhotoButton onPress={() => setPhotoUri(null)}>
@@ -298,7 +294,7 @@ export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
                     </>
                   )
                   :
-                  ( // Estado VAZIO (como estava)
+                  ( 
                     <>
                       <PhotoIcon />
                       <PhotoText>Adicionar imagem da sala</PhotoText>
@@ -365,10 +361,9 @@ export function CreateRoomModal({ onClose, onRoomCreated, ...rest }: Props) {
       >
         <CameraModalContainer>
           {permission?.granted ? (
-            // A câmera agora ocupa a tela inteira (flex: 1)
             <CameraView 
               ref={cameraRef} 
-              style={{ flex: 1 }} // <<== MUDANÇA AQUI
+              style={{ flex: 1 }} 
               facing="back" 
             />
           ) : (

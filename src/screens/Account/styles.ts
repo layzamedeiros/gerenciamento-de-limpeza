@@ -4,13 +4,14 @@ import styled, { css } from "styled-components/native";
 
 export const Container = styled(SafeAreaView)`
   flex: 1;
-  background-color: ${({ theme }) => theme.COLORS.WHITE};
-`;
+  background-color: ${({ theme }) => theme.COLORS.BACKGROUND};
+  `;
 
 export const Content = styled.View`
-  flex: 1;
+  height: 100%;
   align-items: center;
   padding: 32px;
+  background-color: ${({ theme }) => theme.COLORS.WHITE};
 `;
 
 export const AvatarPlaceholder = styled.View`
@@ -50,7 +51,7 @@ export const UserRole = styled.Text`
   margin-bottom: 15%;
 `;
 
-export const AccountButton = styled(TouchableOpacity)`
+export const AccountButton = styled(TouchableOpacity).attrs({ activeOpacity: 0.6 })`
   width: 105%;
   min-height: 50px;
   background-color: ${({ theme }) => theme.COLORS.PRIMARY};
@@ -72,7 +73,7 @@ export const AccountButtonText = styled.Text`
   font-size: 16px;
 `;
 
-export const PasswordButton = styled(TouchableOpacity)`
+export const PasswordButton = styled(TouchableOpacity).attrs({ activeOpacity: 0.6 })`
   width: 105%;
   min-height: 50px;
   background-color: ${({ theme }) => theme.COLORS.BACKGROUND};
@@ -94,7 +95,7 @@ export const ButtonText = styled.Text`
   font-size: 16px;
 `;
 
-export const LogoutButton = styled(TouchableOpacity)`
+export const LogoutButton = styled(TouchableOpacity).attrs({ activeOpacity: 0.6 })`
   width: 105%;
   min-height: 50px;
   background-color: ${({ theme }) => theme.COLORS.BACKGROUND};

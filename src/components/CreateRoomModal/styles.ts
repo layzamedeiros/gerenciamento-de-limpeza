@@ -100,7 +100,7 @@ export const ErrorCapacity = styled.Text`
 export const PhotoRoomContainer = styled.View`
   flex-direction: column;
   gap: 3px;
-`
+`;
 
 export const InputName = styled.Text`
   ${({ theme }) => css`
@@ -108,7 +108,7 @@ export const InputName = styled.Text`
     color: ${theme.COLORS.TITLE};
   `}
   font-size: 14px;
-`
+`;
 
 export const AddPhotoRoomContainer = styled.Pressable<{ photoExists: boolean }>`
   ${({ theme, photoExists }) => css`
@@ -137,8 +137,7 @@ export const PhotoText = styled.Text`
   `}
   text-align: center;
   font-size: 12px;
-  
-`
+`;
 
 export const PhotoPreview = styled.Image`
   width: 100%;
@@ -164,8 +163,6 @@ export const RemovePhotoIcon = styled(XCircleIcon)`
   font-size: 16px;
   font-weight: bold;
 `;
-
-// --- Estilos para o Modal da Câmera ---
 
 export const CameraModalContainer = styled.View`
   flex: 1;

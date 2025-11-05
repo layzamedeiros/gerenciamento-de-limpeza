@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Modal, ActivityIndicator, ModalProps } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import { Modal, ActivityIndicator, ModalProps, TouchableOpacity, Modal as CameraModal } from "react-native";
 import Toast from "react-native-toast-message";
 import {
   ModalOverlay,
@@ -14,6 +14,15 @@ import {
   AddPhotoRoomContainer,
   PhotoIcon,
   PhotoText,
+  PhotoPreview,
+  RemovePhotoButton,
+  RemovePhotoIcon,
+  CameraModalContainer,
+  CameraPermissionDenied,
+  CameraButtonText,
+  CameraControls,
+  CameraButton,
+  CaptureButton,
 } from "./styles";
 import { Room, updateRoom } from "@services/rooms.service";
 import { Controller, useForm } from "react-hook-form";
@@ -23,6 +32,8 @@ import { ScrollView } from "react-native";
 import { FormInput } from "@components/FormInput";
 import { Dropdown } from "@components/Dropdowm";
 import { fetchUsers, User } from "@services/employee.service";
+import { CameraView, useCameraPermissions } from "expo-camera";
+import api from "@services/api";
 
 type Props = ModalProps & {
   room: Room;
@@ -46,11 +57,56 @@ export function EditRoomModal({ room, onClose, onRoomUpdated, ...rest }: Props) 
   const [isUpdating, setIsUpdating] = useState(false);
   const [responsableButtonPressed, setResponsableButtonPressed] = useState(false);
   const [responsables, setResponsables] = useState<User[]>({} as User[]);
-  const [photo, setPhoto] = useState(false);
+  const [photoUri, setPhotoUri] = useState<string | null>(null);
+  const [originalPhoto, setOriginalPhoto] = useState<string | null>(null);
+
+  const [isCameraVisible, setCameraVisible] = useState(false);
+  const [permission, requestPermission] = useCameraPermissions();
+  const cameraRef = useRef<CameraView>(null);
 
   const { control, handleSubmit, formState: { errors }, reset } = useForm<EditRoomFormData>({
     resolver: zodResolver(editRoomFormSchema)
   });
+
+    async function handleOpenCam() {
+      if (permission && permission.granted) {
+        setCameraVisible(true);
+        return;
+      }
+  
+      const response = await requestPermission();
+      if (!response.granted) {
+        Toast.show({
+          type: "error",
+          text1: "Permissão Negada",
+          text1Style: {
+            fontSize: 16,
+          },
+          text2: "Permita o acesso da câmera para tirar fotos.",
+          text2Style: {
+            fontSize: 12,
+          },
+        });
+        return;
+      }
+      setCameraVisible(true);
+    }
+  
+    async function handleTakePhoto() {
+      if (!cameraRef.current) return;
+  
+      try {
+        const photo = await cameraRef.current.takePictureAsync({ quality: 0.7 });
+        if (photo) {
+          setPhotoUri(photo.uri); 
+        }
+      } catch (error) {
+        console.error("Erro ao tirar foto: ", error);
+        Toast.show({ type: "error", text1: "Erro ao tirar foto." });
+      } finally {
+        setCameraVisible(false); 
+      }
+    }
 
   async function getEmplooyes() {
     try {
@@ -76,13 +132,16 @@ export function EditRoomModal({ room, onClose, onRoomUpdated, ...rest }: Props) 
     reset();
     onClose();
     setResponsableButtonPressed(false);
+    setPhotoUri(null);
+    setOriginalPhoto(null);
   };
   
   const handleUpdateRoom = async (data: EditRoomFormData) => {
-    setIsUpdating(true);
+    const deleteExistingPhoto = !photoUri && !originalPhoto && !!room.imagem;
 
     try {
-      await updateRoom(room.qr_code_id, data);
+      // Passe a flag 'deleteExistingPhoto' para o serviço
+      await updateRoom(room.qr_code_id, data, deleteExistingPhoto, photoUri);
 
       Toast.show({
         type: "success",
@@ -127,11 +186,22 @@ export function EditRoomModal({ room, onClose, onRoomUpdated, ...rest }: Props) 
         instrucoes: room.instrucoes
       });
     }
+
+    if (room.imagem) {
+        const serverImageUrl = `${api.defaults.baseURL?.replace('/api/', '')}${room.imagem}`;
+        setOriginalPhoto(serverImageUrl);
+      } else {
+        setOriginalPhoto(null);
+      }
+      
+      setPhotoUri(null)
   }, [room, reset])
 
   useEffect(() => {
     getEmplooyes();
   }, []);
+
+  const displayUri = photoUri || originalPhoto;
 
   return (
     <Modal transparent={true} onRequestClose={onClose} animationType="fade" {...rest}>
@@ -210,6 +280,7 @@ export function EditRoomModal({ room, onClose, onRoomUpdated, ...rest }: Props) 
                   )}
                 />
               </ExternalInputContainer>
+              
     
               <Controller
                 control={control}
@@ -227,20 +298,39 @@ export function EditRoomModal({ room, onClose, onRoomUpdated, ...rest }: Props) 
                   />
                 )}
               /> 
-    
-              <PhotoRoomContainer>
-                <InputName>Foto da sala</InputName>
-                <AddPhotoRoomContainer>
-                  { photo ?
-                      <></>
-                    :
-                      <>
-                      <PhotoIcon />
-                      <PhotoText>Adicionar imagem da sala</PhotoText>
-                      </>
-                  }
-                </AddPhotoRoomContainer>
-              </PhotoRoomContainer>
+              
+          <PhotoRoomContainer>
+            <InputName>Foto da sala</InputName>
+            
+            <AddPhotoRoomContainer onPress={!displayUri ? handleOpenCam : undefined} photoExists={!!displayUri} >
+              
+              { displayUri ?
+                ( 
+                  <>
+                    <PhotoPreview 
+                      source={{ uri: displayUri }} 
+                      resizeMode="cover" 
+                    />
+                    
+                    <RemovePhotoButton onPress={() => {
+                      setPhotoUri(null);
+                      setOriginalPhoto(null);
+                    }}>
+                      <RemovePhotoIcon color="#004A8D" />
+                    </RemovePhotoButton>
+                  </>
+                )
+                :
+                ( 
+                  <>
+                    <PhotoIcon />
+                    <PhotoText>Adicionar imagem da sala</PhotoText>
+                  </>
+                )
+              }
+
+            </AddPhotoRoomContainer>
+          </PhotoRoomContainer>
     
               <Controller 
                 control={control}
@@ -291,6 +381,39 @@ export function EditRoomModal({ room, onClose, onRoomUpdated, ...rest }: Props) 
           </ModalButtons>
         </ModalContainer>
       </ModalOverlay>
+
+            <CameraModal 
+              visible={isCameraVisible} 
+              animationType="slide" 
+              onRequestClose={() => setCameraVisible(false)}
+            >
+              <CameraModalContainer>
+                {permission?.granted ? (
+                  <CameraView 
+                    ref={cameraRef} 
+                    style={{ flex: 1 }} 
+                    facing="back" 
+                  />
+                ) : (
+                  <CameraPermissionDenied>
+                    <CameraButtonText>Aguardando permissão...</CameraButtonText>
+                  </CameraPermissionDenied>
+                )}
+                
+                <CameraControls>
+                   <CameraButton onPress={() => setCameraVisible(false)}>
+                    <CameraButtonText>Voltar</CameraButtonText>
+                  </CameraButton>
+                  
+                  <TouchableOpacity 
+                    onPress={handleTakePhoto} 
+                    disabled={!permission?.granted}
+                  >
+                    <CaptureButton />
+                  </TouchableOpacity>
+                </CameraControls>
+              </CameraModalContainer>
+            </CameraModal>
     </Modal>
   );
 }

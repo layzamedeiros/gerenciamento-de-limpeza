@@ -20,7 +20,7 @@ type Props = {
 export function FilterUserButton({ activeFilter, onFilterChange }: Props) {
   const buttons: FilterButtonConfig[] = [
     { label: 'Todos', status: 'todas', keyName: undefined, keyValue: undefined },
-    { label: 'Colaborador', status: 'colaborador', keyName: 'is_superuser', keyValue: 'false' },
+    { label: 'Funcionário', status: 'colaborador', keyName: 'is_superuser', keyValue: 'false' },
     { label: 'Admin', status: 'admin', keyName: 'is_superuser', keyValue: 'true' },
   ];
 
